@@ -1,0 +1,37 @@
+// src/components/common/Forms/GoogleButton.jsx
+
+// Google-branded button following Google identity guidelines
+
+import { signInWithGoogle } from '../../../services/authService';
+import { useState } from 'react';
+
+export default function GoogleButton({ fullWidth = true }) {
+    const [loading, setLoading] = useState(false);
+
+    const handleClick = async () => {
+        setLoading(true);
+        /* Supabase does the heavy lifting; the page reloads after OAuth */
+        const { error } = await signInWithGoogle();
+        if (error) console.error(error.message);
+        // no navigate() because Supabase will redirect automatically
+    };
+    
+    return (
+        <button
+            onClick={handleClick}
+            disabled={loading}
+            /* Tailwind classes recommended by Google */
+            className={`flex items-center justify-center gap-3 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring_gray-400 ${fullWidth ? 'w-full py-2' : 'px-4 py-2'}`}
+        >
+           {/* SVG from Google assets (keeps you compliant)  :contentReference[oaicite:3]{index=3} */}
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.7 1.23 9.25 3.25l6.9-6.9C35.3 1.8 29.92 0 24 0 14.7 0 6.48 4.9 2.25 12l8.1 6.3C12.5 12.5 17.73 9.5 24 9.5z" />
+        <path fill="#4285F4" d="M46.1 24.5c0-1.55-.14-3.05-.4-4.5H24v8.5h12.4c-.55 2.96-2.18 5.46-4.65 7.15l7.1 5.52C43.4 38.2 46.1 31.8 46.1 24.5z" />
+        <path fill="#FBBC05" d="M10.35 28.45a14.71 14.71 0 010-8.9l-8.1-6.3A23.95 23.95 0 000 24c0 3.93.93 7.63 2.55 10.95l7.8-6.5z" />
+        <path fill="#34A853" d="M24 47.5c6.48 0 11.9-2.14 15.87-5.82l-7.1-5.52c-2.11 1.42-4.83 2.27-8.77 2.27-6.27 0-11.5-4.08-13.38-9.6l-7.87 6.5C6.48 43.1 14.7 47.5 24 47.5z" />
+        <path fill="none" d="M0 0h48v48H0z" />
+      </svg> 
+        {loading ? 'Signing in...' : 'Continue with Google'}
+        </button>
+    );
+}
