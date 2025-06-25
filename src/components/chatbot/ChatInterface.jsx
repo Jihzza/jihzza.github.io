@@ -6,14 +6,12 @@ import FormButton from '../common/Forms/FormButton';
 
 /**
  * A reusable, generic chat interface component
- * @param {string} workflowId - The unique identifier for the n8n webhook
  * @param {string} initialMessage - The first message displayed by the chatbot
  * @param {string} inputPlaceholder - The placeholder text for the chat input field
  * @param {string} containerHeight - The height of the chat container
  */
 
 export default function ChatInterface({
-    workflowId,
     initialMessage,
     inputPlaceholder = "Type your message...",
     containerHeight = 'h-96'
@@ -23,6 +21,7 @@ export default function ChatInterface({
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
+    const [sessionId] = useState(() => crypto.randomUUID());
 
     // HOOKS
     // Effect to scroll to the bottom whenever a new message if added
@@ -42,12 +41,12 @@ export default function ChatInterface({
 
         try {
             // The URL for your n8n webhook. It should be in your environment variables.
-            const webhookUrl = `${import.meta.env.VITE_N8N_WEBHOOK_URL}/${workflowId}`;
+            const webhookUrl = `${import.meta.env.VITE_N8N_WEBHOOK_URL}`;
 
             const response = await fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: input }),
+                body: JSON.stringify({ session_id: sessionId, chatInput: input }),
             });
 
             if (!response.ok) {
@@ -55,7 +54,11 @@ export default function ChatInterface({
             }
 
             const data = await response.json();
-            const botMessage = { text: data.reply, sender: 'bot' };
+            const text =
+                data.output ??
+                data.reply ??
+                (typeof data === 'string' ? data : JSON.stringify(data));
+            const botMessage = { text, sender: 'bot' };
             setMessages(prev => [...prev, botMessage]);
         } catch (error) {
             console.error("Error communicating with the chatbot:", error);

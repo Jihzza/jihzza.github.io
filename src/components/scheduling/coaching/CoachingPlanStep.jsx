@@ -33,7 +33,7 @@ const formatPrice = (amount) => Intl.NumberFormat('de-DE', { style: 'currency', 
  * @param {string} selectedPlan - The ID of the currently selected plan ('basic', standard or premium)
  * @param {function} onSelectPlan - A callback function that fires when a plan is selected
  */
-export default function CoachingPlanStep({ selectedPlan, onSelectedPlan }) {
+export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
 
     // RENDER LOGIC
     return (

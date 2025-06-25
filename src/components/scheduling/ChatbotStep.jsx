@@ -12,12 +12,13 @@ export default function ChatbotStep() {
             </p>
 
             {/** Chat Interface - Reusable Component */}
-            <ChatInterface />
-            {/** This ID would point to the n8n workflow specifically for post-booking info gathering*/}
-            workflowId="consultation-intake-workflow"
+            <ChatInterface
             initialMessage="Hello! I'm here to gather some preliminary information for our upcoming consultation. To start, could you please tell more about yourself?"
             containerHeigth="h-[450px]"
             inputPlaceholder="Type your message..."
+            />
+            
+            {/** This ID would point to the n8n workflow specifically for post-booking info gathering*/}
         </div>
     );
 }

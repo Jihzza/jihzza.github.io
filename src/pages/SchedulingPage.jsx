@@ -84,7 +84,14 @@ export default function SchedulingPage() {
      * (Validation logic will be added here later)
      */
     const handleNext = () => {
-        // For now, it just increments the step number.
+        const { serviceType } = formData;
+
+        // If we are on the contact step of the pitch deck flow, jump to the chatbot step
+        if (serviceType === 'pitchdeck' && currentStep === 3) {
+            setCurrentStep(5);
+            return;
+        }
+        
         setCurrentStep(prevStep => prevStep + 1);
     };
 
@@ -244,7 +251,7 @@ export default function SchedulingPage() {
                 {currentStep === 2 && formData.serviceType === 'coaching' && (
                     <CoachingPlanStep
                         selectedPlan={formData.coaching.plan}
-                        onSelectPlan={(planId) => handleUpdate('coaching', 'plan', planId)}
+                        onSelectPlan={(planId) => handleUpdateField('coaching', 'plan', planId)}
                     />
                 )}
 
@@ -252,7 +259,7 @@ export default function SchedulingPage() {
                 {currentStep === 2 && formData.serviceType === 'pitchdeck' && (
                     <PitchDeckStep 
                         selectedDeck={formData.pitchdeck.type}
-                        onSelectDeck={(deckId) => handleUpdate('pitchdeck', 'type', deckId)}
+                        onSelectDeck={(deckId) => handleUpdateField('pitchdeck', 'type', deckId)}
                     />
                 )}
                 
