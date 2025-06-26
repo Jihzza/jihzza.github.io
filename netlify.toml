@@ -1,28 +1,16 @@
+# Netlify Build Settings
 [build]
-  functions = "netlify/functions"
-  publish = "build"
-  command = "npm run build"
+  command = "npm run build"      # The command to build your React site
+  publish = "dist"               # The folder that contains the built site (Vite's default)
+  functions = "netlify/functions" # The folder where our serverless functions live
 
+# Redirects and Rewrites
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
-  force = true
 
-[functions."stripe-webhook"]
-  node_bundler = "esbuild"
-  external_node_modules = ["stripe", "@netlify/functions"]
-
-[functions."send-welcome-email"]
-  node_bundler = "esbuild"
-  external_node_modules = ["resend", "node-fetch"]
-
-[functions."handle-verification"]
-  node_bundler = "esbuild"
-  external_node_modules = ["resend", "@supabase/supabase-js"]
-
-  [[redirects]]
-  from   = "/*"
-  to     = "/index.html"
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
-  force  = true

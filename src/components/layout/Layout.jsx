@@ -5,6 +5,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import NavigationBar from './NavigationBar'; // Your project's NavigationBar
 import ChatbotWindow from '../chatbot/ChatbotWindow'; // Your project's ChatbotWindow
+import Header from './Header';
 
 export default function Layout() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
@@ -24,7 +25,7 @@ export default function Layout() {
   // 2. `flex flex-col`: This allows the <main> content to grow and fill the space above the navbar.
   return (
     <div className="h-full flex flex-col">
-      
+      <Header />
       {/* The <main> tag now correctly fills all available space and allows scrolling. */}
       {/* The bottom padding prevents content from being hidden by the fixed navbar. */}
       <main className="flex-grow overflow-y-auto">

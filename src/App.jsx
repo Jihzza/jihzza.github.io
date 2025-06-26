@@ -1,7 +1,7 @@
+// src/App.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Layout from './components/layout/Layout';
-// Create these placeholder files in the next step
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -10,6 +10,9 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import SchedulingPage from './pages/SchedulingPage';
+import MessagesPage from './pages/MessagesPage';
+// 1. Import the new page component we are about to create.
+import ConversationPage from './pages/ConversationPage';
 
 function App() {
   return (
@@ -20,21 +23,24 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         
-        {/* Routes that SHOULD have the navigation bar are nested under the Layout route */}
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/scheduling" element={<SchedulingPage />} />
           <Route 
             path="/profile" 
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} 
           />
-          {/* Add other pages that need the nav bar here in the future */}
+          <Route 
+            path="/messages" 
+            element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} 
+          />
+          {/* 2. Add the new dynamic route for a single conversation. */}
+          {/* This route will render our new ConversationPage component. */}
+          <Route 
+            path="/messages/:conversationId"
+            element={<ProtectedRoute><ConversationPage /></ProtectedRoute>}
+          />
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

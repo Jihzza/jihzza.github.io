@@ -14,7 +14,8 @@ import { supabase } from '../lib/supabaseClient';
  * @param {string} email    – The user’s email address.
  * @param {string} password – The password they chose.
  * @param {Object} [options] – Optional extra data (e.g. redirect URL).
- * @returns {{data: object, error: object|null}}
+ * @param {string} userId - The user's ID.
+ * @param {object} profileData - An object with username, full_name, etc. * @returns {{data: object, error: object|null}}
  *            data  → Info about the new user & session.
  *            error → If something went wrong.
  */
@@ -81,3 +82,36 @@ export const getUserSession = async () => {
   const { data, error } = await supabase.auth.getSession();
   return { data, error };
 };
+
+export const getProfile = async (userId) => {
+  if (!userId) return { data: null, error: 'User ID is required' };
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('username, full_name, avatar_url')
+    .eq('id', userId)
+    .single(); // .single() returns one object instead of an array
+
+  if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found, which is ok
+    console.error('Error fetching profile:', error);
+  }
+  
+  return { data, error };
+}
+
+export const updateProfile = async (userId, profileData) => {
+  if (!userId) return { data: null, error: 'User ID is required' };
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(profileData)
+    .eq('id', userId)
+    .select() // .select() returns the updated data
+    .single();
+
+  if (error) {
+    console.error('Error updating profile:', error);
+  }
+
+  return { data, error };
+}
