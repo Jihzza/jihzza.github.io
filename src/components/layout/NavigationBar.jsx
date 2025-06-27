@@ -33,8 +33,8 @@ export default function NavigationBar({ onChatClick }) {
     };
 
     return (
-        <nav className="w-full sticky bottom-0 left-0 right-0 border-t shadow-lg z-40">
-            <div className="flex justify-around items-center w-full bg-blue-900 h-20 mx-auto">
+        <nav className="w-full sticky top-0 left-0 right-0 border-t shadow-lg z-40">
+            <div className="flex justify-around items-center w-full bg-black h-20 mx-auto">
                 {navItems.map((item, index) => {
                     const Icon = item.icon;
                     const isActiveItem = item.path ? isActive(item.path) : false;

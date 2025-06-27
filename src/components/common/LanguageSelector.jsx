@@ -23,7 +23,7 @@ export default function LanguageSelector() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 // COLOR UPDATE: Adjusted focus ring offset color.
-                className="flex items-center p-2 text-white rounded-full hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white"
+                className="flex items-center p-2 text-white rounded-full"
                 aria-label="Change language"
             >
                 <GlobeAltIcon className="h-6 w-6" />

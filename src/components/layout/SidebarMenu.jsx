@@ -50,7 +50,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated }) {
                         {/* We remove 'w-full', 'max-w-sm', and 'flex-1' and replace them with 'w-[70vw]'. */}
                         {/* 'vw' stands for "viewport width", so this is 70% of the total screen width. */}
                         <Dialog.Panel className="relative flex w-[70vw] h-full">
-                            <div className="flex flex-grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 text-white">
+                            <div className="flex flex-grow flex-col gap-y-5 overflow-y-auto bg-black px-6 pb-4 text-white">
                                 <nav className="flex flex-1 flex-col pt-6">
                                     <ul role="list" className="flex flex-1 flex-col gap-y-7">
                                         <li>

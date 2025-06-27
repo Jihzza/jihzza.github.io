@@ -17,7 +17,7 @@ export default function NotificationsBell() {
                 // `text-gray-600`: Changed from text-white to be visible on a white background.
                 // `hover:bg-gray-100`: Added a subtle hover effect suitable for a light theme.
                 // `focus:ring...`: Added accessibility improvements for keyboard navigation.
-                className="relative p-2 text-white rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="relative p-2 text-white rounded-full"
             >
                 <BellIcon className="h-7 w-7" />
                 {unreadCount > 0 && (
