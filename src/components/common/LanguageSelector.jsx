@@ -1,0 +1,53 @@
+// src/components/common/LanguageSelector.jsx
+
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { GlobeAltIcon, CheckIcon } from '@heroicons/react/24/outline';
+
+const languages = [
+    { key: 'en', label: 'English' },
+    { key: 'es', label: 'Español' },
+];
+
+export default function LanguageSelector() {
+    const { i18n } = useTranslation();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleLanguageChange = (langKey) => {
+        i18n.changeLanguage(langKey);
+        setIsOpen(false);
+    };
+
+    return (
+        <div className="relative">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                // COLOR UPDATE: Adjusted focus ring offset color.
+                className="flex items-center p-2 text-white rounded-full hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white"
+                aria-label="Change language"
+            >
+                <GlobeAltIcon className="h-6 w-6" />
+            </button>
+
+            {isOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+                    <ul className="py-1">
+                        {languages.map((lang) => (
+                            <li key={lang.key}>
+                                <button
+                                    onClick={() => handleLanguageChange(lang.key)}
+                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center justify-between"
+                                >
+                                    <span>{lang.label}</span>
+                                    {i18n.language === lang.key && (
+                                        <CheckIcon className="h-5 w-5 text-indigo-600" />
+                                    )}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}

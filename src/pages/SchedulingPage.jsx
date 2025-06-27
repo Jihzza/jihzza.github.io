@@ -1,7 +1,6 @@
 // src/pages/SchedulingPage.jsx
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from '../contexts/AuthContext';
 // COMPONENT IMPORTS
 // We import the first "step" component we created.
@@ -74,7 +73,7 @@ export default function SchedulingPage() {
             ...prevData,
             [formSection]: {
                 ...prevData[formSection],
-                [fieldName]:value
+                [fieldName]: value
             }
         }));
     };
@@ -91,7 +90,7 @@ export default function SchedulingPage() {
             setCurrentStep(5);
             return;
         }
-        
+
         setCurrentStep(prevStep => prevStep + 1);
     };
 
@@ -125,52 +124,45 @@ export default function SchedulingPage() {
 
     const handleInitiateCheckout = async () => {
         setIsProcessing(true);
-        // This is a conceptual mapping. You'd need to create these Price Ids in Stripe
-        const priceIdMapping = {
-            consultation_45: 'price_1RdJ7nFjE6pGfxcx2jVLoc qp', // 45 min consultation price ID
-            consultation_60: 'price_1RdJAYFjE6pGfxcx378rhD1A', // 60 min consultation price ID,
-            consultation_75: 'price_1RdJBqFjE6pGfxcxN2YuBUrX', // 75 min consultation price ID
-            consultation_90: 'price_1RdJCXFjE6pGfxcxes4spH3A', // 90 min consultation price ID,
-            consultation_105: 'price_1RdJHHFjE6pGfxcxE9m11zKI', // 105 min consultation price ID,
-            consultation_120: 'price_1RdJIiFjE6pGfxcxuPgav5dM', // 120 min consultation price ID,
-            coaching_basic: 'price_1RdJa8FjE6pGfxcxdjHtNjnu', // Basic coaching price ID,
-            coaching_standard: 'price_1RdJbFFjE6pGfxcx01eLhzOk', // Standard coaching price ID,
-            coaching_premium: 'price_1RdJcJFjE6pGfxcx5UDIvoug', // Premium coaching price ID,
+
+        // --- NEW ARCHITECTURE: Map services to their Payment Link URLs ---
+        // Replace these placeholder URLs with the real ones you created in your Stripe Dashboard.
+        const paymentLinkMapping = {
+            consultation_45: 'https://buy.stripe.com/test_28E8wPgq10NEeub2Lb1oI01',
+            consultation_60: 'https://buy.stripe.com/test_aFadR9a1D9kacm3clL1oI00',
+            consultation_75: 'https://buy.stripe.com/test_9B65kD8Xzcwm1HpetT1oI03',
+            consultation_90: 'https://buy.stripe.com/test_7sY7sLb5Haoe71J85v1oI04',
+            consultation_105: 'https://buy.stripe.com/test_9B600jb5HgMCcm3etT1oI05',
+            consultation_120: 'https://buy.stripe.com/test_14A28r2zb9kacm3bhH1oI06',
+            coaching_basic: 'https://buy.stripe.com/test_14A28r2zb9kacm3bhH1oI06',
+            coaching_standard: 'https://buy.stripe.com/test_9B6dR95Ln1RIcm35Xn1oI08',
+            coaching_premium: 'https://buy.stripe.com/test_6oU6oHflXfIycm385v1oI09',
         };
 
-        // Determine the correct Price ID
-        let priceId = '';
+        // CAPTURE THE STATE TO PRESERVE
+        const stateToPreserve = {
+            formData: formData,
+            currentStep: currentStep,
+            scrollPosition: window.scrollY
+        };
+
+        // --- 2. SAVE STATE TO SESSION STORAGE ---
+        // We convert the object to a JSON string because storage can only hold strings.
+        sessionStorage.setItem('schedulingState', JSON.stringify(stateToPreserve));
+
+        // Determine the correct Payment Link URL
+        let paymentLinkUrl = '';
         if (formData.serviceType === 'consultation') {
-            priceId = priceIdMapping[`consultation_${formData.consultation.duration}`];
+            paymentLinkUrl = paymentLinkMapping[`consultation_${formData.consultation.duration}`];
         } else if (formData.serviceType === 'coaching') {
-            priceId = priceIdMapping[`coaching_${formData.coaching.plan}`];
+            paymentLinkUrl = paymentLinkMapping[`coaching_${formData.coaching.plan}`];
         }
 
-        // Construct the success and cancel URLs
-        const baseUrl = window.location.origin + window.location.pathname;
-        const successUrl = `${baseUrl}?payment_status=success`;
-        const cancelUrl = `${baseUrl}?payment_status=cancelled`;
-
-        try {
-            // Call your backend API endpoint
-            const response = await fetch('/api/create-checkout-session', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ priceId, quantity: 1, successUrl, cancelUrl }),
-            });
-
-            const session = await response.json();
-
-            // Redirect to Stripe Checkout
-            const stripe = await stripePromise;
-            const { error } = await stripe.redirectToCheckout({ sessionId: session.id });
-
-            if (error) {
-                console.error("Stripe redirect error:", error);
-                setIsProcessing(false);
-            }
-        } catch (error) {
-            console.error("Error creating checkout session:", error);
+        if (paymentLinkUrl) {
+            window.location.href = paymentLinkUrl;
+        } else {
+            console.error("No payment link found for the selected service.");
+            sessionStorage.removeItem('schedulingState'); // Clean up if there's an error
             setIsProcessing(false);
         }
     };
@@ -214,16 +206,45 @@ export default function SchedulingPage() {
         }
     }, [user, currentStep]); // Dependency array
 
-    // STRIPE SETUP
-    const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+ // --- ADD THIS NEW USEEFFECT HOOK FOR STATE RESTORATION ---
+ useEffect(() => {
+    // 1. Check if saved state exists in sessionStorage
+    const savedStateJSON = sessionStorage.getItem('schedulingState');
 
-    {/* Get the total steps for the currently selected flow */}
+    if (savedStateJSON) {
+        try {
+            // 2. Parse the JSON string back into an object
+            const savedState = JSON.parse(savedStateJSON);
+
+            // 3. Restore the component's state from the saved data
+            setFormData(savedState.formData);
+            setCurrentStep(savedState.currentStep);
+
+            // 4. Restore the scroll position. We use a small timeout
+            // to ensure the page has re-rendered before scrolling.
+            setTimeout(() => {
+                window.scrollTo(0, savedState.scrollPosition);
+            }, 100); // 100ms delay is usually sufficient
+
+            // 5. IMPORTANT: Clean up the stored state so it's not reused
+            sessionStorage.removeItem('schedulingState');
+
+        } catch (error) {
+            console.error("Failed to parse or restore scheduling state:", error);
+            // Clean up in case of a parsing error
+            sessionStorage.removeItem('schedulingState');
+        }
+    }
+}, []); // The empty dependency array [] ensures this runs only once on mount
+
+
+    {/* Get the total steps for the currently selected flow */ }
     const totalSteps = formData.serviceType ? flowConfig[formData.serviceType].totalSteps : 1;
 
     // RENDER LOGIC
     return (
         // We use a container to center the form on the page and provide padding
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-12 px-4">
+        <div className="h-auto flex flex-col items-center justify-center py-12 px-4">
             <div className="w-full max-w-2xl p-8 space-y-8 bg-white rounded-xl shadow-md">
 
                 {/* Conditional Rendering: Display the correct component for the current step */}
@@ -257,12 +278,12 @@ export default function SchedulingPage() {
 
                 {/* Add the new PitchDeckStep rendering condition for step 2 */}
                 {currentStep === 2 && formData.serviceType === 'pitchdeck' && (
-                    <PitchDeckStep 
+                    <PitchDeckStep
                         selectedDeck={formData.pitchdeck.type}
                         onSelectDeck={(deckId) => handleUpdateField('pitchdeck', 'type', deckId)}
                     />
                 )}
-                
+
                 {currentStep === 3 && (
                     <ContactInfoStep
                         isLoggedIn={!!user} // Pass true/false if user object exists
@@ -286,7 +307,7 @@ export default function SchedulingPage() {
                     <ChatbotStep />
                 )}
 
-                
+
 
                 {/* Navigation Buttons */}
                 <div className="flex justify-between pt-6">
@@ -298,7 +319,7 @@ export default function SchedulingPage() {
 
                     {/* Action Button: Show "Next" if not the last step, otherwise show "Finish" */}
                     {currentStep < totalSteps ? (
-                        <button 
+                        <button
                             onClick={handleNext}
                             disabled={
                                 (currentStep === 1 && !formData.serviceType) ||

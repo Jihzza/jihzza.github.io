@@ -1,34 +1,55 @@
 // src/components/layout/Header.jsx
 
-import React from 'react'; // Imports the core React library to create components.
-import NotificationsBell from '../notifications/NotificationsBell'; // Imports the notification component.
-import { useAuth } from '../../contexts/AuthContext'; // We need the auth context to know if we should display the header.
+import React, { useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { Bars3Icon } from '@heroicons/react/24/outline';
+import NotificationsBell from '../notifications/NotificationsBell';
+import LanguageSelector from '../common/LanguageSelector';
+import SidebarMenu from './SidebarMenu';
+import DaGalowLogo from '../../assets/images/DaGalow Logo.svg';
 
-/**
- * Header Component (Simplified)
- * This component renders a simple rectangular bar at the top of the application,
- * containing only the notification bell for logged-in users.
- */
 export default function Header() {
-    // Get the current `user` object from our global AuthContext.
-    // This will be null if the user is not logged in.
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    // Do not render the header at all if there is no user session.
-    // This prevents an empty bar from showing on the login page.
-    if (!user) {
+    if (!isAuthenticated) {
         return null;
     }
 
     return (
-        // The <header> semantic HTML tag.
-        // `sticky top-0 z-50`: Makes the header "stick" to the top of the screen during scroll. `z-50` ensures it appears above other page content.
-        // `bg-white shadow-md`: Sets a white background and adds a subtle box-shadow for a "lifted" effect.
-        // `flex items-center justify-end`: Uses Flexbox to align the bell vertically and push it to the far right.
-        // `p-4`: Applies padding for spacing.
-        <header className="sticky top-0 z-50 bg-blue-900 shadow-md flex items-center justify-end p-4">
-            {/* The NotificationsBell component is the only item in the header. */}
-            <NotificationsBell />
-        </header>
+        <>
+            <SidebarMenu 
+                isOpen={sidebarOpen} 
+                onClose={() => setSidebarOpen(false)} 
+                isAuthenticated={isAuthenticated} 
+            />
+
+            {/* STYLING UPDATE: Added a fixed height of h-16 (4rem) to the header. */}
+            {/* This is critical for the sidebar to know where its top boundary should be. */}
+            <header className="sticky top-0 z-40 bg-gray-900 shadow-md h-16">
+                <div className="grid grid-cols-3 items-center h-full p-2 mx-auto max-w-7xl">
+
+                    <div className="flex items-center justify-self-start">
+                        <button
+                            type="button"
+                            className="p-2 text-white"
+                            onClick={() => setSidebarOpen(true)}
+                            aria-label="Open sidebar"
+                        >
+                            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+                        </button>
+                    </div>
+
+                    <div className="flex items-center justify-self-center">
+                        <img src={DaGalowLogo} alt="DaGalow Logo" className="h-6" />
+                    </div>
+
+                    <div className="flex items-center justify-self-end">
+                        <LanguageSelector />
+                        <NotificationsBell />
+                    </div>
+                </div>
+            </header>
+        </>
     );
 }

@@ -7,7 +7,7 @@ import SchedulingPage from './SchedulingPage';
 export default function HomePage() { 
     return (
         <div
-            className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4"
+            className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white px-4"
             >
                 {/* Title Text */}
                 <h1 className="text-4xl font-bolld mb-10">Hello World!</h1>
@@ -22,9 +22,9 @@ export default function HomePage() {
                    >
                     Get&nbsp;Started
                    </Link>
-                   <Link to="/scheduling" className="px-8 py-3 rounded-md text-lg font-medium bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                    Book a Call
-                   </Link>
+
+                <SchedulingPage />
+
         </div>
     );
 }
