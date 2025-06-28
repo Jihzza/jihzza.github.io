@@ -11,7 +11,44 @@ body,
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Word Carousel */
+/* The keyframes define the anmimation: it moves the element from left to right*/
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* We translate it by half its  total width, which corresponds to the length of the original (non-duplicated) word list. */
+    transform: translateX(-50%);
+  }
+}
+
+/* This class applies the animmation to our carousel track */
+.word-carousel-track {
+  /* 'will-change' is a performance hint for the browser */
+  will-change: transform;
+  animation: scroll 10s linear infinite;
+}
+
+/* When the user is dragging, we pause the animation */
+.word-carousel-track.is-dragging {
+  animation-play-state: paused;
+}
+
+/* Feature Carousel */
+/* We target the custom class we added to our SwiperSlide component. */
+.feature-swiper .swiper-slide-custom {
+  /* On mobile, each slide takes up 70% of the screen width */
+  width: 70%;
+  height: 120px;
+}
+
+@media (min-width: 768px) {
+  .feature-swiper .swiper-slide-custom {
+    /* On desktop, each slide takes up 30% of the screen width */
+    width: 30%;
+  }
 }

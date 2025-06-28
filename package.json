@@ -25,6 +25,7 @@
     "react-i18next": "^15.5.3",
     "react-router-dom": "^7.6.2",
     "stripe": "^18.2.1",
+    "swiper": "^11.2.9",
     "zod": "^3.25.67"
   },
   "devDependencies": {

@@ -11,7 +11,7 @@ export default function ProtectedRoute({ children }) {
     if (loading) {
         // Still checking session -> show neutral splash
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className=" flex items-cmin-h-screenenter justify-center">
                 Loading...
             </div>
         );

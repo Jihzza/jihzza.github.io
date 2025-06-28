@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GlobeAltIcon, CheckIcon } from '@heroicons/react/24/outline';
+import GlobeIcon from '../../assets/icons/Globe Branco.svg';
+
 
 const languages = [
     { key: 'en', label: 'English' },
@@ -23,10 +25,10 @@ export default function LanguageSelector() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 // COLOR UPDATE: Adjusted focus ring offset color.
-                className="flex items-center p-2 text-white rounded-full"
+                className="flex items-center text-white rounded-full"
                 aria-label="Change language"
             >
-                <GlobeAltIcon className="h-6 w-6" />
+                <img src={GlobeIcon} alt="Globe" className="h-5 w-5" />
             </button>
 
             {isOpen && (

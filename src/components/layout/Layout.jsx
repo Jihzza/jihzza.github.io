@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import NavigationBar from './NavigationBar'; // Your project's NavigationBar
-import ChatbotWindow from '../chatbot/ChatbotWindow'; // Your project's ChatbotWindow
+import NavigationBar from './NavigationBar';
+import ChatbotWindow from '../chatbot/ChatbotWindow';
 import Header from './Header';
 
 export default function Layout() {
@@ -20,24 +20,23 @@ export default function Layout() {
     setIsChatbotOpen(!isChatbotOpen);
   };
 
-  // --- FIX: Correct Layout Structure ---
-  // 1. `h-full`: Because its parent (#root) is now 100% height, this div will also fill the screen.
-  // 2. `flex flex-col`: This allows the <main> content to grow and fill the space above the navbar.
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full w-full flex flex-col bg-gradient"> {/* Set background here to avoid flashes */}
       <Header />
-      {/* The <main> tag now correctly fills all available space and allows scrolling. */}
-      {/* The bottom padding prevents content from being hidden by the fixed navbar. */}
-      <main className="flex-grow overflow-y-auto">
+      
+      {/* --- FIX APPLIED HERE --- */}
+      {/* We've added `w-full` and `overflow-x-hidden` to the main element.
+        - `w-full`: This forces the main content area to strictly adhere to the screen's width.
+        - `overflow-x-hidden`: This is the key. It tells the browser to simply hide any content that
+          goes beyond the screen's horizontal boundaries, effectively preventing horizontal scrolling for the entire page.
+        - `overflow-y-auto`: This remains, allowing for normal vertical scrolling of page content.
+      */}
+      <main className="flex-grow overflow-y-auto w-full ">
         <Outlet />
       </main>
 
-      {/* Persistent Navigation Bar - It will be correctly positioned at the bottom */}
       <NavigationBar onChatClick={handleChatbotToggle} />
 
-      {/* The Chatbot Window is now conditionally rendered. 
-        It will appear ON TOP of the main content.
-      */}
       {isChatbotOpen && (
         <ChatbotWindow 
           isOpen={isChatbotOpen}
