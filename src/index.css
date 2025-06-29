@@ -53,3 +53,52 @@ body,
   }
 }
 
+/* Style the form labels */
+.homepage-signup-form label {
+  color: #000; /* Lighter text color for better contrast on a dark background */
+  text-align: left; /* Align labels to the left */
+}
+
+/* Style the input fields to match the gold theme */
+.homepage-signup-form input {
+  background-color: transparent; /* Dark background for inputs */
+  border: 2px solid #BFA200;  /* Gold border */
+  color: #000;             /* White text for input */
+  padding: 0.75rem 1rem;       /* More padding for a better look */
+}
+
+/* Style the input focus state */
+.homepage-signup-form input:focus {
+  --tw-ring-color: #BFA200; /* Tailwind variable for the focus ring */
+}
+
+/* Style the placeholder text inside inputs */
+.homepage-signup-form input::placeholder {
+  color: #000; /* Gray placeholder text */
+  opacity: 0.5;
+}
+
+/* Style the "or" separator line */
+.homepage-signup-form hr {
+    border-color: #000; /* Darker gray border */
+}
+
+/* The original has a white bg for the 'or' text, we use the section's dark bg */
+.homepage-signup-form span.bg-white {
+  background-color: transparent !important; /* Force override */
+  color: #000;
+}
+
+/* Style the "Already have an account? Log in" text and link */
+.homepage-signup-form p {
+    color: #000; /* Gray text for the paragraph */
+}
+
+.homepage-signup-form p a {
+    color: #BFA200; /* Gold color for the link */
+    text-decoration: underline;
+}
+
+.homepage-signup-form p a:hover {
+    color: #ddb911; /* Brighter gold on hover */
+}

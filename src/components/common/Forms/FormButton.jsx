@@ -3,31 +3,37 @@
 import React from 'react';
 
 /**
- * A styled button for use within forms.
+ * A styled, intelligent button for use within forms.
+ * It now handles its own loading state to provide user feedback and prevent multiple submissions.
  *
+ * @param {boolean} isLoading - If true, the button will be disabled and show a loading indicator.
  * @param {boolean} fullWidth - If true, the button will take up the full width of its container.
  * @param {React.Node} children - The content of the button.
  * @param {object} rest - Any other props to be passed to the underlying button element (e.g., type, onClick, disabled).
  */
-// 1. We destructure `fullWidth` from the props object here.
-export default function FormButton({ children, fullWidth, ...rest }) {
-  // 2. We use the `fullWidth` variable to conditionally apply the 'w-full' class.
+// 1. We destructure `isLoading` from props, just like `fullWidth` and `children`.
+//    This removes it from the `rest` object, so it won't be passed to the DOM element.
+export default function FormButton({ children, fullWidth, isLoading, ...rest }) {
   const widthClass = fullWidth ? 'w-full' : '';
 
   return (
     <button
-      // 3. The `...rest` object now contains all props EXCEPT `fullWidth`,
-      //    so our custom prop is no longer passed to the DOM element.
+      // 2. We explicitly pass down `...rest` which no longer contains `isLoading`.
       {...rest}
+      // 3. We use the `isLoading` boolean to control the button's `disabled` state.
+      //    We also check `rest.disabled` so the button can still be disabled by its parent for other reasons.
+      disabled={isLoading || rest.disabled}
       className={`
         ${widthClass}
-        flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm
-        text-sm font-medium text-white bg-blue-600 hover:bg-blue-700
-        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-        disabled:opacity-50 disabled:cursor-not-allowed
+        w-60 px-4 py-3 rounded-lg transition-colors duration-300
+        bg-[#BFA200] hover:bg-yellow-600 
+        text-black font-semibold       
+        focus:outline-none focus:ring-2 focus:ring-offset-2 
+        focus:ring-yellow-400 focus:ring-offset-gray-800
       `}
     >
-      {children}
+      {/* 4. We provide better UX by changing the button's content when it's loading. */}
+      {isLoading ? 'Processing...' : children}
     </button>
   );
 }

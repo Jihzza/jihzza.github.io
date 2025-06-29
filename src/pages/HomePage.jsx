@@ -10,7 +10,10 @@ import PitchDeckSection from './sections/PitchDeckSection';
 import OtherWinsSection from './sections/OtherWinsSection';
 import MediaAppearancesSection from './sections/MediaAppearancesSection';
 import TestimonialsSection from './sections/TestimonialsSection';
+import SignupSection from './sections/SignupSection';
+
 export default function HomePage() { 
+    
     return (
         <div
             className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#002147] to-[#ECEBE5] text-white px-4"
@@ -23,6 +26,7 @@ export default function HomePage() {
                 <TestimonialsSection />
                 <OtherWinsSection />
                 <MediaAppearancesSection />
+                <SignupSection />
                 <SchedulingPage />
         </div>
     );
