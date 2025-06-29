@@ -13,7 +13,7 @@ import SchedulingPage from './pages/SchedulingPage';
 import MessagesPage from './pages/MessagesPage';
 // 1. Import the new page component we are about to create.
 import ConversationPage from './pages/ConversationPage';
-
+import AddTestimonialPage from './pages/AddTestimonialPage';
 function App() {
   return (
     <BrowserRouter>
@@ -22,7 +22,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        
+        <Route path="/add-testimonial" element={<AddTestimonialPage />} />
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/scheduling" element={<SchedulingPage />} />

@@ -10,7 +10,7 @@ import React from 'react';
  * @param {string} [className=''] - Optional additional CSS classes to apply.
  * @param {object} props - Any other props to pass to the button element (e.g., onClick).
  */
-export default function CtaButton({ children, className = '', ...props }) {
+export default function Button({ children, className = '', ...props }) {
   return (
     <button
       // We combine a base set of styles with any additional classes passed via props.

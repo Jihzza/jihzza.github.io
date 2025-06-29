@@ -15,7 +15,7 @@ export default function ServicesPreview() {
   return (
     // `px-4` for horizontal padding.
     // `py-8` for vertical spacing.
-    <div className="py-8">
+    <div className="py-2">
       {/* This is the main container for the service cards.
         - `flex flex-col`: Stacks the items vertically.
         - `space-y-4`: Adds vertical space between each card.

@@ -38,7 +38,7 @@ const features = [
 
 export default function FeatureCarousel() {
     return (
-        <div className="py-8 ">
+        <div className="py-8">
             <Swiper 
                 // SWIPER CONFIG
                 modules={[Autoplay, EffectCoverflow]} // Register the modules we'll use
