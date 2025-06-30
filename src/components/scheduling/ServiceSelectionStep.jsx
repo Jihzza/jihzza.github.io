@@ -22,9 +22,7 @@ export default function ServiceSelectionStep({ selectedService, onSelectService 
   // --- RENDER (JSX) ---
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-        How can we help you today?
-      </h2>
+      
       <div className="space-y-4">
         {/*
           We map over our `services` array to render a selectable card for each service.

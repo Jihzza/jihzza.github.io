@@ -7,6 +7,7 @@ import NavigationBar from './NavigationBar';
 import ChatbotWindow from '../chatbot/ChatbotWindow';
 import Header from './Header';
 
+
 export default function Layout() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const { isAuthenticated } = useAuth();

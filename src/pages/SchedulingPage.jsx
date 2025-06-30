@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 // We import the first "step" component we created.
 import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
 import ConsultationScheduleStep from '../components/scheduling/consultations/ConsultationScheduleStep';
+import SectionTextBlack from '../components/common/SectionTextBlack';
 import CoachingPlanStep from '../components/scheduling/coaching/CoachingPlanStep';
 import PitchDeckStep from '../components/scheduling/pitchdeck/PitchDeckStep';
 import ContactInfoStep from '../components/scheduling/ContactInfoStep';
@@ -244,8 +245,9 @@ export default function SchedulingPage() {
     // RENDER LOGIC
     return (
         // We use a container to center the form on the page and provide padding
-        <div className="h-auto flex flex-col items-center justify-center py-12 px-4">
-            <div className="w-full max-w-2xl p-8 space-y-8 bg-white rounded-xl shadow-md">
+        <div className="h-auto flex flex-col items-center justify-center py-8 px-4">
+            <SectionTextBlack title="Schedule Your Consultation" />
+            <div className="w-full max-w-2xl p-8 space-y-8 bg-[#002147] rounded-xl shadow-md">
 
                 {/* Conditional Rendering: Display the correct component for the current step */}
                 {currentStep === 1 && (

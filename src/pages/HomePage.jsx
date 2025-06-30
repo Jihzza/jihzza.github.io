@@ -11,9 +11,11 @@ import OtherWinsSection from './sections/OtherWinsSection';
 import MediaAppearancesSection from './sections/MediaAppearancesSection';
 import TestimonialsSection from './sections/TestimonialsSection';
 import SignupSection from './sections/SignupSection';
+import ChatWithMeSection from './sections/ChatWithMeSection';
+import InteractiveSections from './sections/InteractiveSections';
 
 export default function HomePage() { 
-    
+
     return (
         <div
             className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#002147] to-[#ECEBE5] text-white px-4"
@@ -27,7 +29,9 @@ export default function HomePage() {
                 <OtherWinsSection />
                 <MediaAppearancesSection />
                 <SignupSection />
+                <ChatWithMeSection />
                 <SchedulingPage />
+                <InteractiveSections />
         </div>
     );
 }
