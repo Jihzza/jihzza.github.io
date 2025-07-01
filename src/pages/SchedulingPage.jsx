@@ -315,7 +315,7 @@ export default function SchedulingPage() {
                 <div className="flex justify-between pt-6">
                     {/* Back Button: Show if we are after step 1 and before the final step */}
                     {currentStep > 1 && currentStep < (totalSteps + 1) && (
-                        <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">Back</button>
+                        <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors">Back</button>
                     )}
                     {currentStep === 1 && <div />} {/* Space */}
 
@@ -331,10 +331,10 @@ export default function SchedulingPage() {
                                 (currentStep === 3 && (!formData.contactInfo.name || !formData.contactInfo.email)) ||
                                 (currentStep === 4 && (formData.serviceType === 'consultation' || !formData.serviceType === 'coaching') && paymentStatus !== 'success')
                             }
-                            className="px-6 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md transition-colors disabled:bg-indigo-300 disabled:cursor-not-allowed hover:bg-indigo-700"
+                            className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors disabled:bg-[#BFA200] disabled:cursor-not-allowed hover:bg-[#BFA200]"
                         >Next</button>
                     ) : (
-                        <button onClick={() => alert("Flow Finished!")} className="px-6 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md transition-colors disabled:bg-indigo-300 disabled:cursor-not-allowed hover:bg-indigo-700">
+                        <button onClick={() => alert("Flow Finished!")} className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors disabled:bg-[#BFA200] disabled:cursor-not-allowed hover:bg-[#BFA200]">
                             Finish
                         </button>
                     )}

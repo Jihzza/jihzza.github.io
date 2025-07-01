@@ -8,16 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 // --- CHANGE: Removed 'Navigation' from the import ---
 import { Autoplay, Pagination } from 'swiper/modules';
-import { getTestimonials } from '../../services/testimonialService';
 import SectionTextWhite from '../../components/common/SectionTextWhite';
 import TestimonialCard from '../../components/testimonials/TestimonialCard';
 import Button from '../../components/common/Button';
+import { getTestimonials } from '../../services/testimonialService';
 
 // Import Swiper styles.
 import 'swiper/css';
 import 'swiper/css/pagination';
-// --- CHANGE: Removed the CSS for navigation arrows ---
-// import 'swiper/css/navigation';
 
 export default function TestimonialsSection() {
     const [testimonials, setTestimonials] = useState([]);

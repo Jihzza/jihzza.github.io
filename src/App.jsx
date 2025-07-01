@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ProfilePage from './pages/profile/ProfilePage';
+import EditProfilePage from './pages/profile/EditProfilePage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
@@ -14,6 +15,12 @@ import MessagesPage from './pages/MessagesPage';
 // 1. Import the new page component we are about to create.
 import ConversationPage from './pages/ConversationPage';
 import AddTestimonialPage from './pages/AddTestimonialPage';
+import AppointmentsPage from './pages/profile/AppointmentsPage';
+import SubscriptionsPage from './pages/SubscriptionsPage';
+import PitchDeckRequestsPage from './pages/profile/PitchDeckRequestsPage';
+import ChatbotHistoryPage from './pages/profile/ChatbotHistoryPage';
+import AccountSettingsPage from './pages/profile/AccountSettingsPage';
+
 function App() {
   return (
     <BrowserRouter>
@@ -31,6 +38,14 @@ function App() {
             element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} 
           />
           <Route 
+            path="/profile/edit"
+            element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>}
+          />
+          <Route 
+            path="/profile/account-settings"
+            element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>}
+          />
+          <Route 
             path="/messages" 
             element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} 
           />
@@ -39,6 +54,22 @@ function App() {
           <Route 
             path="/messages/:conversationId"
             element={<ProtectedRoute><ConversationPage /></ProtectedRoute>}
+          />
+          <Route 
+            path="/profile/appointments"
+            element={<ProtectedRoute><AppointmentsPage /></ProtectedRoute>}
+          />
+          <Route 
+            path="/profile/subscriptions"
+            element={<ProtectedRoute><SubscriptionsPage /></ProtectedRoute>}
+          />
+          <Route 
+            path="/profile/pitch-requests"
+            element={<ProtectedRoute><PitchDeckRequestsPage /></ProtectedRoute>}
+          />
+          <Route 
+            path="/profile/chatbot-history"
+            element={<ProtectedRoute><ChatbotHistoryPage /></ProtectedRoute>}
           />
         </Route>
       </Routes>

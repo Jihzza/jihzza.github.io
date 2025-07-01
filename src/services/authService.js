@@ -88,7 +88,7 @@ export const getProfile = async (userId) => {
 
   const { data, error } = await supabase
     .from('profiles')
-    .select('username, full_name, avatar_url')
+    .select('username, full_name, avatar_url, phone')
     .eq('id', userId)
     .single(); // .single() returns one object instead of an array
 
@@ -99,19 +99,100 @@ export const getProfile = async (userId) => {
   return { data, error };
 }
 
-export const updateProfile = async (userId, profileData) => {
-  if (!userId) return { data: null, error: 'User ID is required' };
+export const updateProfile = async (userId, updates) => {
+  if (!userId) return { data: null, error: { message: 'User ID is required.' } };
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(profileData)
-    .eq('id', userId)
-    .select() // .select() returns the updated data
-    .single();
+  try {
+      const { data, error } = await supabase
+          .from('profiles')
+          .update({
+              ...updates,
+              updated_at: new Date().toISOString(), // Always update the timestamp
+          })
+          .eq('id', userId)
+          .select() // Use .select() to get the updated data back
+          .single(); // Use .single() if you expect only one row to be updated
 
-  if (error) {
-    console.error('Error updating profile:', error);
+      if (error) {
+          console.error('Error updating profile:', error);
+          throw error;
+      }
+
+      return { data, error: null };
+  } catch (error) {
+      return { data: null, error };
   }
+};
 
+export const uploadAvatar = async (userId, file) => {
+  try {
+      if (!userId || !file) {
+          throw new Error('User ID and file are required for avatar upload.');
+      }
+
+      // 1. Define the path for the file in the storage bucket.
+      // We include a timestamp to bypass caching issues in the browser.
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${userId}.${fileExt}?t=${new Date().getTime()}`;
+
+      // 2. Upload the file to the 'avatars' bucket.
+      // `upsert: true` will overwrite the file if it already exists.
+      const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(filePath, file, {
+              cacheControl: '3600',
+              upsert: true,
+          });
+
+      if (uploadError) {
+          throw uploadError;
+      }
+
+      // 3. Get the public URL of the uploaded file.
+      const { data: urlData } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(filePath);
+
+      if (!urlData.publicUrl) {
+          throw new Error('Could not get public URL for avatar.');
+      }
+      
+      const publicUrl = urlData.publicUrl;
+
+      // 4. Update the 'avatar_url' in the user's profile table.
+      const { error: dbError } = await supabase
+          .from('profiles')
+          .update({ avatar_url: publicUrl })
+          .eq('id', userId);
+
+      if (dbError) {
+          throw dbError;
+      }
+
+      return publicUrl;
+  } catch (error) {
+      console.error('Error in avatar upload process:', error);
+      // Here you could add more specific error handling or logging
+      return null;
+  }
+};
+
+export const updateUserEmail = async (newEmail) => {
+  const { data, error } = await supabase.auth.updateUser({ email: newEmail });
+  if (error) console.error('Error updating user email:', error.message);
   return { data, error };
-}
+};
+
+export const updateUserPassword = async (newPassword) => {
+  const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) console.error('Error updating user password:', error.message);
+  return { data, error };
+};
+
+export const deleteCurrentUser = async () => {
+  const { data, error } = await supabase.functions.invoke('delete-user', {
+    method: 'POST',
+  });
+  if (error) console.error("Error deleting user:", error.message);
+  return { data, error };
+};

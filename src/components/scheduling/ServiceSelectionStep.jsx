@@ -9,9 +9,9 @@ import React from 'react';
 // We define the service options as an array of objects outside the component.
 // This is efficient because this data is static and doesn't need to be recreated on every render.
 const services = [
-  { id: 'consultation', title: 'Consultations', description: 'Schedule a one-on-one session to discuss your project.' },
-  { id: 'coaching', title: 'Coaching', description: 'Get ongoing mentorship with a structured program.' },
-  { id: 'pitchdeck', title: 'Pitch Deck', description: 'Request a professionally designed pitch deck.' },
+  { id: 'consultation', title: 'Consultations'},
+  { id: 'coaching', title: 'Coaching' },
+  { id: 'pitchdeck', title: 'Pitch Deck' },
 ];
 
 /**
@@ -37,15 +37,14 @@ export default function ServiceSelectionStep({ selectedService, onSelectService 
             // Here we dynamically apply CSS classes. This is the key to showing the "selected" state.
             // If the service's ID matches the `selectedService` prop, we apply a blue border and background; otherwise, we use default gray styling.
             className={`
-              p-6 border rounded-lg cursor-pointer transition-all duration-200
+              p-4 border rounded-lg cursor-pointer transition-all duration-200
               ${selectedService === service.id
-                ? 'border-indigo-600 bg-indigo-50 shadow-lg' // Active state
-                : 'border-gray-300 bg-white hover:border-indigo-400 hover:bg-gray-50' // Inactive state
+                ? 'border-2 border-[#BFA200] shadow-lg' // Active state
+                : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:bg-gray-50' // Inactive state
               }
             `}
           >
-            <h3 className="text-lg font-semibold text-gray-900">{service.title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+            <h3 className="text-lg text-center text-white">{service.title}</h3>
           </div>
         ))}
       </div>

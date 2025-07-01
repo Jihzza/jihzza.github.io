@@ -42,7 +42,7 @@
     "netlify-cli": "^22.1.7",
     "postcss": "^8.5.6",
     "prettier": "^3.5.3",
-    "supabase": "^2.26.9",
+    "supabase": "^2.30.4",
     "tailwindcss": "^4.1.10",
     "vite": "^6.3.5"
   }
