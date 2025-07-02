@@ -2,48 +2,41 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
-import { useAuth } from '../contexts/AuthContext'; // 1. Import the useAuth hook
+import { useAuth } from '../contexts/AuthContext';
 import ChatWindow from '../components/messages/ChatWindow';
-import { ArrowLeftIcon } from '@heroicons/react/24/solid';
+import BackButton from '../components/common/BackButton';
 
+/**
+ * A full-screen page dedicated to a single conversation.
+ * It fetches the conversation details and renders the ChatWindow.
+ */
 export default function ConversationPage() {
     const { conversationId } = useParams();
     const navigate = useNavigate();
-    
-    // 2. Use the AuthContext to get the user and, crucially, the loading status.
-    const { user, loading: authLoading } = useAuth(); 
-
+    const { user, loading: authLoading } = useAuth();
     const [conversation, setConversation] = useState(null);
     const [pageLoading, setPageLoading] = useState(true);
 
+    // Effect to fetch details of the conversation partner.
     useEffect(() => {
-        // 3. This effect now depends on the auth status. It will only run when we are
-        //    sure about whether a user is logged in or not.
         if (!authLoading && user) {
             const fetchConversationDetails = async () => {
                 setPageLoading(true);
-
-                // 4. We use the user object directly from our hook, which we know is reliable.
+                // Fetch the *other* member of the conversation to display their name.
                 const { data: memberData, error } = await supabase
                     .from('conversation_members')
                     .select('*')
                     .eq('conversation_id', conversationId)
-                    .neq('user_id', user.id) // Use the safe user.id from the context
+                    .neq('user_id', user.id)
                     .single();
 
                 if (error) {
                     console.error("Error fetching conversation details:", error);
-                    navigate('/messages');
+                    navigate('/messages'); // Redirect if conversation not found or error.
                 } else {
-                    // 5. Set the state for the ChatWindow component.
                     setConversation({
                         conversation_id: parseInt(conversationId, 10),
-                        profiles: {
-                            id: memberData.user_id,
-                            username: memberData.username,
-                            full_name: memberData.full_name,
-                            avatar_url: memberData.avatar_url
-                        }
+                        profiles: memberData,
                     });
                 }
                 setPageLoading(false);
@@ -53,32 +46,30 @@ export default function ConversationPage() {
                 fetchConversationDetails();
             }
         } else if (!authLoading && !user) {
-            // If auth is done loading and there's no user, redirect them.
             navigate('/login');
         }
-    }, [conversationId, navigate, user, authLoading]); // 6. Add auth dependencies to the hook.
+    }, [conversationId, navigate, user, authLoading]);
 
-    // Display a loading indicator while either auth or page data is being fetched.
-    if (authLoading || pageLoading) {
-        return <div className="p-4 text-center">Loading conversation...</div>;
-    }
-
-    if (!conversation) {
-        return <div className="p-4 text-center">Conversation not found or you do not have permission to view it.</div>;
+    if (authLoading || pageLoading || !conversation) {
+        return (
+            <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
+                Loading Conversation...
+            </div>
+        );
     }
 
     return (
+        // The page is a flex container that fills the screen height.
         <div className="h-full flex flex-col">
-            <div className="p-4 border-b border-gray-200 bg-white flex items-center space-x-4">
-                <button onClick={() => navigate('/messages')} className="p-2 rounded-full hover:bg-gray-100">
-                    <ArrowLeftIcon className="h-6 w-6 text-gray-600" />
-                </button>
-                <h1 className="text-xl font-semibold">{conversation.profiles.username}</h1>
-            </div>
+            {/* Header Section */}
+            <header className="p-4 flex items-center space-x-4 flex-shrink-0">
+                <BackButton />
+            </header>
             
-            <div className="flex-grow">
+            {/* Chat Window takes up the remaining space */}
+            <main className="flex-grow overflow-hidden">
                  <ChatWindow key={conversationId} conversation={conversation} />
-            </div>
+            </main>
         </div>
     );
 }

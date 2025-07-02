@@ -73,8 +73,8 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
     // RENDER LOGIC
     return (
         <div className="w-full">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">Schedule your consultation</h2>
-            <p className="text-center text-gray-500 mb-6">Select a date, duration, and time that works for you.</p>
+            <h2 className="text-2xl font-bold text-center text-white mb-2">Schedule your consultation</h2>
+            <p className="text-center text-white  mb-6">Select a date, duration, and time that works for you.</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 

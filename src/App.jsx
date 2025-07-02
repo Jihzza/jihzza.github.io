@@ -20,6 +20,8 @@ import SubscriptionsPage from './pages/SubscriptionsPage';
 import PitchDeckRequestsPage from './pages/profile/PitchDeckRequestsPage';
 import ChatbotHistoryPage from './pages/profile/ChatbotHistoryPage';
 import AccountSettingsPage from './pages/profile/AccountSettingsPage';
+import CalendarPage from './pages/CalendarPage';
+import NotificationsPage from './pages/NotificationsPage';
 
 function App() {
   return (
@@ -70,6 +72,14 @@ function App() {
           <Route 
             path="/profile/chatbot-history"
             element={<ProtectedRoute><ChatbotHistoryPage /></ProtectedRoute>}
+          />
+          <Route 
+            path="/calendar"
+            element={<ProtectedRoute><CalendarPage /></ProtectedRoute>}
+          />
+          <Route 
+            path="/notifications"
+            element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}
           />
         </Route>
       </Routes>
