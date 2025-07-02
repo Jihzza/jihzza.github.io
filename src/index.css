@@ -13,6 +13,24 @@ body,
   font-family: 'Inter', sans-serif;
 }
 
+/* This class allows a child element to "break out" of a padded container. */
+@layer utilities {
+  .full-bleed {
+    /* 1. Force the element's width to match the entire browser window. */
+    width: 100vw;
+    /* 2. Establish a positioning context. */
+    position: relative;
+    /* 3. Center the element horizontally relative to its original position. */
+    left: 50%;
+    right: 50%;
+    /* 4. Use negative margins to pull the element left and right by half the viewport's width.
+       This effectively cancels out the parent container's padding and centers the full-width element. */
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+}
+
+
 /* Word Carousel */
 /* The keyframes define the anmimation: it moves the element from left to right*/
 @keyframes scroll {

@@ -38,7 +38,7 @@ const features = [
 
 export default function FeatureCarousel() {
     return (
-        <div className="py-8">
+        <div className="full-bleed py-8">
             <Swiper 
                 // SWIPER CONFIG
                 modules={[Autoplay, EffectCoverflow]} // Register the modules we'll use
@@ -66,9 +66,9 @@ export default function FeatureCarousel() {
                 {features.map((features, index) => (
                     // ´swiper-slide-custom' is a custom class for styling
                     <SwiperSlide key={index} className="swiper-slide-custom">
-                        <div className="bg-gray-800 p-6 rounded-lg text-center h-full">
+                        <div className="bg-[#333333] px-4 py-2 space-y-2 justify-center items-center flex flex-col rounded-lg text-center h-full">
                             <h3 className="font-bold text-white text-lg">{features.title}</h3>
-                            <p className="text-gray-400 mt-2">{features.subtitle}</p>
+                            <p className="text-white">{features.subtitle}</p>
                         </div>
                     </SwiperSlide>
                 ))}

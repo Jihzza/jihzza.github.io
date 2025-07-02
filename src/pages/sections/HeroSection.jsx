@@ -13,11 +13,11 @@ import ServicesPreview from '../../components/hero/ServicesPreview';
 export default function HeroSection() {
     return (
         // The overflow-hidden here can now be safely removed.
-        <section className="max-w-full py-2">
+        <section className="max-w-full mx-auto py-2">
             <LearnFromHeader />
 
             {/* Client Image - SOLUTION APPLIED HERE */}
-            <div className="flex w-full justify-center">
+            <div className="flex w-full justify-center px-4">
                 {/* 1. We constrain the container. `max-w-xs` is a good mobile-first choice. */}
                 <div className="w-full py-2 max-w-xs"> 
                     <img 
