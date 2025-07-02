@@ -1,66 +1,43 @@
 // src/components/layout/Header.jsx
 
-import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import React, { useState, forwardRef } from 'react'; // Import forwardRef
+import { Link } from 'react-router-dom';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 import NotificationsBell from '../notifications/NotificationsBell';
 import LanguageSelector from '../common/LanguageSelector';
-import SidebarMenu from './SidebarMenu';
+import { useAuth } from '../../contexts/AuthContext';
 import DaGalowLogo from '../../assets/images/DaGalow Logo.svg';
 import HamburgerIcon from '../../assets/icons/Hamburger White.svg';
 
-export default function Header() {
-    const { user, isAuthenticated } = useAuth();
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-
-    if (!isAuthenticated) {
-        return null;
-    }
+const Header = forwardRef(({ onMenuClick }, ref) => {
+    const { isAuthenticated } = useAuth();
 
     return (
-        <>
-            {/* Sidebar remains unchanged */}
-            <SidebarMenu 
-                isOpen={sidebarOpen} 
-                onClose={() => setSidebarOpen(false)} 
-                isAuthenticated={isAuthenticated} 
-            />
+        <header ref={ref} className="sticky top-0 z-40 bg-black shadow-md h-14 flex items-center justify-between px-4 py-2 relative">
+            <div className="flex items-center">
+                <button
+                    type="button"
+                    className="p-2 text-gray-400 hover:text-white"
+                    onClick={onMenuClick} // Fire the event handler from props.
+                >
+                    <img src={HamburgerIcon} alt="Hamburger Icon" className="h-5 w-5" />
+                </button>
+            </div>
 
-            {/* --- LAYOUT MODIFICATION --- */}
-            {/* Switched from 'grid' to 'flex justify-between' to push side elements to the edges. */}
-            {/* Added padding 'px-4' and ensured it's a 'relative' container for the absolute logo. */}
-            <header className="sticky top-0 z-40 bg-black shadow-md h-16 flex items-center justify-between px-4 py-2 relative">
-                
-                {/* Left Side: Hamburger Menu */}
-                {/* This is now a direct child of the flex container. */}
-                <div className="flex items-center">
-                    <button
-                        type="button"
-                        className="text-white py-2"
-                        onClick={() => setSidebarOpen(true)}
-                        aria-label="Open sidebar"
-                    >
-                        <img src={HamburgerIcon} alt="Hamburger" className="h-5 w-5" />
-                    </button>
-                </div>
+            <div className="flex-1 flex justify-center px-2">
+                <Link to="/">
+                    <img src={DaGalowLogo} alt="DaGalow Logo" className="w-[134px]" />
+                </Link>
+            </div>
 
-                {/* Center: Logo (Absolutely Positioned) */}
-                {/* This div is taken from the inspiration file to achieve perfect centering. */}
-                <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer">
-                    <img
-                        src={DaGalowLogo}
-                        alt="DaGalow Logo"
-                        className="w-[130px]" // Increased size, similar to inspiration file
-                    />
-                </div>
-
-                {/* Right Side: Actions */}
-                {/* This is now a direct child of the flex container, pushed to the right. */}
-                <div className="flex items-center gap-x-3">
-                    <LanguageSelector />
-                    <NotificationsBell />
-                </div>
-
-            </header>
-        </>
+            <div className="flex items-center gap-x-4">
+                <LanguageSelector />
+                {isAuthenticated && <NotificationsBell />}
+            </div>
+            
+            {/* The SidebarMenu component is no longer rendered here. */}
+        </header>
     );
-}
+});
+
+export default Header;
