@@ -1,13 +1,8 @@
-// src/pages/sections/ConsultationsSection.jsx
-
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-// COMPONENTS IMPORTS
+import React from 'react';
 import SectionText from '../../components/common/SectionTextWhite';
-import ServicesTypeBox from '../../components/ServiceSections/ServicesTypeBox';
 import ServicesDetailBlock from '../../components/ServiceSections/ServicesDetailBlock';
 import Button from '../../components/common/Button';
+import ExpandableGrid from '../../components/common/ExpandableGrid'; // 1. Import the new component
 
 // ICONS IMPORT
 import MindsetIcon from '../../assets/icons/Brain Branco.svg';
@@ -27,9 +22,7 @@ import RecordingIcon from '../../assets/icons/Microphone Preto.svg';
 import FollowUpEmailIcon from '../../assets/icons/Email Preto.svg';
 import FollowUpConsultationIcon from '../../assets/icons/FollowUp Preto.svg';
 
-// DATA DEFINITIONS
-// By defining data outside the component, we avoid recreating it on every render
-// This is the best practice for large data sets
+// Data remains the same
 const consultationTypes = [
     { id: 1, icon: MindsetIcon, title: 'Mindset & Psychology', description: 'Unlock the power of your mind. Our Mindset & Psychology service provides you with tools and strategies to overcome limiting beliefs, enhance mental resilience, and cultivate a growth mindset. Achieve clarity, focus, and emotional balance to excel in all areas of your life..' },
     { id: 2, icon: SocialMediaIcon, title: 'Social Media Growth', description: 'Amplify your online presence. We\'ll help you craft a winning social media strategy, create engaging content, and grow your audience effectively. This description is a bit longer to test how the animation handles varying text lengths and ensure smoothness.' },
@@ -51,62 +44,18 @@ const consultationDetails = [
     { icon: FollowUpConsultationIcon, title: 'Follow-up Consultation', description: 'Book a follow-up consultation to review your progress, address new challenges, and receive continued support on your journey.' },
 ];
 
-// MAIN COMPONENT DEFINITION
+
 export default function ConsultationsSection() {
-    // STATE MANAGEMENT: We use useState to manage the selected consultation type
-    // null means no box is currently open. THis is the lifted state
-    const [selectedId, setSelectedId] = useState(null);
-
-    // HANDLER FUNCTION: this function is passed to the childe components
-    const handleBoxClick = (id) => {
-        // If the clicked box is already selected, close it, otherwise open it
-        setSelectedId(prevId => (prevId === id ? null : id));
-    };
-
-    // We find the full object for the selcted item to pass its decsription to the detail view
-    const selectedConsultation = selectedId ? consultationTypes.find(c => c.id === selectedId) : null;
-
+    // 2. All state and animation logic is now gone.
     return (
         <section className="max-w-4xl mx-auto py-4">
             <SectionText title="How I Can Help You">
                 Whether you need guidance on mindset, social media growth, finance, marketing, business building, or relationships – I cover it all.
             </SectionText>
 
-            {/* INTERACTIVE GRID SECTION */}
-            {/* Tje 'layout' prop on this grid container is crucial. It tells framer-motion to automatically animate any changes to this container's layout, such as when child element grows in size. This is what makes the other boxes "push down" smoothly */}
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-6">
-                {consultationTypes.map(item => (
-                    // We'll use a Fragment becuase we need ot render the box and its potential detail view together inside the map, and a key is required on the top-level element
-                    <React.Fragment key={item.id}>
-                        <ServicesTypeBox
-                            icon={item.icon}
-                            title={item.title}
-                            isSelected={selectedId === item.id}
-                            onClick={() => handleBoxClick(item.id)}
-                        />
-                        {/* The detail view is rendered across all columns of the grid */}
-                        {/* it's wrapped in AnimatePrensence so we can animate its appearance and disappearance */}
-                        <AnimatePresence>
-                            {selectedId === item.id && (
-                                <motion.div
-                                    // This tells the element to span the full width of the grid
-                                    className="col-span-2 md:col-span-3 lg:col-span-5 py-4 text-center"
-                                    // The 'layout' prop animates the element's own size change layout
-                                    // initial, animate, exit define the animation states
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto', transition: { duration: 0.3 } }}
-                                    exit={{ opacity: 0, height: 0, transition: { duration: 0.3 } }}
-                                >
-                                    <h4 className="font-bold text-yellow-400 text-xl">{selectedConsultation?.title}</h4>
-                                    <p className="text-white mt-2 max-w-2xl mx-auto">{selectedConsultation?.description}</p>
+            {/* 3. Use the new component, passing the data as a prop. It's clean and declarative. */}
+            <ExpandableGrid items={consultationTypes} />
 
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </React.Fragment>
-                ))}
-            </motion.div>
-            {/* STATIC DETAILS SECTION */}
             <div className="mt-10 space-y-8">
                 {consultationDetails.map((detail) => (
                     <ServicesDetailBlock
