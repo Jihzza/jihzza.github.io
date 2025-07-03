@@ -23,9 +23,9 @@ export default function ServicesPreview({ onScheduleConsultation, onScheduleCoac
       */}
       <div className="flex flex-col space-y-4 max-w-xl mx-auto">
         {/* We render each of our new card components in order. */}
-        <ConsultationCard />
-        <CoachingCard />
-        <InvestmentCard />
+        <ConsultationCard onScheduleClick={onScheduleConsultation} />
+        <CoachingCard onScheduleClick={onScheduleCoaching} />
+        <InvestmentCard onScheduleClick={onScheduleInvestment} />
       </div>
     </div>
   );

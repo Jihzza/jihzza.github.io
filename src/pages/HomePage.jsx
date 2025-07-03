@@ -16,17 +16,19 @@ import SchedulingPage from './SchedulingPage';
 
 export default function HomePage() {
 
+        // This allows us to directly call browser functions on it, like `scrollIntoView`.
     const schedulingRef = useRef(null);
 
+        // It starts as `null`, meaning the user hasn't chosen a service from the hero section yet.
     const [initialService, setInitialService] = useState(null);
 
     const handleScheduleService = (serviceId) => {
-        // 1. Set the state with the chosen service. This will be passed to SchedulingPage.
+        // 3. Set State: We update the `initialService` state with the ID from the clicked button.
+        // This state will be passed as a prop to the SchedulingPage.
         setInitialService(serviceId);
 
-        // 2. Use the ref to scroll the scheduling form into the user's view.
-        // We use a short timeout to ensure the state update has been processed
-        // before we initiate the scroll, making the transition smoother.
+        // 4. Scroll to the Form: We use the ref to smoothly scroll the scheduling form into the user's view.
+        // The timeout ensures the state update is processed before we scroll, creating a smoother transition.
         setTimeout(() => {
             schedulingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
@@ -41,9 +43,9 @@ export default function HomePage() {
             className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#002147] to-[#ECEBE5] text-white px-4"
         >
             <HeroSection
-                onScheduleConsultation={() => handleScheduleService('consultation')}
-                onScheduleCoaching={() => handleScheduleService('coaching')}
-                onScheduleInvestment={() => handleScheduleService('pitchdeck')}
+               onScheduleConsultation={() => handleScheduleService('consultation')}
+               onScheduleCoaching={() => handleScheduleService('coaching')}
+               onScheduleInvestment={() => handleScheduleService('pitchdeck')}
             />
             <AboutMeSection />
 
@@ -82,7 +84,6 @@ export default function HomePage() {
             <div id="interactive-sections" className="w-full">
                 <InteractiveSections />
             </div>
-            {/* --- CHANGES END HERE --- */}
         </div>
     );
 }

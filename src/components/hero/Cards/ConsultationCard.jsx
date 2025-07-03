@@ -7,7 +7,7 @@ import CtaButton from '../../common/Button'; // Import our new reusable button.
  * A UI card component for the "Individual Consultation" service.
  * Displays pricing and a primary call-to-action.
  */
-export default function ConsultationCard({ onScheduleConsultation }) {
+export default function ConsultationCard({ onScheduleClick }) {
 
   const handleCardClick = () => {
     document.getElementById('consultations-section').scrollIntoView({ behavior: 'smooth' });
