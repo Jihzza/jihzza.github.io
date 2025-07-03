@@ -1,38 +1,40 @@
 // src/pages/sections/HeroSection.jsx
 
 import React from 'react';
-import Daniel from '../../assets/images/Daniel.jpg';
-
-// IMPORT COMPONENTS
 import LearnFromHeader from '../../components/hero/LearnFromHeader';
 import WordCarousel from '../../components/hero/WordCarousel';
-import CtaSection from '../../components/hero/CtaSection';
-import FeatureCarousel from '../../components/hero/FeatureCarousel';
 import ServicesPreview from '../../components/hero/ServicesPreview';
+import CtaSection from '../../components/hero/CtaSection';
 
-export default function HeroSection() {
-    return (
-        // The overflow-hidden here can now be safely removed.
-        <section className="max-w-full mx-auto py-2">
-            <LearnFromHeader />
+/**
+ * The main Hero Section for the homepage.
+ *
+ * @param {function} onScheduleConsultation - Handler from HomePage.
+ * @param {function} onScheduleCoaching - Handler from HomePage.
+ * @param {function} onScheduleInvestment - Handler from HomePage.
+ */
+export default function HeroSection({
+  onScheduleConsultation,
+  onScheduleCoaching,
+  onScheduleInvestment
+}) {
+  return (
+    <section className="w-full max-w-7xl mx-auto py-12 px-4 md:px-8 text-center">
+      <LearnFromHeader />
+      <WordCarousel />
 
-            {/* Client Image - SOLUTION APPLIED HERE */}
-            <div className="flex w-full justify-center px-4">
-                {/* 1. We constrain the container. `max-w-xs` is a good mobile-first choice. */}
-                <div className="w-full py-2 max-w-xs"> 
-                    <img 
-                        src={Daniel} 
-                        alt="Daniel" 
-                        // 2. The image now fills its constrained container.
-                        className="rounded-xl w-full object-cover" 
-                    />
-                </div>
-            </div>
+      {/*
+        CRITICAL FIX: These three props must be passed from here
+        down to the ServicesPreview component. This is the link that
+        was missing and causing your TypeErrors.
+      */}
+      <ServicesPreview
+        onScheduleConsultation={onScheduleConsultation}
+        onScheduleCoaching={onScheduleCoaching}
+        onScheduleInvestment={onScheduleInvestment}
+      />
 
-            <WordCarousel />
-            <CtaSection />
-            <FeatureCarousel />
-            <ServicesPreview />
-        </section>
-    );
+      <CtaSection />
+    </section>
+  );
 }

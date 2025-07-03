@@ -11,7 +11,7 @@ import InvestmentCard from './Cards/InvestmentCard';
  * A component to display a preview of the main services offered.
  * This now renders a vertical stack of detailed service cards.
  */
-export default function ServicesPreview() {
+export default function ServicesPreview({ onScheduleConsultation, onScheduleCoaching, onScheduleInvestment }) {
   return (
     // `px-4` for horizontal padding.
     // `py-8` for vertical spacing.

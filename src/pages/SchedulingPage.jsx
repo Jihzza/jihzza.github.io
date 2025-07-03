@@ -17,7 +17,7 @@ import ChatbotStep from '../components/scheduling/ChatbotStep';
 
 // COMPONENT DEFINITION
 // This is our "smart" component or "wizard". It will manage the state and logic for the entire scheduling flow
-export default function SchedulingPage() {
+export default function SchedulingPage({ initialService, onFlowStart }) {
     // STATE MANAGEMENT
 
     // Get user and sign-in method from context
@@ -186,6 +186,26 @@ export default function SchedulingPage() {
             setPaymentStatus('cancelled');
         }
     }, []);
+
+    useEffect(() => {
+        // If an initial service is provided (i.e., the user clicked a "Book" button)...
+        if (initialService) {
+            // ...update the form's state with the selected service type.
+            setFormData(prevData => ({
+                ...prevData,
+                serviceType: initialService,
+            }));
+            // ...and advance the user directly to the second step of the wizard.
+            setCurrentStep(2);
+
+            // Call the callback to reset the state in the parent, preventing this
+            // effect from running again on re-renders.
+            if (onFlowStart) {
+                onFlowStart();
+            }
+        }
+    }, [initialService, onFlowStart]); // Dependency array ensures this runs only when these props change.
+
 
     // This effects runs when the user object or current step changes.
     // It's responsible for pre-filling the form for logged-in users
