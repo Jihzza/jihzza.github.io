@@ -38,7 +38,7 @@ const coachingDetails = [
 ];
 
 
-export default function CoachingSection() {
+export default function CoachingSection({ onBookCoaching }) {
     // 2. All state and animation logic is now gone.
     return (
         <section className="max-w-4xl mx-auto py-4">
@@ -61,7 +61,7 @@ export default function CoachingSection() {
             </div>
             <TierCards />
             <div className="w-full mt-auto pt-10 flex flex-col items-center justify-center">
-                <Button>Get My Number</Button>
+                <Button onClick={onBookCoaching}>Get My Number</Button>
             </div>
         </section>
     );

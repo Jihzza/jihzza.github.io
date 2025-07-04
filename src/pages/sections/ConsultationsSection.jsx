@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import SectionText from '../../components/common/SectionTextWhite';
 import ServicesDetailBlock from '../../components/ServiceSections/ServicesDetailBlock';
-import Button from '../../components/common/Button';
 import ExpandableGrid from '../../components/common/ExpandableGrid'; // 1. Import the new component
-
+import StickyButton from '../../components/common/StickyButton';
 // ICONS IMPORT
 import MindsetIcon from '../../assets/icons/Brain Branco.svg';
 import SocialMediaIcon from '../../assets/icons/Phone Branco.svg';
@@ -45,15 +44,16 @@ const consultationDetails = [
 ];
 
 
-export default function ConsultationsSection() {
-    // 2. All state and animation logic is now gone.
+export default function ConsultationsSection({ onBookConsultation }) {
+
+    const sectionRef = useRef(null);
+
     return (
         <section className="max-w-4xl mx-auto py-4">
             <SectionText title="How I Can Help You">
                 Whether you need guidance on mindset, social media growth, finance, marketing, business building, or relationships – I cover it all.
             </SectionText>
 
-            {/* 3. Use the new component, passing the data as a prop. It's clean and declarative. */}
             <ExpandableGrid items={consultationTypes} />
 
             <div className="mt-10 space-y-8">
@@ -67,8 +67,10 @@ export default function ConsultationsSection() {
                 ))}
             </div>
             <div className="w-full mt-auto pt-10 flex flex-col items-center justify-center">
-                <Button>Book a Consultation</Button>
-            </div>
+                {/* CHANGE 2: Attach the prop to the button's onClick event */}
+                <StickyButton containerRef={sectionRef} onClick={onBookConsultation}>
+                    Book a Consultation
+                </StickyButton>            </div>
         </section>
     );
 }

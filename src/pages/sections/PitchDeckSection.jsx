@@ -13,7 +13,7 @@ const pitchDecks = [
     { id: 'galowclub', icon: GalowClub, title: 'Galow - Success Club', description: 'A social club with real world activities and digital software to help successful people connect and achieve their dreams.' },
 ]
 
-export default function PitchDeckSection() {
+export default function PitchDeckSection({ onBookPitchDeck }) {
     return (
         <section className="max-w-4xl mx-auto py-8">
             <SectionText title="My Ventures" />
@@ -36,7 +36,7 @@ export default function PitchDeckSection() {
             </SectionText>
 
             <div className="w-full mt-auto pt-10 flex flex-col items-center justify-center">
-                <Button>Request Pitch Deck</Button>
+                <Button onClick={onBookPitchDeck}>Request Pitch Deck</Button>
             </div>
             </div>
         </section>

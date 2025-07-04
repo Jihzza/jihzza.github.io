@@ -7,7 +7,6 @@ import FaqSection from './FaqSection';
 import BugReportSection from './BugReportSection';
 import SectionNavigator from '../../components/common/SectionNavigator';
 
-// DATA DEFINITION
 const sections = [
     { id: 'social-media', label: 'Social Media' },
     { id: 'faq', label: 'FAQ' },
@@ -15,7 +14,10 @@ const sections = [
 ];
 
 export default function InteractiveSections() {
-    const [activeSection, setActiveSection] = useState('social');
+    // --- CHANGE IS HERE ---
+    // We initialize the state with the correct ID 'social-media'
+    // to ensure the social media section is visible by default.
+    const [activeSection, setActiveSection] = useState('social-media');
 
     return (
         <section className="w-full max-w-4xl mx-auto py-8">
@@ -24,7 +26,7 @@ export default function InteractiveSections() {
                 activeSection={activeSection}
                 onSelectSection={setActiveSection}
             />
-            <div>
+            <div className="mt-8"> {/* Added margin-top for spacing */}
                 {activeSection === 'social-media' && <SocialMediaSection />}
                 {activeSection === 'faq' && <FaqSection />}
                 {activeSection === 'bug-report' && <BugReportSection />}

@@ -52,13 +52,13 @@ export default function HomePage() {
             {/* --- CHANGES START HERE --- */}
             {/* We add IDs to these divs to make them linkable from the sidebar */}
             <div id="consultations-section" className="w-full">
-                <ConsultationsSection />
+                <ConsultationsSection onBookConsultation={() => handleScheduleService('consultation')} />
             </div>
             <div id="coaching-section" className="w-full">
-                <CoachingSection />
+                <CoachingSection onBookCoaching={() => handleScheduleService('coaching')} />
             </div>
             <div id="invest-section" className="w-full">
-                <PitchDeckSection />
+                <PitchDeckSection onBookPitchDeck={() => handleScheduleService('pitchdeck')} />
             </div>
             <div id="testimonials-section" className="w-full">
                 <TestimonialsSection />
