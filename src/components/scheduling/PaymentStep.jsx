@@ -5,6 +5,9 @@ import { format } from 'date-fns';
 import FormButton from '../common/Forms/FormButton';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 
+import StripeLogo from '../../assets/images/stripe.svg';
+import SSLLogo from '../../assets/images/ssl.svg';
+
 // A helper to format currency
 const formatPrice = (amount) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
 
@@ -37,38 +40,44 @@ export default function PaymentStep({ paymentStatus, formData, price, onInitiate
     // RENDER LOGIC: Default / Awaiting Payment View
     return (
         <div className="w-full">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Order Summary</h2>
+            <h2 className="text-2xl font-bold text-center text- mb-4">Order Summary</h2>
 
-            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 space-y-4">
+            <div className="border-2 border-[#BFA200] p-6 rounded-lg space-y-4">
                 {/* Dynamically render summary based on service type */}
                 {formData.serviceType === 'consultation' && (
-                    <div>
-                        <h3 className="text--lg font-semibold">Consultation</h3>
-                        <p className="text-gray-600">Date: {format(formData.consultation.date, 'eeee, MMM d, yyyy')}</p>
-                        <p className="text-gray-600">Time: {formData.consultation.time}</p>
-                        <p className="text-gray-600">Duration: {formData.consultation.duration} minutes</p>
+                    <div className="space-y-2">
+                        <h3 className="text-lg font-semibold">Consultation</h3>
+                        <p className="text-white">Date: {format(formData.consultation.date, 'eeee, MMM d, yyyy')}</p>
+                        <p className="text-white">Time: {formData.consultation.time}</p>
+                        <p className="text-white">Duration: {formData.consultation.duration} minutes</p>
                     </div>
                 )}
 
                 {formData.serviceType === 'coaching' && (
-                    <div>
+                    <div className="space-y-2">
                         <h3 className="text-lg font-semibold">Coaching Plan</h3>
-                        <p className="text-gray-600 capitalize">Plan: {formData.coaching.plan}</p>
+                        <p className="text-white capitalize">Plan: {formData.coaching.plan}</p>
                     </div>
                 )}
 
-                <div className="border-t border-gray-200 pt-4 flex justify-between items-center">
-                    <span className="text-lg font-semibold text-gray-8">Total</span>
-                    <span className="text-xl font-bold text-indigo-600">{formatPrice(price)}</span>
+                <div className="border-t border-[#333333] pt-4 flex justify-between items-center">
+                    <span className="text-lg font-semibold text-white">Total</span>
+                    <span className="text-xl font-bold text-[#BFA200]">{formatPrice(price)}</span>
                 </div>
             </div>
 
-            <div className="mt-8">
+            <div className="p-6 rounded-lg flex space-x-4 items-center justify-center">
+                <img src={StripeLogo} alt="Stripe Logo" className="w-15 justify-center" />
+                <img src={SSLLogo} alt="SSL Logo" className="w-10 justify-center " />
+
+            </div>
+
+            <div>
                 <FormButton onClick={onInitiateCheckout} disabled={isProcessing} fullWidth>
-                    {isProcessing ? 'Redirecting to payment...' : `Proceed to Pay ${formatPrice(price)}`}
+                    {isProcessing ? 'Redirectingt...' : `Proceed to Checkout`}
                 </FormButton>
             </div>
-            <p className="text-center text-xs text-gray-500 mt-4">You will be redirected to Stripe to complete your payment.</p>
+            <p className="text-center text-xs text-white mt-4">You will be redirected to Stripe to complete your payment.</p>
         </div>
     );
 }

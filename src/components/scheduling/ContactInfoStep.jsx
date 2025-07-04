@@ -22,20 +22,17 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
     // RENDER LOGIC
     return (
         <div className="w-full">
-            <h2 className="text-2xl font-fold text-center text-gray-800 mb-6">
+            <h2 className="text-xl font-bold text-center text- mb-4">
                 {/* We display a different title based  on the login state */}
-                {isLoggedIn ? 'Confirm Your Information' : 'Tell Us About Yourself'}
+                {isLoggedIn ? 'Contact Info' : 'Tell Us About Yourself'}
             </h2>
 
             {/* This is the core logix: a conditional (ternary) operator that renders one of two entirely different blocks of JSX based on the `isLoggedIn` prop. */}
             {isLoggedIn ? (
                 // LOGGED IN VIEW
                 <div className="space-y-4">
-                    <p className="text-center text-sm text-gray-600 mb-4">
-                        We've pre-filled this from your account. Please confirm or update it for this appoitment.
-                    </p>
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-white">Full Name</label>
                         <Input
                             id="name"
                             name="name"
@@ -46,7 +43,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                         />
                     </div>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
                         <Input 
                             id="email"
                             name="email"
@@ -57,7 +54,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                         />
                     </div>
                     <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-white">Phone Number</label>
                         <Input
                             id="phone"
                             name="phone"
@@ -72,19 +69,19 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                 // GUEST / LOGGED-OUT VIEW
                 <div className="space-y-4">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-white">Full Name</label>
                         <Input id="name" name="name" type="text" placeholder="Enter your full name" value={contactInfoData.name} onChange={onUpdateField} />
                     </div>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
                         <Input id="email" name="email" type="email" placeholder="you@example.com" value={contactInfoData.email} onChange={onUpdateField} />
                     </div>
                     <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-white">Phone Number</label>
                         <Input id="phone" name="phone" type="tel" placeholder="+1 (123) 456-7890" value={contactInfoData.phone} onChange={onUpdateField} />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Create Password</label>
+                        <label htmlFor="password" className="block text-sm font-medium text-white">Create Password</label>
                         <Input id="password" name="password" type="password" placeholder="**********" value={contactInfoData.password} onChange={onUpdateField} />
                     </div>
 

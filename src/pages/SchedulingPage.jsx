@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+
+import { getProfile } from '../services/authService';
+
 // COMPONENT IMPORTS
 // We import the first "step" component we created.
 import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
@@ -46,6 +49,7 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
 
     // ´currentStep´ will track which step of the process the user is on.
     // We'll start at step 1: the service selection.
+    const [profile, setProfile] = useState(null);
     const [currentStep, setCurrentStep] = useState(1);
     const [paymentStatus, setPaymentStatus] = useState('awaiting');
     const [isProcessing, setIsProcessing] = useState(false);
@@ -60,6 +64,17 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
      *@param {string} fieldName - The specific field within the formSection that is being updated (e.g. 'date')
      *@param {*} value - The new value for the field
      */
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (user) {
+                const { data } = await getProfile(user.id);
+                setProfile(data);
+            }
+        };
+        fetchProfile();
+    }, [user]);
+
     const handleServiceSelect = (serviceId) => {
         // We update the 'formData' object with the selected service type
         // We use the functional form of setState '(prevData => ...)' to ensure we are always working with the most up-to-date state.
@@ -67,6 +82,7 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
             ...prevData,
             serviceType: serviceId,
         }));
+        setCurrentStep(2);
     };
 
     const handleUpdateField = (formSection, fieldName, value) => {
@@ -85,13 +101,10 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
      */
     const handleNext = () => {
         const { serviceType } = formData;
-
-        // If we are on the contact step of the pitch deck flow, jump to the chatbot step
         if (serviceType === 'pitchdeck' && currentStep === 3) {
             setCurrentStep(5);
             return;
         }
-
         setCurrentStep(prevStep => prevStep + 1);
     };
 
@@ -99,16 +112,23 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
      * Moves the user to the previous step in the form
      */
     const handleBack = () => {
-        const { serviceType } = formData;
-        // Special logic for the pitchdeck flow
-        // If we are on the step 3 (contact info) of the pitch deck flow, the next step is 5 (Chatbot), skipping 4 (Payment)
-        if (serviceType === 'pitchdeck' && currentStep === 3) {
-            setCurrentStep(5); // Jumps directly to the chatbot step
-            return;
+        // If the user goes back to step 1, we should reset the serviceType
+        // so they can make a different choice.
+        if (currentStep === 2) {
+            setFormData(prev => ({ ...prev, serviceType: null }));
         }
-        // For all other cases, just go to the next sequential step.
-        setCurrentStep(prev => prev - 1);
+        setCurrentStep(prevStep => prevStep - 1);
     };
+
+    const handleCoachingPlanSelect = (planId) => {
+        handleUpdateField('coaching', 'plan', planId);
+        handleNext();
+    }
+
+    const handlePitchDeckSelect = (deckId) => {
+        handleUpdateField('pitchdeck', 'type', deckId);
+        handleNext();
+    }
 
     const price = useMemo(() => {
         const { serviceType, consultation, coaching } = formData;
@@ -210,64 +230,62 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
     // This effects runs when the user object or current step changes.
     // It's responsible for pre-filling the form for logged-in users
     useEffect(() => {
-        // We only want to pre-fill if the user is logged in AND is ont he contact step.
-        if (user && currentStep === 3) {
-            // We also check if the form data is still empty to avoid overwriting user edits.
+        if (user && profile && currentStep === 3) {
             if (!formData.contactInfo.name && !formData.contactInfo.email) {
                 setFormData(prevData => ({
                     ...prevData,
                     contactInfo: {
                         ...prevData.contactInfo,
-                        name: user.user_metadata?.full_name || '',
-                        emai: user.email || '',
-                        phone: user.user_metadata?.phone || ''
+                        name: profile.full_name || '',
+                        email: user.email || '', // Corrected the typo 'emai' to 'email'
+                        phone: profile.phone || ''
                     }
                 }));
             }
         }
-    }, [user, currentStep]); // Dependency array
+    }, [user, profile, currentStep]); // Dependency array
 
- // --- ADD THIS NEW USEEFFECT HOOK FOR STATE RESTORATION ---
- useEffect(() => {
-    // 1. Check if saved state exists in sessionStorage
-    const savedStateJSON = sessionStorage.getItem('schedulingState');
+    // --- ADD THIS NEW USEEFFECT HOOK FOR STATE RESTORATION ---
+    useEffect(() => {
+        // 1. Check if saved state exists in sessionStorage
+        const savedStateJSON = sessionStorage.getItem('schedulingState');
 
-    if (savedStateJSON) {
-        try {
-            // 2. Parse the JSON string back into an object
-            const savedState = JSON.parse(savedStateJSON);
+        if (savedStateJSON) {
+            try {
+                // 2. Parse the JSON string back into an object
+                const savedState = JSON.parse(savedStateJSON);
 
-            // 3. Restore the component's state from the saved data
-            setFormData(savedState.formData);
-            setCurrentStep(savedState.currentStep);
+                // 3. Restore the component's state from the saved data
+                setFormData(savedState.formData);
+                setCurrentStep(savedState.currentStep);
 
-            // 4. Restore the scroll position. We use a small timeout
-            // to ensure the page has re-rendered before scrolling.
-            setTimeout(() => {
-                window.scrollTo(0, savedState.scrollPosition);
-            }, 100); // 100ms delay is usually sufficient
+                // 4. Restore the scroll position. We use a small timeout
+                // to ensure the page has re-rendered before scrolling.
+                setTimeout(() => {
+                    window.scrollTo(0, savedState.scrollPosition);
+                }, 100); // 100ms delay is usually sufficient
 
-            // 5. IMPORTANT: Clean up the stored state so it's not reused
-            sessionStorage.removeItem('schedulingState');
+                // 5. IMPORTANT: Clean up the stored state so it's not reused
+                sessionStorage.removeItem('schedulingState');
 
-        } catch (error) {
-            console.error("Failed to parse or restore scheduling state:", error);
-            // Clean up in case of a parsing error
-            sessionStorage.removeItem('schedulingState');
+            } catch (error) {
+                console.error("Failed to parse or restore scheduling state:", error);
+                // Clean up in case of a parsing error
+                sessionStorage.removeItem('schedulingState');
+            }
         }
-    }
-}, []); // The empty dependency array [] ensures this runs only once on mount
+    }, []); // The empty dependency array [] ensures this runs only once on mount
 
 
     {/* Get the total steps for the currently selected flow */ }
-    const totalSteps = formData.serviceType ? flowConfig[formData.serviceType].totalSteps : 1;
+    const totalSteps = formData.serviceType ? flowConfig[formData.serviceType].totalSteps : 0;
 
     // RENDER LOGIC
     return (
         // We use a container to center the form on the page and provide padding
-        <div className="h-auto flex flex-col items-center justify-center py-8 px-4">
+        <div className="h-auto flex flex-col items-center justify-center py- px-4">
             <SectionTextBlack title="Schedule Your Consultation" />
-            <div className="w-full max-w-2xl p-8 space-y-8 bg-[#002147] rounded-xl shadow-md">
+            <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
 
                 {/* Conditional Rendering: Display the correct component for the current step */}
                 {currentStep === 1 && (
@@ -294,7 +312,7 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
                 {currentStep === 2 && formData.serviceType === 'coaching' && (
                     <CoachingPlanStep
                         selectedPlan={formData.coaching.plan}
-                        onSelectPlan={(planId) => handleUpdateField('coaching', 'plan', planId)}
+                        onSelectPlan={handleCoachingPlanSelect}
                     />
                 )}
 
@@ -302,7 +320,7 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
                 {currentStep === 2 && formData.serviceType === 'pitchdeck' && (
                     <PitchDeckStep
                         selectedDeck={formData.pitchdeck.type}
-                        onSelectDeck={(deckId) => handleUpdateField('pitchdeck', 'type', deckId)}
+                        onSelectDeck={handlePitchDeckSelect}
                     />
                 )}
 
@@ -331,34 +349,34 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
 
 
 
-                {/* Navigation Buttons */}
-                <div className="flex justify-between pt-6">
-                    {/* Back Button: Show if we are after step 1 and before the final step */}
-                    {currentStep > 1 && currentStep < (totalSteps + 1) && (
+                {currentStep > 1 && (
+                    <div className="flex justify-between pt-4">
+                        {/* Back Button: Always shown after step 1 */}
                         <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors">Back</button>
-                    )}
-                    {currentStep === 1 && <div />} {/* Space */}
 
-                    {/* Action Button: Show "Next" if not the last step, otherwise show "Finish" */}
-                    {currentStep < totalSteps ? (
-                        <button
-                            onClick={handleNext}
-                            disabled={
-                                (currentStep === 1 && !formData.serviceType) ||
-                                (currentStep === 2 && formData.serviceType === 'consultation' && (!formData.consultation.date || !formData.consultation.duration || !formData.consultation.time)) ||
-                                (currentStep === 2 && formData.serviceType === 'coaching' && !formData.coaching.plan) ||
-                                (currentStep === 2 && formData.serviceType === 'pitchdeck' && !formData.pitchdeck.type) ||
-                                (currentStep === 3 && (!formData.contactInfo.name || !formData.contactInfo.email)) ||
-                                (currentStep === 4 && (formData.serviceType === 'consultation' || !formData.serviceType === 'coaching') && paymentStatus !== 'success')
-                            }
-                            className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors disabled:bg-[#BFA200] disabled:cursor-not-allowed hover:bg-[#BFA200]"
-                        >Next</button>
-                    ) : (
-                        <button onClick={() => alert("Flow Finished!")} className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors disabled:bg-[#BFA200] disabled:cursor-not-allowed hover:bg-[#BFA200]">
-                            Finish
-                        </button>
-                    )}
-                </div>
+                        {/* Next Button: Shown on intermediate steps */}
+                        {currentStep < totalSteps && (
+                            <button
+                                onClick={handleNext}
+                                disabled={
+                                    (currentStep === 2 && formData.serviceType === 'consultation' && (!formData.consultation.date || !formData.consultation.duration || !formData.consultation.time)) ||
+                                    (currentStep === 2 && formData.serviceType === 'coaching' && !formData.coaching.plan) ||
+                                    (currentStep === 2 && formData.serviceType === 'pitchdeck' && !formData.pitchdeck.type) ||
+                                    (currentStep === 3 && (!formData.contactInfo.name || !formData.contactInfo.email)) ||
+                                    (currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && paymentStatus !== 'success')
+                                }
+                                className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors disabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500"
+                            >Next</button>
+                        )}
+
+                        {/* Finish Button: Shown only on the last step */}
+                        {currentStep === totalSteps && (
+                            <button onClick={() => alert("Flow Finished!")} className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors hover:bg-yellow-500">
+                                Finish
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

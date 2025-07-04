@@ -18,11 +18,13 @@ const Layout = () => {
 
     // --- State for dynamic sidebar style ---
     const [sidebarStyle, setSidebarStyle] = useState({ top: 0, height: 0 });
-    const [chatbotStyle, setChatbotStyle] = useState({ top: 0, bottom: 0 });
 
     // --- Refs to measure DOM elements ---
     const headerRef = useRef(null);
     const navBarRef = useRef(null);
+
+    // This tells the exact height of the navigation bar
+    const [navBarHeight, setNavBarHeight] = useState(0);
 
     // --- The "Why" behind useLayoutEffect ---
     // We use useLayoutEffect instead of useEffect because it fires synchronously
@@ -30,28 +32,26 @@ const Layout = () => {
     // "flicker" where the user might briefly see the component in a pre-styled state.
     useLayoutEffect(() => {
         const updateLayoutStyles = () => {
-            if (headerRef.current && navBarRef.current) {
-                const headerRect = headerRef.current.getBoundingClientRect();
-                const navBarRect = navBarRef.current.getBoundingClientRect();
+            const headerRect = headerRef.current?.getBoundingClientRect();
+            const navBarRect = navBarRef.current?.getBoundingClientRect();
 
-                // Sidebar style calculation (no change here)
+            if (headerRect && navBarRect) {
+                // Sidebar style calculation (no change)
                 const sidebarTop = headerRect.bottom;
                 const sidebarHeight = navBarRect.top - headerRect.bottom;
                 setSidebarStyle({ top: sidebarTop, height: sidebarHeight });
 
-                // REFINED LOGIC FOR CHATBOT
-                // Provide the exact frame for the chatbot to live in.
-                setChatbotStyle({
-                    top: headerRect.height,
-                    bottom: navBarRect.height
-                });
+                // --- CHANGE 3: Set the nav bar height ---
+                // The "Why": We store the measured height in our state.
+                setNavBarHeight(navBarRect.height);
             }
         };
 
         updateLayoutStyles();
         window.addEventListener('resize', updateLayoutStyles);
         return () => window.removeEventListener('resize', updateLayoutStyles);
-    }, [location]);
+    }, [location]); // Re-run when the route changes
+
     const handleChatbotToggle = () => {
         setChatbotOpen(!chatbotOpen);
     };
@@ -65,7 +65,7 @@ const Layout = () => {
     }
 
     return (
-        <div className="h-full w-full flex flex-col bg-gradient">
+        <div className="h-full w-full flex flex-col bg-gradi z-inde ent">
             {/* The ref and onMenuClick prop are passed to the Header */}
             <Header ref={headerRef} onMenuClick={handleMenuClick} />
 
@@ -81,13 +81,14 @@ const Layout = () => {
                 <Outlet />
             </main>
 
-            {/* The ref is passed to the NavigationBar */}
-            <NavigationBar ref={navBarRef} onChatClick={handleChatbotToggle} />
+            <div ref={navBarRef}>
+                <NavigationBar onChatClick={handleChatbotToggle} />
+            </div>
 
             <ChatbotWindow
                 isOpen={chatbotOpen}
                 onClose={handleChatbotToggle}
-                style={chatbotStyle}
+                navBarHeight={navBarHeight}
             />
         </div>
     );

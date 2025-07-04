@@ -44,7 +44,7 @@ export default function NavigationBar({ onChatClick }) {
     };
 
     return (
-        <nav className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-700 bg-black shadow-lg z-40">
+        <nav className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-700 bg-black shadow-lg z-50">
             {/* A simple flex container now handles the layout for all items uniformly. `justify-around` distributes them evenly. */}
             <div className="flex justify-around items-center w-full h-14 mx-auto">
                 {navItems.map((item) => {
