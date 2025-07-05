@@ -3,11 +3,8 @@ import React, { useState } from 'react';
 import { searchUsers } from '../../services/messagesService';
 import { useAuth } from '../../contexts/AuthContext';
 
-// --- FIX: Simplify the component's responsibility ---
-// It should only SEARCH for a user and report the SELECTION back to the parent.
-// The prop is renamed from `onSelect` to `onUserSelect` to be more descriptive.
 export default function UserSearch({ onUserSelect }) {
-    const { user, loading: authLoading } = useAuth(); // Also get loading state here
+    const { user, loading: authLoading } = useAuth();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -22,14 +19,11 @@ export default function UserSearch({ onUserSelect }) {
         }
 
         setLoading(true);
-        // Your original search was fine, this remains the same.
         const { data } = await searchUsers(currentQuery, user.id);
         setResults(data || []);
         setLoading(false);
     };
 
-    // This is now much simpler. It just calls the callback with the chosen user object.
-    // The parent component (`MessagesPage`) will handle the logic for creating the conversation.
     const handleSelectUser = (selectedUser) => {
         setQuery('');
         setResults([]);
@@ -42,22 +36,22 @@ export default function UserSearch({ onUserSelect }) {
                 type="text"
                 value={query}
                 onChange={handleSearch}
-                placeholder="Search for a user..."
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                // Disable the input if auth isn't ready or a search is in progress.
+                placeholder="Search to start a new chat..."
+                className="w-full p-3 bg-[#002147] border-2 border-gray-600 rounded-lg text-white placeholder-gray-400"
                 disabled={authLoading || loading}
             />
             {results.length > 0 && (
-                <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                <ul className="absolute z-10 w-full mt-1 bg-[#002147] border border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
                     {results.map((u) => (
                         <li
                             key={u.id}
                             onClick={() => handleSelectUser(u)}
-                            className="p-3 flex items-center space-x-3 hover:bg-indigo-50 cursor-pointer"
+                            className="p-3 flex items-center space-x-4 hover:bg-gray-700 cursor-pointer"
                         >
+                            <img src={u.avatar_url || `https://i.pravatar.cc/150?u=${u.id}`} alt={u.username} className="w-10 h-10 rounded-full" />
                             <div>
-                                <p className="font-semibold">{u.username}</p>
-                                <p className="text-sm text-gray-500">{u.full_name}</p>
+                                <p className="font-semibold text-white">{u.username}</p>
+                                <p className="text-sm text-gray-400">{u.full_name}</p>
                             </div>
                         </li>
                     ))}

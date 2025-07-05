@@ -1,13 +1,7 @@
 // src/components/hero/FeatureCarousel.jsx
 
 import React from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectCoverflow } from 'swiper/modules';
-
-// SWIPER STYLES
-// It's crucial to import the base styles for Swiper to function correctly
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
+import BaseCarousel from '../carousel/BaseCarousel';
 
 // COMPONENT DATA
 // An array of objects, each representing a slide in the carousel
@@ -37,42 +31,41 @@ const features = [
  */
 
 export default function FeatureCarousel() {
+    // --- 1. DEFINE CAROUSEL-SPECIFIC CONFIGURATION ---
+    const swiperConfig = {
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        spaceBetween: 50,
+        coverflowEffect: {
+            rotate: 0,
+            stretch: 0,
+            modifier: 2.5,
+            slideShadows: false,
+        },
+    };
+
+    // --- 2. DEFINE THE RENDER FUNCTION ---
+    // The "Why": Here we define the unique JSX for a feature slide (the colored box).
+    const renderFeatureSlide = (feature, index) => (
+        <div className="bg-[#333333] px-4 py-2 space-y-2 justify-center items-center flex flex-col rounded-lg text-center h-full">
+            <h3 className="font-bold text-white text-lg">{feature.title}</h3>
+            <p className="text-white">{feature.subtitle}</p>
+        </div>
+    );
+
+    // --- 3. RENDER THE BASE CAROUSEL ---
     return (
         <div className="full-bleed py-8">
-            <Swiper 
-                // SWIPER CONFIG
-                modules={[Autoplay, EffectCoverflow]} // Register the modules we'll use
-                effect={'coverflow'} // Use the Coverflow effect for a 3d-like aooearance
-                grabCursor={true} // Visual effect to shows the grab cursor
-                centeredSlides={true} // Ensures the active slide is alwaus in the cetner
-                loop={true} // Enables infinite looping
-                slidesPerView={'auto'} // Crucial for showing partial slides. Swiper calculates the number based on slide width
-                // Configuration for the Coverflow effect
-                spaceBetween={50}
-                coverflowEffect={{
-                    rotate: 0,
-                    stretch: 0,
-                    modifier: 2.5,
-                    slideShadows: false,
-                }}
-                // Configuration for autoplay
-                autoplay={{
-                    deplay: 2500, // Time between slides change
-                    disableOnInteraction: false, // Keep autoplay running even when user interacts
-                }}
-                className="feature-swiper"
-            >
-                {/* We map over our deatures array to create a SwiperSlide for each item */}
-                {features.map((features, index) => (
-                    // ´swiper-slide-custom' is a custom class for styling
-                    <SwiperSlide key={index} className="swiper-slide-custom">
-                        <div className="bg-[#333333] px-4 py-2 space-y-2 justify-center items-center flex flex-col rounded-lg text-center h-full">
-                            <h3 className="font-bold text-white text-lg">{features.title}</h3>
-                            <p className="text-white">{features.subtitle}</p>
-                        </div>
-                    </SwiperSlide>
-                ))}
-            </Swiper>
+            <BaseCarousel
+                items={features}
+                renderItem={renderFeatureSlide}
+                swiperConfig={swiperConfig}
+                containerClassName="feature-swiper"
+                // The `swiper-slide-custom` class is defined in index.css to handle the slide width
+                slideClassName="swiper-slide-custom"
+            />
         </div>
     );
 }

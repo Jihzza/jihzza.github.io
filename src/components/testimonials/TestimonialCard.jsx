@@ -10,6 +10,11 @@ import React from 'react';
  */
 export default function TestimonialCard({ testimonial }) {
     const { name, content, image_url } = testimonial;
+    const MAX_CHARACTERS = 110;
+
+    const truncatedContent = content.length > MAX_CHARACTERS
+        ? `${content.substring(0, MAX_CHARACTERS)}...`
+        : content;
 
     return (
         // The main card container with a white background, rounded corners, padding, and a flex column layout.

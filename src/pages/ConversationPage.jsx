@@ -4,25 +4,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import ChatWindow from '../components/messages/ChatWindow';
-import BackButton from '../components/common/BackButton';
+// --- CHANGE: Import the new header component ---
+import ConversationHeader from '../components/messages/ConversationHeader'; 
 
-/**
- * A full-screen page dedicated to a single conversation.
- * It fetches the conversation details and renders the ChatWindow.
- */
 export default function ConversationPage() {
     const { conversationId } = useParams();
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
-    const [conversation, setConversation] = useState(null);
+    const [conversationPartner, setConversationPartner] = useState(null);
     const [pageLoading, setPageLoading] = useState(true);
 
-    // Effect to fetch details of the conversation partner.
     useEffect(() => {
         if (!authLoading && user) {
             const fetchConversationDetails = async () => {
                 setPageLoading(true);
-                // Fetch the *other* member of the conversation to display their name.
                 const { data: memberData, error } = await supabase
                     .from('conversation_members')
                     .select('*')
@@ -30,14 +25,11 @@ export default function ConversationPage() {
                     .neq('user_id', user.id)
                     .single();
 
-                if (error) {
+                if (error || !memberData) {
                     console.error("Error fetching conversation details:", error);
-                    navigate('/messages'); // Redirect if conversation not found or error.
+                    navigate('/messages');
                 } else {
-                    setConversation({
-                        conversation_id: parseInt(conversationId, 10),
-                        profiles: memberData,
-                    });
+                    setConversationPartner(memberData);
                 }
                 setPageLoading(false);
             };
@@ -50,7 +42,7 @@ export default function ConversationPage() {
         }
     }, [conversationId, navigate, user, authLoading]);
 
-    if (authLoading || pageLoading || !conversation) {
+    if (authLoading || pageLoading || !conversationPartner) {
         return (
             <div className="h-screen w-screen flex items-center justify-center bg-black text-white">
                 Loading Conversation...
@@ -58,15 +50,19 @@ export default function ConversationPage() {
         );
     }
 
+    const conversation = {
+        conversation_id: parseInt(conversationId, 10),
+        profiles: conversationPartner,
+    };
+
     return (
-        // The page is a flex container that fills the screen height.
-        <div className="h-full flex flex-col">
-            {/* Header Section */}
-            <header className="p-4 flex items-center space-x-4 flex-shrink-0">
-                <BackButton />
-            </header>
+        // --- CHANGE: Applied the desired background gradient and flex layout ---
+        // The "Why": The page is now responsible for the overall layout and background,
+        // making the child components more modular and reusable.
+        <div className="h-full flex flex-col bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
+            {/* --- CHANGE: Replaced inline header with the new reusable component --- */}
+            <ConversationHeader partner={conversationPartner} />
             
-            {/* Chat Window takes up the remaining space */}
             <main className="flex-grow overflow-hidden">
                  <ChatWindow key={conversationId} conversation={conversation} />
             </main>

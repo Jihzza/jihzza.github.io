@@ -1,13 +1,7 @@
 // src/components/carousel/ImageCarousel.jsx
 
 import React from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectCoverflow, Navigation } from 'swiper/modules';
-
-// Import Swiper's base and effect styles. This is crucial for functionality and appearance.
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/navigation';
+import BaseCarousel from './BaseCarousel';
 
 // Image Import
 // Twitter
@@ -136,51 +130,51 @@ const images = [
 ];
 
 /**
- * A reusable image carousel component using Swiper.js.
- * It's configured for a 3D cover-flow effect, autoplay, and infinite looping.
- * @param {{images: string[]}} props - An array of image URLs to display.
+ * A reusable image carousel, now refactored to use the BaseCarousel.
+ * It's now a purely presentational component that configures the BaseCarousel for its specific needs.
  */
+
 export default function ImageCarousel() {
+    const swiperConfig = {
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+        },
+    };
+
+    // --- CHANGE 1: ENSURE IMAGE FILLS THE SLIDE ---
+    // The "Why": We ensure the image always fills its parent slide container.
+    // This solves the alignment problem permanently.
+    const renderImageSlide = (imageSrc, index) => (
+        <img
+            src={imageSrc}
+            alt={`Other win ${index + 1}`}
+            className="rounded-lg object-cover w-full h-full"
+        />
+    );
+
     return (
-        <div className="pt-8 relative"> {/* Set to relative to position navigation arrows */}
-            <Swiper
-                // --- SWIPER CONFIGURATION ---
-                modules={[Autoplay, EffectCoverflow, Navigation]} // Enable required Swiper modules
-                effect={'coverflow'}      // Use the 3D cover-flow effect
-                grabCursor={true}         // Show a "grab" cursor on hover
-                centeredSlides={true}     // Ensure the active slide is always in the center
-                loop={true}               // Enable infinite looping through the slides
-                slidesPerView={'auto'}    // Let Swiper determine the number of slides based on their width
-                
-                // Configuration specific to the Coverflow effect
-                coverflowEffect={{
-                    rotate: 50,           // Rotation angle of the side slides
-                    stretch: 0,           // How much to stretch side slides
-                    depth: 100,           // Z-axis depth of the side slides
-                    modifier: 1,          // A multiplier for all coverflow effects
-                    slideShadows: true,   // Display shadows on the sides of the slides for a 3D feel
-                }}
-
-                // Configuration for the autoplay feature
-                autoplay={{
-                    delay: 3000,                      // Time in ms between slide transitions
-                    disableOnInteraction: false,      // Keep autoplaying even after user interaction
-                }}
-
-                className="w-full" // Apply full width to the Swiper container
-            >
-                {/* We map over the `images` array to create a SwiperSlide for each image. */}
-                {images.map((src, index) => (
-                    // The `key` is essential for React's rendering logic.
-                    <SwiperSlide key={index} style={{ width: '40%', maxWidth: '500px' }}>
-                        <img 
-                            src={src} 
-                            alt={`Other win ${index + 1}`} 
-                            className="rounded-lg object-cover w-full"
-                        />
-                    </SwiperSlide>
-                ))}
-            </Swiper>
+        <div className="pt-8 relative">
+            <BaseCarousel
+                items={images}
+                renderItem={renderImageSlide}
+                swiperConfig={swiperConfig}
+                // --- CHANGE 2: USE A CSS HOOK ---
+                // The "Why": Like the other carousels, we assign a unique class
+                // to the container so we can style it precisely from our stylesheet.
+                containerClassName="w-full image-swiper"
+                // --- CHANGE 3: USE THE GENERIC SLIDE CLASS ---
+                // The "Why": We now use the generic `swiper-slide-custom` class.
+                // The actual sizing will be handled in `index.css`.
+                slideClassName="swiper-slide-custom"
+            />
         </div>
     );
 }

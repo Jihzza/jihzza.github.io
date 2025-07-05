@@ -70,7 +70,8 @@ export default function ConsultationsSection({ onBookConsultation }) {
                 {/* CHANGE 2: Attach the prop to the button's onClick event */}
                 <StickyButton containerRef={sectionRef} onClick={onBookConsultation}>
                     Book a Consultation
-                </StickyButton>            </div>
+                </StickyButton>
+            </div>
         </section>
     );
 }

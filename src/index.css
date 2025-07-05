@@ -58,17 +58,21 @@ body,
 
 /* Feature Carousel */
 /* We target the custom class we added to our SwiperSlide component. */
-.feature-swiper .swiper-slide-custom {
+.swiper-slide-custom {
   /* On mobile, each slide takes up 70% of the screen width */
   width: 70%;
+}
+
+.feature-swiper .swiper-slide-custom {
   height: 120px;
 }
 
-@media (min-width: 768px) {
-  .feature-swiper .swiper-slide-custom {
-    /* On desktop, each slide takes up 30% of the screen width */
-    width: 30%;
-  }
+.testimonial-swiper .swiper-slide-custom {
+  height: 400px;
+}
+
+.image-swiper .swiper-slide-custom {
+  width: 40%;
 }
 
 /* Style the form labels */
