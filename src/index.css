@@ -40,15 +40,25 @@ body,
   }
   100% {
     /* We translate it by half its  total width, which corresponds to the length of the original (non-duplicated) word list. */
-    transform: translateX(-50%);
+    transform: translateX(-1000%);
   }
+}
+
+.word-carousel-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to left, transparent, black 20px, black calc(100% - 100px), transparent);
+  mask-image: linear-gradient(to left, transparent, black 20px, black calc(100% - 100px), transparent);
+}
+.word-carousel-container::-webkit-scrollbar {
+  display: none;
 }
 
 /* This class applies the animmation to our carousel track */
 .word-carousel-track {
   /* 'will-change' is a performance hint for the browser */
   will-change: transform;
-  animation: scroll 10s linear infinite;
+  animation: scroll 20s linear infinite;
 }
 
 /* When the user is dragging, we pause the animation */

@@ -1,15 +1,12 @@
 // src/components/layout/SidebarMenu.jsx
 
 import React, { Fragment } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, Transition } from '@headlessui/react';
 import { Cog6ToothIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 import { signOut } from '../../services/authService';
 
-// --- NEW DATA STRUCTURE ---
-// The "Why": We define our links as data. This makes the component clean, readable, and easy to modify.
-// We group them to easily create the "Explore" heading in the UI.
-
+// --- DATA STRUCTURES (Unchanged) ---
 const mainPages = [
     { href: '/', label: 'Home' },
     { href: '/profile', label: 'Profile' },
@@ -24,21 +21,50 @@ const exploreLinks = [
     { href: '/#testimonials-section', label: 'Success Stories' },
     { href: '/#media-appearances-section', label: 'Media Appearances' },
     { href: '/#other-wins-section', label: 'Other Wins' },
-    // Note: These three link to the same parent section. Clicking them will scroll to the start
-    // of the interactive tabs component on the homepage.
     { href: '/#interactive-sections', label: 'Social Media' },
     { href: '/#interactive-sections', label: 'FAQs' },
     { href: '/#interactive-sections', label: 'Bugs' },
 ];
 
-
 export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style }) {
     const navigate = useNavigate();
+    // 1. Get the current location to know which page we're on.
+    const location = useLocation();
 
     const handleSignOut = async () => {
         await signOut();
         onClose();
         navigate('/login');
+    };
+
+    /**
+     * A smart click handler for navigation that supports in-page scrolling.
+     * @param {string} href - The destination URL for the link.
+     */
+    const handleLinkClick = (href) => {
+        onClose(); // Always close the sidebar first.
+
+        // Check if the link is intended to scroll to a section on the page.
+        if (href.includes('#')) {
+            const [path, id] = href.split('#');
+
+            // If we are not on the page with the target section, navigate there first.
+            // (For this app, all sections are on the homepage, so the path is '/').
+            if (path && location.pathname !== path) {
+                navigate(path);
+                // We use a brief timeout to give React Router time to navigate to the
+                // new page and render it before we try to scroll.
+                setTimeout(() => {
+                    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else {
+                // If we're already on the correct page, just find the element and scroll.
+                document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            // For regular links without a hash, just navigate normally.
+            navigate(href);
+        }
     };
 
     return (
@@ -73,16 +99,15 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
                                 <nav className="flex flex-1 flex-col">
                                     <ul role="list" className="flex flex-1 flex-col gap-y-4">
                                         
-                                        {/* --- NEW LINK RENDERING LOGIC --- */}
-                                        
                                         {/* Main Pages List */}
                                         <li>
                                             <ul role="list" className="-mx-2 space-y-1">
                                                 {mainPages.map((item) => (
                                                     <li key={item.label}>
+                                                        {/* 2. Use the new smart click handler for all links. */}
                                                         <Link
                                                             to={item.href}
-                                                            onClick={onClose}
+                                                            onClick={() => handleLinkClick(item.href)}
                                                             className="block rounded-md px-2 py-2 text-base leading-6 text-white hover:bg-white/10 hover:text-yellow-400"
                                                         >
                                                             {item.label}
@@ -98,9 +123,10 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
                                             <ul role="list" className="-mx-2 mt-2 space-y-1">
                                                 {exploreLinks.map((item) => (
                                                     <li key={item.label}>
+                                                        {/* 3. Also apply the handler here to ensure consistent behavior. */}
                                                         <Link
                                                             to={item.href}
-                                                            onClick={onClose}
+                                                            onClick={() => handleLinkClick(item.href)}
                                                             className="block rounded-md px-2 py-2 text-base leading-6 text-white hover:bg-white/10 hover:text-yellow-400"
                                                         >
                                                             {item.label}
@@ -110,11 +136,11 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
                                             </ul>
                                         </li>
                                         
-                                        {/* --- BOTTOM SECTION (Unchanged as requested) --- */}
+                                        {/* Bottom Section (Settings & Logout) */}
                                         <li className="mt-auto">
                                             <Link
                                                 to="/profile/account-settings"
-                                                onClick={onClose}
+                                                onClick={() => handleLinkClick('/profile/account-settings')}
                                                 className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm leading-6 text-white hover:bg-white/10"
                                             >
                                                 <Cog6ToothIcon className="h-6 w-6 shrink-0" />

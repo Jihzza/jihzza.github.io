@@ -1,55 +1,61 @@
-// src/hooks/useIntersectionObserver.js
-
 import { useState, useEffect, useRef } from 'react';
 
 /**
- * A reusable React Hook to observe an element's intersection with the viewport.
- * This hook encapsulates the Intersection Observer API for clean, declarative use in components.
+ * A custom hook that wraps the Intersection Observer API.
+ * It observes a target element and returns its intersection entry.
  *
- * @param {object} [options] - Configuration options for the IntersectionObserver (e.g., root, rootMargin, threshold).
- * @returns {[React.RefObject<HTMLElement>, IntersectionObserverEntry | null]} - A tuple containing:
- * - `ref`: A ref object to attach to the DOM element you want to observe.
- * - `entry`: The latest IntersectionObserverEntry object, or null if not intersecting.
- * This entry contains data like `isIntersecting`, `boundingClientRect`, etc.
+ * @param {object} options - Configuration for the Intersection Observer.
+ * @param {number} [options.threshold=0.1] - The percentage of the target's visibility at which the observer's callback should be executed.
+ * @param {string} [options.rootMargin="0px"] - Margin around the root. Can be used to grow or shrink the area used for intersections.
+ * @returns {[React.RefObject<HTMLElement>, IntersectionObserverEntry|null]} - A tuple containing the ref to attach to the element and the latest intersection entry.
  */
-export default function useIntersectionObserver(options) {
-    // `entry` will hold the latest intersection data from the observer.
+export default function useIntersectionObserver(options = {}) {
+    // 1. STATE: This state will hold the latest intersection entry.
+    // An "entry" is an object that contains information like whether the element
+    // is currently visible (`isIntersecting`). It's null by default.
     const [entry, setEntry] = useState(null);
 
-    // The ref that will be attached to the element we want to observe.
-    const ref = useRef(null);
+    // 2. REF: We create a React ref. This ref will be attached to the DOM element
+    // we want to observe (our "sentinel").
+    const sentinelRef = useRef(null);
 
-    // We serialize the options object to a JSON string.
-    // This is a crucial optimization. It ensures that our useEffect below
-    // only re-runs if the options *actually* change, not just on every render.
-    const frozenOptions = JSON.stringify(options);
-
+    // 3. EFFECT: This is where the magic happens. We use useEffect to set up
+    // the observer when the component mounts.
     useEffect(() => {
-        const node = ref?.current; // The DOM element to observe.
+        const observer = new IntersectionObserver(
+            // 4. CALLBACK: This function is called by the browser whenever the
+            // visibility of the observed element crosses the defined `threshold`.
+            // It receives an array of entries (we only care about the first one).
+            ([entry]) => {
+                // We update our state with the latest entry from the observer.
+                setEntry(entry);
+            },
+            // 5. OPTIONS: We pass the configuration object (threshold, rootMargin)
+            // directly to the observer.
+            {
+                threshold: 0.1, // Trigger when 10% of the element is visible
+                rootMargin: "0px 0px -90px 0px", // Shrink the observer viewport by 90px from the bottom to account for the navbar
+                ...options,
+            }
+        );
 
-        // We only proceed if the element to observe actually exists.
-        if (!node) return;
+        // 6. OBSERVE: If the ref is attached to an element, we tell the
+        // observer to start watching it.
+        if (sentinelRef.current) {
+            observer.observe(sentinelRef.current);
+        }
 
-        // Create the observer instance with a callback that updates our state.
-        const observer = new IntersectionObserver(([firstEntry]) => {
-            // This callback fires whenever the observed element's intersection status changes.
-            // We update our component's state with the new entry.
-            setEntry(firstEntry);
-        }, options);
-
-        // Start observing the target element.
-        observer.observe(node);
-
-        // This is the cleanup function. It runs when the component unmounts
-        // or when the dependencies of the useEffect hook change.
-        // It's vital for preventing memory leaks.
+        // 7. CLEANUP: This function is called when the component unmounts.
+        // It's crucial for preventing memory leaks. We disconnect the observer
+        // so it stops watching the element.
         return () => {
-            if (node) {
-                // Stop observing the element to clean up resources.
-                observer.unobserve(node);
+            if (sentinelRef.current) {
+                observer.unobserve(sentinelRef.current);
             }
         };
-    }, [ref, frozenOptions]); // Dependencies array: the effect will re-run if the ref or options change.
+    }, [sentinelRef, options.threshold, options.rootMargin]); // The effect re-runs if the options change.
 
-    return [ref, entry];
+    // 8. RETURN VALUE: The hook returns the ref (to be attached to a JSX element)
+    // and the latest intersection entry object.
+    return [sentinelRef, entry];
 }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import FormButton from '../common/Forms/FormButton';
+import BotIcon from '../../assets/icons/DaGalow Branco.svg'; // Step 1: Import the bot icon
 
 /**
  * A reusable, generic chat interface component
@@ -10,26 +10,24 @@ import FormButton from '../common/Forms/FormButton';
  * @param {string} inputPlaceholder - The placeholder text for the chat input field
  * @param {string} containerHeight - The height of the chat container
  */
-
 export default function ChatInterface({
     initialMessage,
     inputPlaceholder = "Type your message...",
-    containerHeight = 'h-96'
+    containerHeight = 'h-[450px]'
 }) {
-    // STATE MANAGEMENT
+    // STATE MANAGEMENT (No changes needed here)
     const [messages, setMessages] = useState([{ text: initialMessage, sender: 'bot' }]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
     const [sessionId] = useState(() => crypto.randomUUID());
 
-    // HOOKS
-    // Effect to scroll to the bottom whenever a new message if added
+    // HOOKS (No changes needed here)
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // HANDLERS
+    // HANDLERS (No changes needed here)
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
@@ -40,30 +38,22 @@ export default function ChatInterface({
         setIsLoading(true);
 
         try {
-            // The URL for your n8n webhook. It should be in your environment variables.
             const webhookUrl = `${import.meta.env.VITE_N8N_WEBHOOK_URL}`;
-
+            console.log(webhookUrl);
             const response = await fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ session_id: sessionId, chatInput: input }),
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            if (!response.ok) throw new Error('Network response was not ok');
 
             const data = await response.json();
-            const text =
-                data.output ??
-                data.reply ??
-                (typeof data === 'string' ? data : JSON.stringify(data));
-            const botMessage = { text, sender: 'bot' };
-            setMessages(prev => [...prev, botMessage]);
+            const text = data.output ?? data.reply ?? "Sorry, I had an issue processing that.";
+            setMessages(prev => [...prev, { text, sender: 'bot' }]);
         } catch (error) {
             console.error("Error communicating with the chatbot:", error);
-            const errorMessage = { text: "Sorry, there was an error processing your message. Please try again later.", sender: 'bot' };
-            setMessages(prev => [...prev, errorMessage]);
+            setMessages(prev => [...prev, { text: "Sorry, there was an error. Please try again.", sender: 'bot' }]);
         } finally {
             setIsLoading(false);
         }
@@ -71,26 +61,35 @@ export default function ChatInterface({
 
     // RENDER LOGIC
     return (
-        <div className="flex flex-col w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+        // Step 2: Update the main container styling
+        <div className={`flex flex-col w-full bg-transparent rounded-lg shadow-sm ${containerHeight}`}>
             {/* Message Display Area */}
-            <div className={`p-4 overflow-y-auto ${containerHeight}`}>
+            {/* Step 3: Remove padding from the scroll area */}
+            <div className="py-4 overflow-y-auto flex-1">
                 {messages.map((msg, index) => (
-                    <div key={index} className={`flex mb-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-xl
-                            ${msg.sender === 'user'
-                                ? 'bg-indigo-600 text-white'
-                                : 'bg-gray-200 text-gray-800'
-                            }`}
-                        >
-                            {msg.text}
+                    <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`}>
+                        {/* Step 4: Update message bubble styling */}
+                        <div className={`w-full p-1 flex items-start gap-2 ${
+                            msg.sender === 'bot' ? 'rounded-xl rounded-tl-sm bg-[#333333]/70' : ''
+                        }`}>
+                            
+                            {/* Step 5: Wrap user message to align it properly */}
+                            <span className={`max-w-xs lg:max-w-md px-4 py-2 text-white ${
+                                msg.sender === 'user' 
+                                    ? 'bg-[#BFA200] text-black ml-auto rounded-xl rounded-tr-sm' 
+                                    : 'rounded-xl rounded-tl-sm'
+                            }`}>
+                                {msg.text}
+                            </span>
                         </div>
                     </div>
                 ))}
-                {/* Shows a typing indicator when the bot is processing */}
+                {/* Step 6: Update loading indicator styling */}
                 {isLoading && (
                     <div className="flex justify-start">
-                        <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-xl">
-                            <span className="animate-pulse">...</span>
+                        <div className="w-full p-4 flex items-center gap-2 bg-[#333333]/70">
+                            <img src={BotIcon} alt="Bot Avatar" className="w-6 h-6"/>
+                            <span className="animate-pulse text-white">...</span>
                         </div>
                     </div>
                 )}
@@ -98,20 +97,24 @@ export default function ChatInterface({
             </div>
 
             {/* Message Input Form */}
-            <div className="border-t border-gray-200 p-4">
-                <form onSubmit={handleSendMessage} className="flex items-center space-x-3">
+            {/* Step 7: Update input area styling */}
+            <div>
+                <form onSubmit={handleSendMessage} className="relative flex items-center">
                     <input
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={inputPlaceholder}
                         disabled={isLoading}
-                        className="flex-grow p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none disabled:bg-gray-100"
+                        // Step 8: Update input field styling
+                        className="w-full bg-transparent border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#BFA200]"
                     />
+                    {/* Step 9: Update send button styling */}
                     <button
                         type="submit"
                         disabled={isLoading || !input.trim()}
-                        className="p-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 disabled:cursor-not-allowed transition-colors"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-2 text-white hover:bg-white/20 disabled:text-gray-500"
+                        aria-label="Send message"
                     >
                         <PaperAirplaneIcon className="w-6 h-6" />
                     </button>

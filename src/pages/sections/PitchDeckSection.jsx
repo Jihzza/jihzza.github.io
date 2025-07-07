@@ -1,9 +1,9 @@
 // src/pages/sections/PitchDeckSection.jsx
-import React from 'react';
+import React, { useRef } from 'react';
 
 import SectionText from '../../components/common/SectionTextWhite';
 import PitchDeckCard from '../../components/pitchdeck/PitchDeckCard';
-import Button from '../../components/common/Button';
+import StickyButton from '../../components/common/StickyButton';
 
 import Perspetiv from '../../assets/images/Perspectiv Banner.svg';
 import GalowClub from '../../assets/images/Galow Banner.svg';
@@ -14,8 +14,10 @@ const pitchDecks = [
 ]
 
 export default function PitchDeckSection({ onBookPitchDeck }) {
+
+    const sectionRef = useRef(null);
     return (
-        <section className="max-w-4xl mx-auto py-8">
+        <section ref={sectionRef} className="max-w-4xl mx-auto py-4">
             <SectionText title="My Ventures" />
 
             <div className="grid grid-cols-1 gap-6">
@@ -35,10 +37,10 @@ export default function PitchDeckSection({ onBookPitchDeck }) {
                 I'm constantly developing new projects and ventures. If you're interested in learning more about current and upcoming opportunities, request a pitch deck below.
             </SectionText>
 
-            <div className="w-full mt-auto pt-10 flex flex-col items-center justify-center">
-                <Button onClick={onBookPitchDeck}>Request Pitch Deck</Button>
             </div>
-            </div>
+            <StickyButton containerRef={sectionRef} onClick={onBookPitchDeck}>
+                Request Pitch Deck
+            </StickyButton>
         </section>
     )
 }

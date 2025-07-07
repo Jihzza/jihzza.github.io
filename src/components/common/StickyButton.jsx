@@ -1,63 +1,68 @@
 // src/components/common/StickyButton.jsx
 
-import React from 'react';
-import useIntersectionObserver from '../../hooks/useIntersectionObserver';
-import Button from './Button'; // We reuse your existing common Button.
+import React, { useEffect, useState } from 'react';
+import Button from './Button';
 
 /**
- * A button that remains "sticky" at the bottom of the screen as long as a target
- * container is visible, and then "docks" at the bottom of that container.
+ * StickyButton
+ * -----------------------------------------------------------------------------
+ * The button stays invisible (opacity 0) until **≥ 10 %** of the parent section
+ * becomes visible in the viewport. From that point on it fades in to
+ * opacity 100 and remains usable. When the visible portion of the section drops
+ * below 10 %, the button fades out again and stops receiving pointer events.
  *
- * @param {object} props
- * @param {React.RefObject<HTMLElement>} props.containerRef - A ref to the parent container section that this button belongs to.
- * @param {function} props.onClick - The function to call when the button is clicked.
- * @param {React.ReactNode} props.children - The content for the button.
- * @param {string} [props.className] - Optional additional classes for the wrapper div.
+ * A console.log shows the current `intersectionRatio` so that you can verify
+ * the observer behaviour in DevTools.
+ *
+ * @param {object}   props
+ * @param {React.RefObject<HTMLElement>} props.containerRef – **Required.** Ref
+ *        to the section we want to track (e.g. the Consultations section).
+ * @param {Function} props.onClick  – Click handler passed through to the
+ *        underlying `Button` component.
+ * @param {ReactNode} props.children – Button label / children.
+ * @param {string}   [props.className] – Extra Tailwind classes.
  */
 export default function StickyButton({ containerRef, onClick, children, className }) {
-    // --- Observer Hook ---
-    // We use our custom hook to watch the container section.
-    // `entry` will give us information like `isIntersecting`.
-    // We set a `threshold` of 0, meaning the observer will fire as soon as a single pixel
-    // of the container is visible. The `rootMargin` pushes the "bottom" of the observer's
-    // boundary up by 80px, preventing the button from overlapping with your main navigation bar.
-    const [sentinelRef, entry] = useIntersectionObserver({
-        threshold: 0,
-        rootMargin: "0px 0px -80px 0px"
-    });
+  // ---------------------------------------------------------------------------
+  // 1️⃣  Local state: is the section ≥ 10 % visible?
+  // ---------------------------------------------------------------------------
+  const [isVisible, setIsVisible] = useState(false);
 
-    // Determine if the button should be in its "sticky" (fixed) state.
-    // It is sticky if the observer entry exists and its `isIntersecting` property is true.
-    const isSticky = entry?.isIntersecting;
+  // ---------------------------------------------------------------------------
+  // 2️⃣  Attach an Intersection Observer to the *section* (NOT a sentinel).
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    if (!containerRef?.current) return;
 
-    return (
-        <>
-            {/*
-              The Sentinel:
-              This is a zero-height, zero-width div that we place inside the container.
-              This is the element our IntersectionObserver will actually watch.
-              It acts as an invisible tripwire. When this sentinel scrolls into view,
-              the observer fires.
-            */}
-            <div ref={sentinelRef} />
-
-            {/*
-              The Button Wrapper:
-              This div handles the positioning and animation of the button.
-            */}
-            <div
-                className={`
-                    sticky bottom-5 w-full flex justify-center z-30
-                    transition-all duration-300 ease-in-out
-                    ${isSticky ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}
-                    ${className || ''}
-                `}
-            >
-                {/* We render your existing, reusable Button component inside our smart wrapper. */}
-                <Button onClick={onClick}>
-                    {children}
-                </Button>
-            </div>
-        </>
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.intersectionRatio >= 0.1);
+      },
+      {
+        threshold: [0, 0.1],          // fire at 0 % and 10 %
+        root: null,                   // viewport
+        rootMargin: '0px 0px -80px 0px' // compensate for fixed navbar height
+      }
     );
+
+    observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
+  }, [containerRef]);
+
+  // ---------------------------------------------------------------------------
+  // 3️⃣  Render sticky wrapper with animated opacity / translate.
+  // ---------------------------------------------------------------------------
+  return (
+    <div
+      className={`
+        sticky bottom-[70px] w-full flex justify-center z-30
+        transition-all duration-500 ease-in-out
+        ${isVisible ? 'opacity-100 translate-y-5' : 'opacity-0 translate-y-5 pointer-events-none'}
+        ${className || ''}
+      `}
+    >
+      <Button onClick={onClick}>{children}</Button>
+    </div>
+  );
 }

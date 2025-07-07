@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import SectionText from '../../components/common/SectionTextWhite';
 import ServicesDetailBlock from '../../components/ServiceSections/ServicesDetailBlock';
 import TierCards from '../../components/coaching/TierCards';
-import Button from '../../components/common/Button';
 import ExpandableGrid from '../../components/common/ExpandableGrid'; // 1. Import the new component
+import StickyButton from '../../components/common/StickyButton';
 
 // ICONS IMPORT
 import SocialMediaIcon from '../../assets/icons/Phone Branco.svg';
@@ -39,9 +39,12 @@ const coachingDetails = [
 
 
 export default function CoachingSection({ onBookCoaching }) {
+
+    const sectionRef = useRef(null);
+
     // 2. All state and animation logic is now gone.
     return (
-        <section className="max-w-4xl mx-auto py-4">
+        <section ref={sectionRef} className="max-w-4xl mx-auto py-4">
             <SectionText title="Direct Coaching">
                 Personalized coaching to help you excel in specific areas of your life. Get direct access to expert guidance tailored to your unique situation and goals.
             </SectionText>
@@ -60,9 +63,9 @@ export default function CoachingSection({ onBookCoaching }) {
                 ))}
             </div>
             <TierCards />
-            <div className="w-full mt-auto pt-10 flex flex-col items-center justify-center">
-                <Button onClick={onBookCoaching}>Get My Number</Button>
-            </div>
+            <StickyButton containerRef={sectionRef} onClick={onBookCoaching}>
+                Get My Number
+            </StickyButton>
         </section>
     );
 }
