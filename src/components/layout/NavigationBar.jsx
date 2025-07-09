@@ -15,29 +15,51 @@ export default function NavigationBar({ onChatClick }) {
         { icon: UserIcon, label: 'Profile', path: '/profile' }
     ];
 
-    // --- CHANGE IS HERE ---
-    // The "Why": We are modifying the existing handler to include our new logic.
+    /**
+     * Handles all click events on the navigation items.
+     * This function now includes logic to:
+     * 1. Execute a custom onClick function (for the Chat button).
+     * 2. Scroll to the top of the homepage if already there.
+     * 3. Navigate back if the user clicks the icon for the page they are currently on.
+     * 4. Navigate to a new page as the default action.
+     */
     const handleItemClick = (item) => {
+        // Case 1: The item has a custom onClick function (e.g., opening the chat).
         if (item.onClick) {
-            item.onClick(); // Handles the special case for the Chat button.
-        } else if (item.path) {
-            // First, check if the clicked item is the "Home" button AND
-            // if we are currently on the homepage.
-            if (item.path === '/' && location.pathname === '/') {
-                // If both are true, find the anchor element and scroll to it.
+            item.onClick();
+            return; // Prioritize the custom onClick and exit.
+        }
+
+        if (item.path) {
+            const isAlreadyOnPage = location.pathname === item.path;
+
+            // Case 2: Special handling for the Home button to scroll to top.
+            if (item.path === '/' && isAlreadyOnPage) {
                 const topElement = document.getElementById('page-top');
                 if (topElement) {
                     topElement.scrollIntoView({ behavior: 'smooth' });
                 }
+            // --- NEW LOGIC IS HERE ---
+            // Case 3: The user is already on the target page. Navigate back.
+            // The "Why": Instead of reloading the page or doing nothing, this provides
+            // an intuitive "go back" action, improving the user experience.
+            } else if (isAlreadyOnPage) {
+                navigate(-1); // This function from react-router-dom goes back one step in history.
             } else {
-                // Otherwise, perform the standard navigation.
+            // Case 4: Default navigation to a new page.
                 navigate(item.path);
             }
         }
     };
 
+    /**
+     * Determines if a navigation item should appear "active".
+     * For parent routes like '/profile', it checks if the current URL starts with the path.
+     * For the root '/' path, it requires an exact match.
+     */
     const isActive = (path) => {
         if (!path) return false;
+        // This logic correctly highlights parent routes (e.g., /profile will be active for /profile/edit).
         if (path !== '/') {
             return location.pathname.startsWith(path);
         }
