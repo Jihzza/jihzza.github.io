@@ -29,7 +29,7 @@ export default function ConsultationCard({ onScheduleClick }) {
         <p className="text-sm text-white mt-1">Minimum 45 minutes</p>
       </div>
 
-      <div className="w-full mt-auto"> {/* Pushes button to the bottom if height varies */}
+      <div className="w-full mt-auto flex flex-col justify-center items-center"> {/* Pushes button to the bottom if height varies */}
         <CtaButton onClick={handleButtonClick}>Book a Consultation</CtaButton>
         <a href="#" className="inline-block mt-3 text-sm text-white">
           Learn More

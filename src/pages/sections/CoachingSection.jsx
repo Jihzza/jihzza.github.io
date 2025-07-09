@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import SectionText from '../../components/common/SectionTextWhite';
 import ServicesDetailBlock from '../../components/ServiceSections/ServicesDetailBlock';
 import TierCards from '../../components/coaching/TierCards';
@@ -37,19 +37,42 @@ const coachingDetails = [
     { icon: ClassesIcon, title: 'Personalized Classes', description: 'Receive custom-tailored training sessions designed specifically for your skill level, learning style, and goals. Each class builds on your progress for maximum growth and development.' },
 ];
 
+const tiers = [
+    { id: 'basic', price: 40, planName: 'Basic', billingCycle: 'm', planDesc: 'Answers to all questions weekly' },
+    { id: 'standard', price: 90, planName: 'Standard', billingCycle: 'm', planDesc: 'Answers to all questions in 48h' },
+    { id: 'premium', price: 230, planName: 'Premium', billingCycle: 'm', planDesc: 'Answer to all questions ASAP' },
+  ];
 
-export default function CoachingSection({ onBookCoaching }) {
-
+  export default function CoachingSection({ onBookCoaching }) {
     const sectionRef = useRef(null);
 
-    // 2. All state and animation logic is now gone.
+    // --- STATE MANAGEMENT (LIFTED STATE) ---
+    // The state for the selected plan now lives in this parent component.
+    // It is the single source of truth.
+    const [selectedPlanId, setSelectedPlanId] = useState(tiers[0].id);
+
+    // --- DERIVED STATE ---
+    // The details of the selected tier and the button text are derived from the
+    // state on every render, ensuring the UI is always consistent.
+    const selectedTier = tiers.find(tier => tier.id === selectedPlanId);
+    const buttonText = selectedTier
+        ? `Get My Number - ${selectedTier.price}€/${selectedTier.billingCycle}`
+        : 'Get My Number';
+
+    // --- EVENT HANDLER ---
+    const handleBookClick = () => {
+        // When the button is clicked, we pass the full details of the
+        // currently selected tier up to the parent (e.g., HomePage).
+        onBookCoaching(selectedTier);
+    }
+
     return (
-        <section ref={sectionRef} className="max-w-4xl mx-auto py-4">
+        // The `id` here is crucial for the scroll-into-view functionality from the HeroSection.
+        <section id="coaching-section" ref={sectionRef} className="max-w-4xl mx-auto py-4">
             <SectionText title="Direct Coaching">
                 Personalized coaching to help you excel in specific areas of your life. Get direct access to expert guidance tailored to your unique situation and goals.
             </SectionText>
 
-            {/* 3. Use the new component, passing the data as a prop. */}
             <ExpandableGrid items={coachingTypes} />
 
             <div className="mt-10 space-y-8">
@@ -62,9 +85,22 @@ export default function CoachingSection({ onBookCoaching }) {
                     />
                 ))}
             </div>
-            <TierCards />
-            <StickyButton containerRef={sectionRef} onClick={onBookCoaching}>
-                Get My Number
+
+            {/*
+              The TierCards component is now "controlled".
+              1. `tiers`: We pass the data it needs to render.
+              2. `selectedPlanId`: We tell it which tier is currently active.
+              3. `onTierSelect`: We give it the function to call when the user selects a new tier.
+            */}
+            <TierCards
+                tiers={tiers}
+                selectedPlanId={selectedPlanId}
+                onTierSelect={setSelectedPlanId}
+            />
+
+            {/* The StickyButton's text is now dynamic, derived from the state. */}
+            <StickyButton containerRef={sectionRef} onClick={handleBookClick}>
+                {buttonText}
             </StickyButton>
         </section>
     );

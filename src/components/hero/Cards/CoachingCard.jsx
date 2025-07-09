@@ -1,13 +1,13 @@
 // src/components/hero/Cards/CoachingCard.jsx
 
 import React, { useState } from 'react';
-import Button from '../../common/Button';
+import CtaButton from '../../common/Button';
 
 
 const tiers = [
-  { price: '40€', plan: 'Basic' },
-  { price: '90€', plan: 'Standard' },
-  { price: '230€', plan: 'Premium' },
+  { id: 'basic', price: '40', planName: 'Basic', billingCycle: 'm' },
+  { id: 'standard', price: '90', planName: 'Standard', billingCycle: 'm' },
+  { id: 'premium', price: '230', planName: 'Premium', billingCycle: 'm' },
 ];
 
 /**
@@ -17,7 +17,14 @@ const tiers = [
  * @param {function} onScheduleClick - Function to initiate the coaching scheduling flow.
  */
 export default function CoachingCard({ onScheduleClick }) {
-  const [selectedPlan, setSelectedPlan] = useState(tiers[0].plan);
+
+  const [selectedPlanId, setSelectedPlanId] = useState(tiers[0].id);
+
+  const selectedTier = tiers.find(tier => tier.id === selectedPlanId);
+
+  const buttonText = selectedTier
+    ? `Get My Number - ${selectedTier.price}€/${selectedTier.billingCycle}`
+    : 'Get My Number';
 
   const handleCardClick = () => {
     document.getElementById('coaching-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -25,37 +32,46 @@ export default function CoachingCard({ onScheduleClick }) {
 
   const handleButtonClick = (e) => {
     e.stopPropagation();
-    onScheduleClick();
+    onScheduleClick(selectedTier);
+  };
+
+  const handleTierClick = (e, planId) => {
+    e.stopPropagation();
+    setSelectedPlanId(planId);
   };
 
   return (
     <div
       onClick={handleCardClick}
-      className="bg-transparent border-2 border-[#BFA200] rounded-lg p-6 text-center flex flex-col items-center cursor-pointer transition-transform hover:scale-105"
+      className="bg-transparent border-2 border-[#BFA200] rounded-lg p-6 text-center flex flex-col items-center cursor-pointer"
     >
       <h3 className="text-3xl font-bold text-white">Direct Coaching</h3>
       
       <div className="flex justify-center space-x-2 my-6 w-full">
         {tiers.map((tier) => (
           <div
-            key={tier.plan}
-            onClick={() => setSelectedPlan(tier.plan)}
+            key={tier.id} // Use the unique `id` for the key.
+            onClick={(e) => handleTierClick(e, tier.id)}
             className={`
               border-2 border-[#BFA200] rounded-md p-3 flex-1 cursor-pointer
               transition-transform duration-300 ease-in-out
-              ${selectedPlan === tier.plan ? 'scale-110' : ''}
+              ${selectedPlanId === tier.id ? 'scale-110' : ''}
             `}
           >
-            <p className="font-bold text-white text-lg">{tier.price}</p>
-            <p className="text-xs text-white">{tier.plan}</p>
+            <p className="font-bold text-white text-lg">{tier.price}€</p>
+            <p className="text-xs text-white">{tier.planName}</p>
           </div>
         ))}
       </div>
 
       <p className="text-sm text-white">Limited Spots</p>
 
-      <div className="w-full mt-auto pt-4">
-        <Button onClick={handleButtonClick}>Get My Number</Button>
+      <div className="w-full mt-auto flex flex-col justify-center items-center">
+        {/* The CtaButton now receives the dynamically generated text as its child. */}
+        <CtaButton onClick={handleButtonClick}>{buttonText}</CtaButton>
+        <a href="#coaching-section" className="inline-block mt-3 text-sm text-white" onClick={(e) => e.stopPropagation()}>
+          Learn More
+        </a>
       </div>
     </div>
   );

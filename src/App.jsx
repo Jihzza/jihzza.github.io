@@ -12,7 +12,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import SchedulingPage from './pages/SchedulingPage';
 import MessagesPage from './pages/MessagesPage';
-// 1. Import the new page component we are about to create.
 import ConversationPage from './pages/ConversationPage';
 import AddTestimonialPage from './pages/AddTestimonialPage';
 import AppointmentsPage from './pages/profile/AppointmentsPage';
@@ -23,6 +22,11 @@ import AccountSettingsPage from './pages/profile/AccountSettingsPage';
 import CalendarPage from './pages/CalendarPage';
 import NotificationsPage from './pages/NotificationsPage';
 
+// --- NEW IMPORTS ---
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -32,6 +36,11 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/add-testimonial" element={<AddTestimonialPage />} />
+        
+        {/* --- NEW ROUTES FOR LEGAL PAGES (can be public) --- */}
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/scheduling" element={<SchedulingPage />} />
@@ -51,8 +60,6 @@ function App() {
             path="/messages" 
             element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} 
           />
-          {/* 2. Add the new dynamic route for a single conversation. */}
-          {/* This route will render our new ConversationPage component. */}
           <Route 
             path="/messages/:conversationId"
             element={<ProtectedRoute><ConversationPage /></ProtectedRoute>}
