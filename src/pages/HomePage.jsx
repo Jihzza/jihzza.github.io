@@ -14,6 +14,7 @@ import ChatWithMeSection from './sections/ChatWithMeSection';
 import InteractiveSections from './sections/InteractiveSections';
 import SchedulingPage from './SchedulingPage';
 
+
 export default function HomePage() {
 
         // This allows us to directly call browser functions on it, like `scrollIntoView`.

@@ -7,23 +7,18 @@ import NavigationBar from './NavigationBar';
 import SidebarMenu from './SidebarMenu'; // Import SidebarMenu here
 import ChatbotWindow from '../chatbot/ChatbotWindow';
 import { useAuth } from '../../contexts/AuthContext';
+import ScrollToTopButton from '../common/ScrollToTopButton'; // 1. Import the new component
+
 
 const Layout = () => {
     const { isAuthenticated } = useAuth();
     const location = useLocation();
-
-    // --- State lifted from Header to Layout ---
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [chatbotOpen, setChatbotOpen] = useState(false);
-
-    // --- State for dynamic sidebar style ---
     const [sidebarStyle, setSidebarStyle] = useState({ top: 0, height: 0 });
-
-    // --- Refs to measure DOM elements ---
     const headerRef = useRef(null);
     const navBarRef = useRef(null);
-
-    // This tells the exact height of the navigation bar
+    const mainContentRef = useRef(null); // 2. Create a ref for the main content area
     const [navBarHeight, setNavBarHeight] = useState(0);
 
     // --- The "Why" behind useLayoutEffect ---
@@ -66,10 +61,7 @@ const Layout = () => {
 
     return (
         <div className="h-full w-full flex flex-col bg-gradi z-inde ent">
-            {/* The ref and onMenuClick prop are passed to the Header */}
             <Header ref={headerRef} onMenuClick={handleMenuClick} />
-
-            {/* SidebarMenu is now rendered here, receiving all necessary props from Layout */}
             <SidebarMenu
                 isOpen={sidebarOpen}
                 onClose={handleCloseSidebar}
@@ -77,9 +69,13 @@ const Layout = () => {
                 style={sidebarStyle}
             />
 
-            <main className="flex-grow overflow-y-auto w-full">
+            {/* 3. Attach the ref to the main element */}
+            <main ref={mainContentRef} className="flex-grow overflow-y-auto w-full">
                 <Outlet />
             </main>
+
+            {/* 4. Pass the ref to the ScrollToTopButton */}
+            <ScrollToTopButton scrollContainerRef={mainContentRef} />
 
             <div ref={navBarRef}>
                 <NavigationBar onChatClick={handleChatbotToggle} />
