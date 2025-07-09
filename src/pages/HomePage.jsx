@@ -40,6 +40,7 @@ export default function HomePage() {
 
     return (
         <div
+            id="page-top"
             className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#002147] to-[#ECEBE5] text-white px-4"
         >
             <HeroSection
