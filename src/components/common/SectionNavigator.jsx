@@ -13,7 +13,7 @@ import React from 'react';
  */
 export default function SectionNavigator({ sections, activeSectionId, onSelectSection }) {
     return (
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex justify-start items-center gap-2">
             {sections.map((section) => (
                 <button
                     key={section.id}

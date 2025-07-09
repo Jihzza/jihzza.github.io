@@ -25,8 +25,9 @@ export default function InteractiveSections() {
                 sections={sections}
                 activeSection={activeSection}
                 onSelectSection={setActiveSection}
+                className="flex"
             />
-            <div className="mt-8"> {/* Added margin-top for spacing */}
+            <div> {/* Added margin-top for spacing */}
                 {activeSection === 'social-media' && <SocialMediaSection />}
                 {activeSection === 'faq' && <FaqSection />}
                 {activeSection === 'bug-report' && <BugReportSection />}
