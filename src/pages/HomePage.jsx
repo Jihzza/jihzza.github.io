@@ -23,10 +23,19 @@ export default function HomePage() {
         // It starts as `null`, meaning the user hasn't chosen a service from the hero section yet.
     const [initialService, setInitialService] = useState(null);
 
-    const handleScheduleService = (serviceId) => {
+    const [initialCoachingPlan, setInitialCoachingPlan] = useState(null);
+
+
+    const handleScheduleService = (serviceId, details = null) => {
         // 3. Set State: We update the `initialService` state with the ID from the clicked button.
         // This state will be passed as a prop to the SchedulingPage.
         setInitialService(serviceId);
+
+        if (serviceId === 'coaching' && details) {
+            setInitialCoachingPlan(details)
+        } else {
+            setInitialCoachingPlan(null);
+        }
 
         // 4. Scroll to the Form: We use the ref to smoothly scroll the scheduling form into the user's view.
         // The timeout ensures the state update is processed before we scroll, creating a smoother transition.
@@ -37,6 +46,7 @@ export default function HomePage() {
 
     const handleFlowStart = () => {
         setInitialService(null);
+        setInitialCoachingPlan(null);
     };
 
     return (
@@ -57,7 +67,7 @@ export default function HomePage() {
                 <ConsultationsSection onBookConsultation={() => handleScheduleService('consultation')} />
             </div>
             <div id="coaching-section" className="w-full">
-                <CoachingSection onBookCoaching={() => handleScheduleService('coaching')} />
+                <CoachingSection onBookCoaching={(tier) => handleScheduleService('coaching', tier)} />
             </div>
             <div id="invest-section" className="w-full">
                 <PitchDeckSection onBookPitchDeck={() => handleScheduleService('pitchdeck')} />
@@ -80,6 +90,7 @@ export default function HomePage() {
             <div id="scheduling-section" ref={schedulingRef} className="w-full">
                 <SchedulingPage
                     initialService={initialService}
+                    initialCoachingPlan={initialCoachingPlan}
                     onFlowStart={handleFlowStart}
                 />
             </div>

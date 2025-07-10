@@ -20,7 +20,7 @@ import ChatbotStep from '../components/scheduling/ChatbotStep';
 
 // COMPONENT DEFINITION
 // This is our "smart" component or "wizard". It will manage the state and logic for the entire scheduling flow
-export default function SchedulingPage({ initialService, onFlowStart }) {
+export default function SchedulingPage({ initialService, initialCoachingPlan, onFlowStart }) {
     // STATE MANAGEMENT
 
     // Get user and sign-in method from context
@@ -208,23 +208,29 @@ export default function SchedulingPage({ initialService, onFlowStart }) {
     }, []);
 
     useEffect(() => {
-        // If an initial service is provided (i.e., the user clicked a "Book" button)...
         if (initialService) {
-            // ...update the form's state with the selected service type.
-            setFormData(prevData => ({
-                ...prevData,
-                serviceType: initialService,
-            }));
-            // ...and advance the user directly to the second step of the wizard.
-            setCurrentStep(2);
+            let step = 2; // Default to step 2 (service-specific options)
+            let newFormData = { ...formData, serviceType: initialService };
 
-            // Call the callback to reset the state in the parent, preventing this
-            // effect from running again on re-renders.
+            // THE CORE LOGIC FOR YOUR REQUEST
+            // WHY: If the service is 'coaching' AND we received an initial plan, we have all the information we need to bypass the plan selection step
+            if (initialService === 'coaching' && initialCoachingPlan) {
+                // Pre-populate the form data with the selected plan's ID
+                newFormData.coaching.plan = initialCoachingPlan.id;
+                // Set the current step to 3, effectively skipping step 2
+                step = 3;
+            }
+
+            // Update the component's state based on our logic
+            setFormData(newFormData);
+            setCurrentStep(step);
+
+            // Notify the parent that the flow has started, so it can reset its own state
             if (onFlowStart) {
                 onFlowStart();
             }
         }
-    }, [initialService, onFlowStart]); // Dependency array ensures this runs only when these props change.
+    }, [initialService, initialCoachingPlan, onFlowStart]);
 
 
     // This effects runs when the user object or current step changes.
