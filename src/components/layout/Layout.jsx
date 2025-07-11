@@ -1,7 +1,7 @@
 // src/components/layout/Layout.jsx
 
-import React, { useState, useRef, useLayoutEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import NavigationBar from './NavigationBar';
 import SidebarMenu from './SidebarMenu'; // Import SidebarMenu here
@@ -13,8 +13,11 @@ import ScrollToTopButton from '../common/ScrollToTopButton'; // 1. Import the ne
 const Layout = () => {
     const { isAuthenticated } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
+
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [chatbotOpen, setChatbotOpen] = useState(false);
+    const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+    const [lastVisitedPage, setLastVisitedPage] = useState(null); // <-- NEW STATE
     const [sidebarStyle, setSidebarStyle] = useState({ top: 0, height: 0 });
     const headerRef = useRef(null);
     const navBarRef = useRef(null);
@@ -47,13 +50,31 @@ const Layout = () => {
         return () => window.removeEventListener('resize', updateLayoutStyles);
     }, [location]); // Re-run when the route changes
 
-    const handleChatbotToggle = () => {
-        setChatbotOpen(!chatbotOpen);
+    // This function will now be passed to the NavigationBar
+    const handleNavigate = (path) => {
+        // If we are navigating to a new page, store the current one as the "last visited"
+        if (location.pathname !== path) {
+            setLastVisitedPage(location.pathname);
+            navigate(path);
+        } else {
+            // If we are on the same page, execute the "go back" logic
+            // Fallback to home ('/') if there's no history yet.
+            navigate(lastVisitedPage || '/');
+        }
+    };
+    
+    const handleChatClick = () => {
+        setIsChatbotOpen(prev => !prev);
     };
 
     const handleMenuClick = () => {
         setSidebarOpen(true);
     };
+
+    useEffect(() => {
+        // whenever the path changes, hide the chat window
+        setIsChatbotOpen(false);
+      }, [location.pathname]);
 
     const handleCloseSidebar = () => {
         setSidebarOpen(false);
@@ -78,12 +99,16 @@ const Layout = () => {
             <ScrollToTopButton scrollContainerRef={mainContentRef} />
 
             <div ref={navBarRef}>
-                <NavigationBar onChatClick={handleChatbotToggle} />
+            <NavigationBar
+                isChatbotOpen={isChatbotOpen}
+                onChatClick={handleChatClick}
+                onNavigate={handleNavigate} // <-- PASS THE NEW HANDLER
+            />
             </div>
 
             <ChatbotWindow
-                isOpen={chatbotOpen}
-                onClose={handleChatbotToggle}
+                isOpen={isChatbotOpen}
+                onClose={handleChatClick}
                 navBarHeight={navBarHeight}
             />
         </div>

@@ -25,7 +25,7 @@ const Header = forwardRef(({ onMenuClick }, ref) => {
     };
 
     return (
-        <header ref={ref} className="sticky top-0 z-40 bg-black shadow-md h-14 flex items-center justify-between px-4 py-2 relative">
+        <header ref={ref} className="sticky top-0 z-10 bg-black shadow-md h-14 flex items-center justify-between px-4 py-2 relative">
             <div className="flex items-center">
                 <button
                     type="button"
