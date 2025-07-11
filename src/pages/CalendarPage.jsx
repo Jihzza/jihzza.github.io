@@ -6,7 +6,7 @@ import { getAppointmentsByUserId } from '../services/appointmentService';
 import { isSameDay, parseISO, format } from 'date-fns';
 
 // --- COMPONENT IMPORTS ---
-import SectionTextBlack from '../components/common/SectionTextBlack';
+import SectionTextWhite from '../components/common/SectionTextWhite';
 import ProfileSectionLayout from '../components/profile/ProfileSectionLayout';
 // --- CHANGE: Import the new AppointmentCalendar ---
 import AppointmentCalendar from '../components/calendar/AppointmentCalendar';
@@ -57,39 +57,41 @@ export default function CalendarPage() {
 
     // --- RENDER LOGIC ---
     return (
-        <ProfileSectionLayout>
-            <SectionTextBlack title="My Consultations">
-                View and manage your scheduled appointments.
-            </SectionTextBlack>
-            {loading && <p className="text-center text-gray-500">Loading...</p>}
-            {error && <p className="text-center text-red-500">{error}</p>}
+        <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] min-h-screen">
+            <ProfileSectionLayout>
+                <SectionTextWhite title="My Consultations">
+                    View and manage your scheduled appointments.
+                </SectionTextWhite>
+                {loading && <p className="text-center text-gray-500">Loading...</p>}
+                {error && <p className="text-center text-red-500">{error}</p>}
 
-            {!loading && !error && (
-                <div className="flex flex-col space-y-6">
+                {!loading && !error && (
+                    <div className="flex flex-col space-y-6">
 
-                    {/* --- CHANGE: Use the new AppointmentCalendar component --- */}
-                    <AppointmentCalendar
-                        appointments={allAppointments}
-                        selectedDate={selectedDate}
-                        onDateSelect={setSelectedDate}
-                    />
+                        {/* --- CHANGE: Use the new AppointmentCalendar component --- */}
+                        <AppointmentCalendar
+                            appointments={allAppointments}
+                            selectedDate={selectedDate}
+                            onDateSelect={setSelectedDate}
+                        />
 
-                    {selectedDate && (
-                        <Button
-                            onClick={() => setSelectedDate(null)}
-                            className="self-center"
-                        >
-                            Show All Appointments
-                        </Button>
-                    )}
-                    
-                    <ConsultationList
-                        appointments={filteredAppointments}
-                        title={listTitle}
-                    />
+                        {selectedDate && (
+                            <Button
+                                onClick={() => setSelectedDate(null)}
+                                className="self-center"
+                            >
+                                Show All Appointments
+                            </Button>
+                        )}
 
-                </div>
-            )}
-        </ProfileSectionLayout>
+                        <ConsultationList
+                            appointments={filteredAppointments}
+                            title={listTitle}
+                        />
+
+                    </div>
+                )}
+            </ProfileSectionLayout>
+        </div>
     );
 }

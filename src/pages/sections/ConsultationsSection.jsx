@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import SectionText from '../../components/common/SectionTextWhite';
 import ServicesDetailBlock from '../../components/ServiceSections/ServicesDetailBlock';
-import Button from '../../components/common/Button';
 import ExpandableGrid from '../../components/common/ExpandableGrid'; // 1. Import the new component
 import StickyButton from '../../components/common/StickyButton';
 
@@ -46,36 +45,27 @@ const consultationDetails = [
 ];
 
 
+
 export default function ConsultationsSection({ onBookConsultation }) {
-    
-    
     const sectionRef = useRef(null);
+
     return (
         <section ref={sectionRef} className="max-w-4xl mx-auto py-4">
             <SectionText title="How I Can Help You">
                 Whether you need guidance on mindset, social media growth, finance, marketing, business building, or relationships – I cover it all.
             </SectionText>
 
-            {/* 3. Use the new component, passing the data as a prop. It's clean and declarative. */}
+            {/* We render our smart component and pass it the data. It handles all complexity internally. */}
             <ExpandableGrid items={consultationTypes} />
 
+            {/* The rest of your section content */}
             <div className="mt-10 space-y-8">
                 {consultationDetails.map((detail) => (
-                    <ServicesDetailBlock
-                        key={detail.title}
-                        icon={detail.icon}
-                        title={detail.title}
-                        description={detail.description}
-                    />
+                    <ServicesDetailBlock key={detail.title} {...detail} />
                 ))}
             </div>
-            {/* 5. ADD THE STICKY BUTTON */}
-            {/*
-              - We place the StickyButton component here. It will appear to be at the
-                bottom of the container when docked.
-              - `containerRef`: We pass the ref of the section.
-              - `onClick`: We pass the `onBookConsultation` handler so the button is functional.
-            */}
+
+            {/* Sticky Button */}
             <StickyButton containerRef={sectionRef} onClick={onBookConsultation}>
                 Book a Consultation
             </StickyButton>

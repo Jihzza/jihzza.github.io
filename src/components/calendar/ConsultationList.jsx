@@ -6,7 +6,7 @@ import AppointmentCard from '../appointments/AppointmentCard';
 export default function ConsultationList({ appointments, title }) {
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-900 mb-4">{title}</h2>
+      <h2 className="text-xl font-bold text-white mb-4">{title}</h2>
       {appointments.length === 0 ? (
         // The styling is now cleaner, without a dashed border.
         <div className="text-center py-10">
