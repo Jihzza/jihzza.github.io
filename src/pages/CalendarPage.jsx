@@ -77,7 +77,7 @@ export default function CalendarPage() {
                     {selectedDate && (
                         <Button
                             onClick={() => setSelectedDate(null)}
-                            className="w-full bg-gray-700 text-white hover:bg-gray-800"
+                            className="self-center"
                         >
                             Show All Appointments
                         </Button>
