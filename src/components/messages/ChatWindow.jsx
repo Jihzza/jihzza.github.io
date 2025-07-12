@@ -4,8 +4,10 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getMessages, sendMessage, subscribeToMessages } from '../../services/messagesService';
 import { supabase } from '../../lib/supabaseClient';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { useTranslation } from 'react-i18next';
 
 export default function ChatWindow({ conversation }) {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
@@ -48,12 +50,11 @@ export default function ChatWindow({ conversation }) {
     };
     
     if (loading) {
-        return <div className="flex-grow flex items-center justify-center text-white">Loading messages...</div>;
+        return <div className="flex-grow flex items-center justify-center text-gray-500">{t('directMessages.chatWindow.loading')}</div>;
     }
 
     return (
-        <div className="h-full flex flex-col text-black">
-            {/* Message Display Area */}
+        <div className="h-full flex flex-col bg-gray-50 text-black">
             <div className="flex-grow p-4 overflow-y-auto space-y-4">
                 {messages.map((msg) => {
                     const isCurrentUser = msg.sender_id === user.id;
@@ -63,13 +64,13 @@ export default function ChatWindow({ conversation }) {
                         <div key={msg.id} className={`flex items-start gap-3 ${isCurrentUser ? 'flex-row-reverse' : ''}`}>
                             <img 
                                 src={avatarUrl} 
-                                alt={msg.profiles?.username || 'User'} 
+                                alt={t('directMessages.chatWindow.avatarAlt', { user: msg.profiles?.username || 'User' })}
                                 className="w-8 h-8 rounded-full object-cover"
                             />
                             <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-xl shadow-sm ${
                                 isCurrentUser
-                                    ? 'bg-[#BFA200] text-black rounded-br-none' // Current user's bubble
-                                    : 'bg-white/90 text-black rounded-bl-none' // Other user's bubble
+                                    ? 'bg-yellow-400 text-black rounded-br-none'
+                                    : 'bg-white text-black rounded-bl-none'
                                 }`}
                             >
                                 <p>{msg.content}</p>
@@ -80,22 +81,21 @@ export default function ChatWindow({ conversation }) {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Message Input Form */}
-            <div className="p-4 border-t border-gray-700/50">
+            <div className="p-4 border-t border-gray-200 bg-white">
                  <form onSubmit={handleSendMessage} className="relative flex items-center">
                     <input
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
-                        className="w-full bg-white/20 border-2 border-gray-400 rounded-full py-3 pl-4 pr-14 text-white placeholder:text-gray-200/70 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                        placeholder={t('directMessages.chatWindow.inputPlaceholder')}
+                        className="w-full bg-gray-100 border-2 border-gray-300 rounded-full py-3 pl-4 pr-14 text-black placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                         autoComplete="off"
                     />
                     <button
                         type="submit"
                         disabled={!newMessage.trim()}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-2 text-white hover:bg-white/20 disabled:text-gray-500 disabled:cursor-not-allowed"
-                        aria-label="Send message"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-2 text-gray-500 hover:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
+                        aria-label={t('directMessages.chatWindow.sendAriaLabel')}
                     >
                         <PaperAirplaneIcon className="h-6 w-6"/>
                     </button>

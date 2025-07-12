@@ -1,12 +1,13 @@
-// src/pages/profile/UpdateEmailForm.jsx
+// src/pages/profile/AccountSettings/UpdateEmailForm.jsx
 
 import React, { useState } from 'react';
 import { updateUserEmail } from '../../../services/authService';
-// --- CHANGE: Import Input and FormButton ---
 import Input from '../../../components/common/Forms/Input';
 import FormButton from '../../../components/common/Forms/FormButton';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 const UpdateEmailForm = () => {
+    const { t } = useTranslation(); // 2. Initialize hook
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -17,9 +18,11 @@ const UpdateEmailForm = () => {
         setMessage('');
         const { error } = await updateUserEmail(email);
         if (error) {
-            setMessage(`Error: ${error.message}`);
+            // 3. Use translated error message with interpolation
+            setMessage(t('accountSettings.updateEmail.errorMessage', { message: error.message }));
         } else {
-            setMessage('Confirmation email sent to both old and new addresses. Please verify to complete the change.');
+            // 4. Use translated success message
+            setMessage(t('accountSettings.updateEmail.successMessage'));
             setEmail('');
         }
         setLoading(false);
@@ -27,19 +30,20 @@ const UpdateEmailForm = () => {
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Change Email</h3>
+            {/* 5. Use translated title */}
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('accountSettings.updateEmail.title')}</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-                {/* --- CHANGE: Replaced with reusable Input component --- */}
                 <Input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="New Email Address"
+                    // 6. Use translated placeholder
+                    placeholder={t('accountSettings.updateEmail.placeholder')}
                     required
                 />
-                {/* --- CHANGE: Replaced with FormButton for consistent loading state --- */}
                 <FormButton type="submit" isLoading={loading} fullWidth>
-                    Update Email
+                    {/* 7. Use translated button text */}
+                    {t('accountSettings.updateEmail.button')}
                 </FormButton>
             </form>
             {message && <p className="mt-4 text-sm text-center text-gray-600">{message}</p>}

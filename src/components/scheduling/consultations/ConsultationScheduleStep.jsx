@@ -7,25 +7,20 @@ import { getAvailableTimeSlots } from '../../../services/availabilityService';
 import CustomCalendar from './CustomCalendar';
 import ScrollableSelector from './ScrollableSelector';
 import AppointmentSummary from './AppointmentSummary';
+import { useTranslation } from 'react-i18next'; // 1. Import the hook
 
-const durationOptions = [
-    { value: '45', label: '45 min' }, { value: '60', label: '1h' },
-    { value: '75', label: '1h 15min' }, { value: '90', label: '1h 30min' },
-    { value: '105', label: '1h 45min' }, { value: '120', label: '2h' },
-];
+// 2. Remove the hardcoded durationOptions array from here.
 
 export default function ConsultationScheduleStep({ consultationData, onUpdateField }) {
   const { user } = useAuth();
-  
-  // State to hold existing appointments for the selected month
+  const { t } = useTranslation(); // 3. Initialize the translation function
+
   const [existingAppointments, setExistingAppointments] = useState([]);
-  
-  // Destructure props for easier access
   const { date: selectedDate, duration: selectedDuration, time: selectedTime } = consultationData;
 
-  // --- DATA FETCHING ---
-  // When the component mounts or the user changes, fetch all their appointments.
-  // We fetch all appointments at once to avoid re-fetching every time a date is clicked.
+  // 4. Get duration options directly from your translation file
+  const durationOptions = useMemo(() => t('scheduling.durationOptions', { returnObjects: true }), [t]);
+
   useEffect(() => {
     if (user) {
       const fetchAppointments = async () => {
@@ -36,21 +31,13 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
     }
   }, [user]);
 
-  // --- DERIVED STATE / MEMOIZATION ---
-  // This is the "Tetris" logic in action.
-  // `useMemo` ensures this complex calculation only re-runs when its dependencies change.
   const availableTimeSlots = useMemo(() => {
     if (!selectedDate || !selectedDuration) {
       return [];
     }
-    // Call our new service to get the list of valid time slots.
     return getAvailableTimeSlots(selectedDate, Number(selectedDuration), existingAppointments);
   }, [selectedDate, selectedDuration, existingAppointments]);
 
-
-  // --- EVENT HANDLERS ---
-  // These handlers now just call the `onUpdateField` prop passed from SchedulingPage.
-  // This keeps the state management centralized in the parent.
   const handleDateSelect = (date) => {
     onUpdateField('date', date);
     onUpdateField('duration', null);
@@ -68,7 +55,6 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
 
   return (
     <div className="w-full space-y-8">
-      
       <CustomCalendar
         selectedDate={selectedDate}
         onDateSelect={handleDateSelect}
@@ -76,17 +62,18 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
 
       {selectedDate && (
         <ScrollableSelector
-          title="Select Duration"
+          // 5. Use the translated title
+          title={t('scheduling.durationSelectorTitle')}
           options={durationOptions}
           selectedValue={selectedDuration}
           onSelect={handleDurationSelect}
         />
       )}
       
-      {/* The time selector now uses the dynamically generated `availableTimeSlots` */}
       {selectedDate && selectedDuration && (
         <ScrollableSelector
-          title="Select Available Time"
+          // 6. Use the translated title
+          title={t('scheduling.timeSelectorTitle')}
           options={availableTimeSlots}
           selectedValue={selectedTime}
           onSelect={handleTimeSelect}

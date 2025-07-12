@@ -5,31 +5,33 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, Transition } from '@headlessui/react';
 import { Cog6ToothIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 import { signOut } from '../../services/authService';
+import { useTranslation } from 'react-i18next'; // 1. Import the hook
 
-// --- DATA STRUCTURES (Unchanged) ---
-const mainPages = [
-    { href: '/', label: 'Home' },
-    { href: '/profile', label: 'Profile' },
-    { href: '/messages', label: 'Messages' },
-    { href: '/calendar', label: 'Calendar' },
+// 2. Define static data for links. Only the hrefs remain, as labels will be translated.
+const mainPagesHrefs = ['/', '/profile', '/messages', '/calendar'];
+const exploreLinksHrefs = [
+    '/#consultations-section', '/#coaching-section', '/#invest-section',
+    '/#testimonials-section', '/#media-appearances-section', '/#other-wins-section',
+    '/#interactive-sections', '/#interactive-sections', '/#interactive-sections'
 ];
 
-const exploreLinks = [
-    { href: '/#consultations-section', label: 'How I Can Help You' },
-    { href: '/#coaching-section', label: 'Direct Coaching' },
-    { href: '/#invest-section', label: 'Invest With Me' },
-    { href: '/#testimonials-section', label: 'Success Stories' },
-    { href: '/#media-appearances-section', label: 'Media Appearances' },
-    { href: '/#other-wins-section', label: 'Other Wins' },
-    { href: '/#interactive-sections', label: 'Social Media' },
-    { href: '/#interactive-sections', label: 'FAQs' },
-    { href: '/#interactive-sections', label: 'Bugs' },
-];
 
 export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style }) {
+    const { t } = useTranslation(); // 3. Initialize the hook
     const navigate = useNavigate();
-    // 1. Get the current location to know which page we're on.
     const location = useLocation();
+
+    // 4. Dynamically create the link arrays by combining static hrefs with translated labels.
+    const mainPages = t('sidebar.mainPages', { returnObjects: true }).map((item, index) => ({
+        ...item,
+        href: mainPagesHrefs[index]
+    }));
+
+    const exploreLinks = t('sidebar.exploreLinks', { returnObjects: true }).map((item, index) => ({
+        ...item,
+        href: exploreLinksHrefs[index]
+    }));
+
 
     const handleSignOut = async () => {
         await signOut();
@@ -37,40 +39,27 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
         navigate('/login');
     };
 
-    /**
-     * A smart click handler for navigation that supports in-page scrolling.
-     * @param {string} href - The destination URL for the link.
-     */
     const handleLinkClick = (href) => {
-        onClose(); // Always close the sidebar first.
-
-        // Check if the link is intended to scroll to a section on the page.
+        onClose();
         if (href.includes('#')) {
             const [path, id] = href.split('#');
-
-            // If we are not on the page with the target section, navigate there first.
-            // (For this app, all sections are on the homepage, so the path is '/').
             if (path && location.pathname !== path) {
                 navigate(path);
-                // We use a brief timeout to give React Router time to navigate to the
-                // new page and render it before we try to scroll.
                 setTimeout(() => {
                     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
             } else {
-                // If we're already on the correct page, just find the element and scroll.
                 document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
             }
         } else {
-            // For regular links without a hash, just navigate normally.
             navigate(href);
         }
     };
 
+    // 5. Render component using translated text
     return (
         <Transition.Root show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-50" onClose={onClose}>
-                {/* Overlay / Backdrop */}
                 <Transition.Child
                     as={Fragment}
                     enter="transition-opacity ease-linear duration-300"
@@ -82,8 +71,6 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
                 >
                     <div className="fixed inset-0 bg-black/60" />
                 </Transition.Child>
-
-                {/* Sidebar Panel */}
                 <div className="fixed left-0 flex" style={style}>
                     <Transition.Child
                         as={Fragment}
@@ -98,13 +85,10 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
                             <div className="flex flex-grow flex-col gap-y-5 overflow-y-auto bg-black px-6 py-4 text-white">
                                 <nav className="flex flex-1 flex-col">
                                     <ul role="list" className="flex flex-1 flex-col gap-y-4">
-                                        
-                                        {/* Main Pages List */}
                                         <li>
                                             <ul role="list" className="-mx-2 space-y-1">
                                                 {mainPages.map((item) => (
                                                     <li key={item.label}>
-                                                        {/* 2. Use the new smart click handler for all links. */}
                                                         <Link
                                                             to={item.href}
                                                             onClick={() => handleLinkClick(item.href)}
@@ -116,14 +100,11 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
                                                 ))}
                                             </ul>
                                         </li>
-
-                                        {/* Explore Section List */}
                                         <li>
-                                            <div className="text-sm font-semibold leading-6 text-yellow-400">Explore</div>
+                                            <div className="text-sm font-semibold leading-6 text-yellow-400">{t('sidebar.explore')}</div>
                                             <ul role="list" className="-mx-2 mt-2 space-y-1">
                                                 {exploreLinks.map((item) => (
                                                     <li key={item.label}>
-                                                        {/* 3. Also apply the handler here to ensure consistent behavior. */}
                                                         <Link
                                                             to={item.href}
                                                             onClick={() => handleLinkClick(item.href)}
@@ -135,8 +116,6 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
                                                 ))}
                                             </ul>
                                         </li>
-                                        
-                                        {/* Bottom Section (Settings & Logout) */}
                                         <li className="mt-auto">
                                             <Link
                                                 to="/profile/account-settings"
@@ -144,14 +123,14 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated, style })
                                                 className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm leading-6 text-white hover:bg-white/10"
                                             >
                                                 <Cog6ToothIcon className="h-6 w-6 shrink-0" />
-                                                Settings
+                                                {t('sidebar.settings')}
                                             </Link>
                                             <button 
                                                 onClick={handleSignOut} 
                                                 className="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-white hover:bg-white/10"
                                             >
                                                 <ArrowLeftOnRectangleIcon className="h-6 w-6 shrink-0" />
-                                                Log Out
+                                                {t('sidebar.logout')}
                                             </button>
                                         </li>
                                     </ul>

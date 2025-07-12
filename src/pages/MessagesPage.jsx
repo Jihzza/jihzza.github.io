@@ -5,8 +5,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { getConversations, findOrCreateConversation } from '../services/messagesService';
 import UserSearch from '../components/messages/UserSearch';
 import ConversationList from '../components/messages/ConversationList';
+import { useTranslation } from 'react-i18next';
 
 export default function MessagesPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
     const [conversations, setConversations] = useState([]);
@@ -48,15 +50,15 @@ export default function MessagesPage() {
     };
 
     if (authLoading || pageLoading) {
-        return <div className="p-4 text-center">Loading...</div>;
+        return <div className="p-4 text-center">{t('directMessages.loading')}</div>;
     }
 
     return (
         <div className="h-full flex flex-col bg-white text-black">
-            <div className="p-4 border-b border-gray-700">
-                <h1 className="text-2xl font-bold">Messages</h1>
+            <div className="p-4 border-b border-gray-200">
+                <h1 className="text-2xl font-bold">{t('directMessages.title')}</h1>
             </div>
-            <div className="p-4 border-b border-gray-700">
+            <div className="p-4 border-b border-gray-200">
                 <UserSearch onUserSelect={handleUserSelect} />
             </div>
             <div className="flex-grow overflow-y-auto">

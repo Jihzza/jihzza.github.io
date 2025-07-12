@@ -1,31 +1,45 @@
+// src/pages/TermsOfServicePage.jsx
+
 import React from 'react';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 import ProfileSectionLayout from '../components/profile/ProfileSectionLayout';
-import SectionTextBlack from '../components/common/SectionTextBlack';
+import SectionTextWhite from '../components/common/SectionTextWhite';
+
+// 2. This helper can be shared or defined per component
+const renderContent = (item, index) => {
+  switch (item.type) {
+    case 'h4':
+      return <h4 key={index}>{item.text}</h4>;
+    case 'p':
+      return <p key={index}>{item.text}</p>;
+    case 'ul':
+      return (
+        <ul key={index}>
+          {item.items.map((li, i) => <li key={i}>{li}</li>)}
+        </ul>
+      );
+    default:
+      return null;
+  }
+};
 
 export default function TermsOfServicePage() {
+  const { t } = useTranslation(); // 3. Initialize hook
+
+  // 4. Load the page structure from the translation file
+  const pageContent = t('termsOfService', { returnObjects: true });
+
   return (
-    <ProfileSectionLayout>
-        <SectionTextBlack title="Terms of Service" />
+    <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
+      <ProfileSectionLayout>
+        <SectionTextWhite title={pageContent.title} />
         <div className="bg-white rounded-xl shadow-md p-6 md:p-8 prose prose-sm md:prose-base max-w-none">
-            <p className="lead">Last updated: July 09, 2025</p>
+          <p className="lead">{pageContent.lead}</p>
 
-            <p>Please read these Terms of Service ("Terms") carefully before using the DaGalow website and services operated by DaGalow ("we," "us," or "our").</p>
-
-            <h4>1. Acceptance of Terms</h4>
-            <p>By accessing or using our service, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the service.</p>
-
-            <h4>2. User Accounts</h4>
-            <p>You are responsible for safeguarding your account password and for all activities that occur under your account. You must provide accurate and complete information and notify us immediately of any unauthorized use.</p>
-
-            <h4>3. Payments and Subscriptions</h4>
-            <p>For paid services, you agree to pay all fees based on the billing terms in effect. Subscriptions will automatically renew until cancelled at least 24 hours before the end of the current billing period.</p>
-            
-            <h4>4. Limitation of Liability</h4>
-            <p>In no event shall DaGalow be liable for any indirect, incidental, special, consequential or punitive damages, including loss of profits, data, or goodwill.</p>
-
-            <h4>5. Contact Us</h4>
-            <p>If you have any questions about these Terms, please contact us at terms@dagalow.com</p>
+          {/* 5. Map and render the content */}
+          {pageContent.content?.map(renderContent)}
         </div>
-    </ProfileSectionLayout>
+      </ProfileSectionLayout>
+    </div>
   );
 };

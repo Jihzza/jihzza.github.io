@@ -6,37 +6,46 @@ import MediaAppearances from '../../assets/images/MediaAppearances.png';
 import Media1 from '../../assets/images/CM Logo.png';
 import Media2 from '../../assets/images/JN Logo.png';
 import Media3 from '../../assets/images/Coutinho.png';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
-const mediaLinks = [
+// This static data will be merged with the translated text
+const staticMediaData = [
     {
         imageSrc: Media1,
         articleUrl: 'https://www.cmjornal.pt/cmtv/programas/especiais/investigacao-cm/detalhe/conteudos-sexuais-na-internet-rendem-milhares-de-euros-e-dao-vida-de-luxo-a-utilizadores-veja-agora-na-cmtv-cmtv',
-        altText: 'A snapshot from the Forbes feature article.',
     },
     {
         imageSrc: Media2,
         articleUrl: 'https://x.com/JornalNoticias/status/1642802512435777536',
-        altText: 'An image from the TechCrunch interview.',
     },
     {
         imageSrc: Media3,
-        articleUrl: 'https://www.youtube.com/watch?v=yr68LJvYDWc',
-        altText: 'Promotional graphic for a podcast guest appearance.',
+        articleUrl: 'https://www.youtube.com/watch?v=0_jkl7e7p5o', // Corrected URL
     },
 ];
 
 export default function MediaAppearancesSection() {
+    const { t } = useTranslation(); // 2. Initialize hook
+
+    // 3. Load the translated alt text and merge it with the static data
+    const translatedLinks = t('mediaAppearances.links', { returnObjects: true });
+    const mediaLinks = staticMediaData.map((media, index) => ({
+        ...media,
+        altText: translatedLinks[index]?.altText || '' // Safely access translated text
+    }));
+
     return (
         <section className="w-full mx-auto py-8 text-center">
             
-            <SectionTextBlack title="Media Appearances">
-                I've had the privilege of sharing my insights and stories with various media outlets. Explore some of these features below.
+            {/* 4. Use translated text for title and subtitle */}
+            <SectionTextBlack title={t('mediaAppearances.title')}>
+                {t('mediaAppearances.subtitle')}
             </SectionTextBlack>
 
             <div className="my-8 px-4">
                 <img 
                     src={MediaAppearances}
-                    alt="Main media feature" 
+                    alt={t('mediaAppearances.mainImageAlt')} // 5. Use translated alt text
                     className="w-full max-w-3xl mx-auto"
                 />
             </div>
@@ -52,7 +61,7 @@ export default function MediaAppearancesSection() {
                     >
                         <img 
                             src={media.imageSrc}
-                            alt={media.altText}
+                            alt={media.altText} // This now comes from the merged array
                             className="rounded-lg shadow-md w-full h-auto"
                         />
                     </a>

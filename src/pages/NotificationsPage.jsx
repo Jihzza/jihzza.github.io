@@ -5,17 +5,11 @@ import { useNotifications } from '../contexts/NotificationsContext';
 import ProfileSectionLayout from '../components/profile/ProfileSectionLayout';
 import NotificationCard from '../components/notifications/NotificationCard';
 import Button from '../components/common/Button';
-import SectionTextBlack from '../components/common/SectionTextBlack';
+import SectionTextWhite from '../components/common/SectionTextWhite';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
-/**
- * The primary page for displaying all user notifications.
- * It uses the `useNotifications` context to fetch and display data,
- * keeping the component itself clean and focused on presentation.
- */
 export default function NotificationsPage() {
-    // --- HOOKS ---
-    // We abstract all data logic into our custom `useNotifications` hook.
-    // This is a key pattern for separating concerns.
+    const { t } = useTranslation(); // 2. Initialize hook
     const {
         notifications,
         loading,
@@ -24,26 +18,21 @@ export default function NotificationsPage() {
         markAllAsRead
     } = useNotifications();
 
-    // --- RENDER LOGIC ---
-
-    /**
-     * Renders the main content based on the current data-fetching state.
-     * @returns {JSX.Element}
-     */
     const renderContent = () => {
         if (loading) {
-            return <p className="text-center text-gray-500 py-8">Loading notifications...</p>;
+            // 3. Use translated text
+            return <p className="text-center text-gray-500 py-8">{t('notifications.loading')}</p>;
         }
 
         if (notifications.length === 0) {
             return (
                 <div className="text-center text-gray-500 py-8">
-                    <p>You have no notifications at the moment.</p>
+                    {/* 4. Use translated text */}
+                    <p>{t('notifications.noNotifications')}</p>
                 </div>
             );
         }
 
-        // Map over the notifications array to render a `NotificationCard` for each item.
         return (
             <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
                 <ul>
@@ -61,23 +50,25 @@ export default function NotificationsPage() {
     };
 
     return (
-        // We use our existing `ProfileSectionLayout` for a consistent look and feel.
-        <ProfileSectionLayout>
-            <SectionTextBlack title="Notifications" />
+        <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
+            <ProfileSectionLayout>
+                {/* 5. Use translated text */}
+                <SectionTextWhite title={t('notifications.pageTitle')} />
 
-            <div className="flex justify-end mb-4">
-                {/* The "Mark all as read" button is conditionally rendered and disabled if not needed. */}
-                {unreadCount > 0 && (
-                    <Button
-                        onClick={markAllAsRead}
-                        className="text-sm py-2 px-4" // Custom sizing for this context
-                    >
-                        Mark all as read ({unreadCount})
-                    </Button>
-                )}
-            </div>
+                <div className="flex justify-end mb-4">
+                    {unreadCount > 0 && (
+                        <Button
+                            onClick={markAllAsRead}
+                            className="text-sm py-2 px-4"
+                        >
+                            {/* 6. Use translated text with interpolation */}
+                            {t('notifications.markAllAsRead', { count: unreadCount })}
+                        </Button>
+                    )}
+                </div>
 
-            {renderContent()}
-        </ProfileSectionLayout>
+                {renderContent()}
+            </ProfileSectionLayout>
+        </div>
     );
 }

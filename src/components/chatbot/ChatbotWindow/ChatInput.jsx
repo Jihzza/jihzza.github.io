@@ -1,38 +1,21 @@
+// src/components/chatbot/ChatbotWindow/ChatInput.jsx
+
 import React, { useRef, useEffect } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
-/**
- * ChatInput component for message input and sending
- * Handles keyboard interactions and input validation
- * * @param {Object} props - Component props
- * @param {string} props.userText - Current input text
- * @param {Function} props.setUserText - Function to update input text
- * @param {Function} props.sendMessage - Function to send the message
- * @param {boolean} props.loading - Whether a message is being sent
- * @param {boolean} props.isAuthenticated - Whether user is authenticated
- * @param {boolean} props.isOpen - Whether the chat window is open
- */
 export default function ChatInput({ 
-  userText, 
-  setUserText, 
-  sendMessage, 
-  loading, 
-  isAuthenticated,
-  isOpen 
+  userText, setUserText, sendMessage, loading, isAuthenticated, isOpen 
 }) {
+  const { t } = useTranslation(); // 2. Initialize hook
   const inputRef = useRef(null);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen]);
 
-  /**
-   * Handle Enter key press to send message
-   * @param {KeyboardEvent} e - Keyboard event
-   */
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -40,34 +23,23 @@ export default function ChatInput({
     }
   };
 
-  /**
-   * Handle input change
-   * @param {ChangeEvent} e - Change event
-   */
-  const handleInputChange = (e) => {
-    setUserText(e.target.value);
-  };
-
-  /**
-   * Check if send button should be disabled
-   */
+  const handleInputChange = (e) => setUserText(e.target.value);
   const isSendDisabled = loading || !userText.trim() || !isAuthenticated;
+
+  // 3. Determine dynamic text from translations
+  const placeholderText = isAuthenticated ? t('chatbot.input.placeholder') : t('chatbot.input.placeholderLoggedOut');
+  const buttonTitle = isAuthenticated ? t('chatbot.input.buttonAria') : t('chatbot.input.buttonAriaLoggedOut');
 
   return (
     <div className="p-4">
       <div className="relative flex items-center">
-        {/* Input Field */}
         <input
           ref={inputRef}
           type="text"
           value={userText}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder={
-            !isAuthenticated 
-              ? "Please log in to chat..." 
-              : "Type your message..."
-          }
+          placeholder={placeholderText} // 4. Use translated placeholder
           className={`
             w-full border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 
             text-white placeholder:text-white/50 bg-transparent
@@ -77,8 +49,6 @@ export default function ChatInput({
           `}
           disabled={loading || !isAuthenticated}
         />
-        
-        {/* Send Button */}
         <button
           onClick={sendMessage}
           disabled={isSendDisabled}
@@ -91,16 +61,15 @@ export default function ChatInput({
               : 'text-[#bfa200] hover:bg-[#bfa200]/10 hover:scale-110'
             }
           `}
-          title={!isAuthenticated ? 'Please log in to chat' : 'Send message'}
+          title={buttonTitle} // 5. Use translated title
         >
           <PaperAirplaneIcon className="h-5 w-5" />
         </button>
       </div>
       
-      {/* Helper Text */}
       {!isAuthenticated && (
         <p className="text-xs text-gray-400 mt-2 text-center">
-          You need to be logged in to use the chat
+          {t('chatbot.input.helperTextLoggedOut')} {/* 6. Use translated helper text */}
         </p>
       )}
     </div>

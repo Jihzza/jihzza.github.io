@@ -2,10 +2,11 @@ import React, { useRef, useState } from 'react';
 import SectionText from '../../components/common/SectionTextWhite';
 import ServicesDetailBlock from '../../components/ServiceSections/ServicesDetailBlock';
 import TierCards from '../../components/coaching/TierCards';
-import ExpandableGrid from '../../components/common/ExpandableGrid'; // 1. Import the new component
+import ExpandableGrid from '../../components/common/ExpandableGrid';
 import StickyButton from '../../components/common/StickyButton';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
-// ICONS IMPORT
+// ICON IMPORTS (These remain unchanged)
 import SocialMediaIcon from '../../assets/icons/Phone Branco.svg';
 import BusinessIcon from '../../assets/icons/Business Branco.svg';
 import OnlyFansIcon from '../../assets/icons/OnlyFans Branco.svg';
@@ -18,58 +19,52 @@ import AnytimeCommsIcon from '../../assets/icons/AnytimeComms Preto.svg';
 import ResponseIcon from '../../assets/icons/Response Preto.svg';
 import ClassesIcon from '../../assets/icons/Classes Preto.svg';
 
-
-// Data remains the same
-const coachingTypes = [
-    { id: 1, icon: StocksIcon, title: 'Learn How to Invest', description: 'Master the markets with confidence. We break down core investment principles, asset allocation, and risk-management tactics so you can build a diversified portfolio that matches your goals and risk appetite.' },
-    { id: 2, icon: PersonalTrainerIcon, title: 'Personal Trainer', description: 'Get a tailor-made fitness roadmap. From periodised workout plans to nutrition tweaks and habit tracking, you\'ll receive step-by-step guidance to hit strength, endurance, and aesthetic targets—safely and sustainably.' },
-    { id: 3, icon: DatingIcon, title: 'Dating Coach', description: 'Upgrade your dating life. Hone social-skill fundamentals, craft a magnetic online profile, and learn real-world approach frameworks that boost confidence and attract high-quality partners.' },
-    { id: 4, icon: OnlyFansIcon, title: 'OnlyFans Coaching', description: 'Turn OnlyFans into a thriving business. We cover niche positioning, content calendars, pricing psychology, fan-funnel design, and cross-platform promotion to scale subscribers and monthly earnings.' },
-    { id: 5, icon: BusinessIcon, title: 'Business Advisor', description: 'Accelerate your venture\'s growth. From lean business-plan audits to marketing funnels, ops systems, and KPI dashboards, you\'ll get actionable strategies to increase revenue and profitability.' },
-    { id: 6, icon: HabitsIcon, title: 'Habits & Personal Growth', description: 'Design habits that stick. Implement science-backed routines for productivity, health, and mindset, while removing self-sabotaging behaviours through accountability loops and progress reviews.' },
-    { id: 7, icon: SocialMediaIcon, title: 'Social Media Manager', description: 'Grow an engaged audience. Receive content-pillar mapping, algorithm-proof posting schedules, analytic deep-dives, and monetisation tactics to turn followers into loyal customers.' },
-    { id: 8, icon: StockResearcherIcon, title: 'Stock Researcher', description: 'Make data-driven trades. Learn fundamental and technical research workflows, valuation models, and watch-list curation so you can spot high-conviction stock opportunities before the crowd.' },
-];
-
-const coachingDetails = [
-    { icon: AnytimeCommsIcon, title: 'Anytime Communication', description: 'Text or send audio messages anytime with questions, updates, or challenges. Get support when you need it most without waiting for scheduled appointments.' },
-    { icon: ResponseIcon, title: 'Flexible Response Formats', description: 'Receive guidance through text, audio, or video responses based on your preference and the complexity of the topic. Visual demonstrations when needed, quick text answers when appropriate.' },
-    { icon: ClassesIcon, title: 'Personalized Classes', description: 'Receive custom-tailored training sessions designed specifically for your skill level, learning style, and goals. Each class builds on your progress for maximum growth and development.' },
-];
-
-const tiers = [
-    { id: 'basic', price: 40, planName: 'Basic', billingCycle: 'm', planDesc: 'Answers to all questions weekly' },
-    { id: 'standard', price: 90, planName: 'Standard', billingCycle: 'm', planDesc: 'Answers to all questions in 48h' },
-    { id: 'premium', price: 230, planName: 'Premium', billingCycle: 'm', planDesc: 'Answer to all questions ASAP' },
-  ];
-
-const buttonTextMap ={
-    1: "Start Investing Smarter",
-    2: "Get Your Fitness Plan",
-    3: "Enhance Your Dating Life",
-    4: "Boost Your Onlyfans",
-    5: "Advice Your Business",
-    6: "Build Better Habits",
-    7: "Excel on Social Media",
-    8: "Navigate the Stock Market",
-}
-
-  export default function CoachingSection({ onBookCoaching }) {
+export default function CoachingSection({ onBookCoaching }) {
+    const { t } = useTranslation(); // 2. Initialize hook
     const sectionRef = useRef(null);
 
-    // --- STATE MANAGEMENT (LIFTED STATE) ---
-    // The state for the selected plan now lives in this parent component.
-    // It is the single source of truth.
+    // State management remains the same
     const [selectedPlanId, setSelectedPlanId] = useState(null);
-    // New: Track selected coaching type card
     const [selectedCoachingType, setSelectedCoachingType] = useState(null);
 
-    // --- DERIVED STATE ---
-    // The details of the selected tier and the button text are derived from the
-    // state on every render, ensuring the UI is always consistent.
+    // --- DATA FETCHING FROM TRANSLATIONS ---
+
+    // 3. Define local icon arrays to map to translated data
+    const coachingTypeIcons = [StocksIcon, PersonalTrainerIcon, DatingIcon, OnlyFansIcon, BusinessIcon, HabitsIcon, SocialMediaIcon, StockResearcherIcon];
+    const coachingDetailIcons = [AnytimeCommsIcon, ResponseIcon, ClassesIcon];
+
+    // 4. Load data from i18n and map icons
+    const coachingTypes = t('coaching.types', { returnObjects: true }).map((type, index) => ({
+        ...type,
+        id: index + 1,
+        icon: coachingTypeIcons[index]
+    }));
+
+    const coachingDetails = t('coaching.details', { returnObjects: true }).map((detail, index) => ({
+        ...detail,
+        icon: coachingDetailIcons[index]
+    }));
+
+    // Tiers data now includes the translated plan descriptions
+    const tiers = t('coaching.tiers', { returnObjects: true }).map((tier, index) => ({
+        ...tier,
+        id: ['basic', 'standard', 'premium'][index],
+        price: [40, 90, 230][index],
+        billingCycle: 'm',
+    }));
+
+    // Dynamically create the button map from translations
+    const buttonKeys = ["invest", "trainer", "dating", "onlyfans", "advisor", "habits", "manager", "researcher"];
+    const buttonTextMap = buttonKeys.reduce((acc, key, index) => {
+        acc[index + 1] = t(`coaching.buttons.${key}`);
+        return acc;
+    }, {});
+
+
+    // --- DERIVED STATE & HANDLERS (Logic remains the same, but uses translated data) ---
     const selectedTier = tiers.find(tier => tier.id === selectedPlanId);
-    // New: Button text logic based on selected card
-    let buttonText = 'Select a Coaching Type';
+    
+    let buttonText = t('coaching.buttons.default');
     if (selectedCoachingType) {
         buttonText = buttonTextMap[selectedCoachingType.id];
         if (selectedTier) {
@@ -77,11 +72,8 @@ const buttonTextMap ={
         }
     }
 
-    // --- EVENT HANDLER ---
     const handleBookClick = () => {
-        // Only proceed if both a card and a tier are selected
         if (selectedCoachingType && selectedTier) {
-            // Pass both selected type and tier up if needed
             onBookCoaching({
                 coachingType: selectedCoachingType,
                 tier: selectedTier
@@ -90,13 +82,11 @@ const buttonTextMap ={
     }
 
     return (
-        // The `id` here is crucial for the scroll-into-view functionality from the HeroSection.
         <section id="coaching-section" ref={sectionRef} className="max-w-4xl mx-auto py-4">
-            <SectionText title="Direct Coaching">
-                Personalized coaching to help you excel in specific areas of your life. Get direct access to expert guidance tailored to your unique situation and goals.
+            <SectionText title={t('coaching.title')}>
+                {t('coaching.subtitle')}
             </SectionText>
 
-            {/* Pass handler to ExpandableGrid for card selection */}
             <ExpandableGrid items={coachingTypes} onItemSelected={setSelectedCoachingType} />
 
             <div className="mt-10 space-y-8">
@@ -110,14 +100,12 @@ const buttonTextMap ={
                 ))}
             </div>
 
-            {/* The TierCards component is now "controlled". */}
             <TierCards
                 tiers={tiers}
                 selectedPlanId={selectedPlanId}
                 onTierSelect={setSelectedPlanId}
             />
 
-            {/* The StickyButton's text is now dynamic, derived from the state. */}
             <StickyButton containerRef={sectionRef} onClick={handleBookClick} disabled={!(selectedCoachingType && selectedTier)}>
                 {buttonText}
             </StickyButton>

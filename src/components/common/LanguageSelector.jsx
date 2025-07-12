@@ -9,6 +9,8 @@ import GlobeIcon from '../../assets/icons/Globe Branco.svg';
 const languages = [
     { key: 'en', label: 'English' },
     { key: 'es', label: 'Español' },
+    { key: 'pt-PT', label: 'Português PT'},
+    { key: 'pt-BR', label: 'Português BR'},    
 ];
 
 export default function LanguageSelector() {

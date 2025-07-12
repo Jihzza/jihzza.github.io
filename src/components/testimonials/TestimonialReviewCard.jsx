@@ -1,9 +1,13 @@
 // src/components/testimonials/TestimonialReviewCard.jsx
 import React from 'react';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 const TestimonialReviewCard = ({ testimonial, onApprove, onReject }) => {
+    const { t } = useTranslation(); // 2. Initialize hook
     const { content, rating, profiles: author } = testimonial;
-    const authorName = author?.full_name || 'Anonymous';
+    
+    // 3. Use translated "Anonymous" text
+    const authorName = author?.full_name || t('testimonials.review.anonymous');
     const avatarUrl = author?.avatar_url || `https://i.pravatar.cc/150?u=${authorName}`;
 
     return (
@@ -23,11 +27,12 @@ const TestimonialReviewCard = ({ testimonial, onApprove, onReject }) => {
             </div>
             <p className="text-gray-600 italic">"{content}"</p>
             <div className="flex justify-end space-x-3 mt-4">
+                {/* 4. Use translated button text */}
                 <button onClick={() => onReject(testimonial.id)} className="px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200">
-                    Reject
+                    {t('testimonials.review.reject')}
                 </button>
                 <button onClick={() => onApprove(testimonial.id)} className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700">
-                    Approve
+                    {t('testimonials.review.approve')}
                 </button>
             </div>
         </div>

@@ -1,22 +1,24 @@
 // src/components/scheduling/ChatbotStep.jsx
 
 import React from 'react';
+import { useTranslation } from 'react-i18next'; // 1. Import the hook
 import ChatInterface from '../chatbot/ChatInterface';
 
 export default function ChatbotStep() {
+    const { t } = useTranslation(); // 2. Initialize the hook
+
     return (
-        // Step 1: Simplify the main container
         <div className="h-full flex flex-col"> 
-            {/* Step 2: Update the header text and styling */}
             <div className="text-center mb-4">
-                <h2 className="text-2xl font-bold text-white mb-2">Final Step</h2>
+                {/* 3. Use the translated title */}
+                <h2 className="text-2xl font-bold text-white mb-2">{t('scheduling.chatbotStep.title')}</h2>
             </div>
 
-            {/* The Chat Interface now carries the desired styling */}
+            {/* 4. Pass translated strings down to the ChatInterface component */}
             <ChatInterface
-                initialMessage="Hello! I'm here to gather some preliminary information for our upcoming consultation. To start, could you please tell more about yourself?"
+                initialMessage={t('scheduling.chatbotStep.initialMessage')}
                 containerHeight="h-[400px]"
-                inputPlaceholder="Type your message..."
+                inputPlaceholder={t('scheduling.chatbotStep.inputPlaceholder')}
             />
         </div>
     );

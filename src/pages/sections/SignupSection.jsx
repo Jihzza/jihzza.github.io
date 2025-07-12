@@ -8,6 +8,7 @@ import { signUpNewUser } from '../../services/authService';
 import SectionTextBlack from '../../components/common/SectionTextBlack';
 import Signup from '../../components/auth/Signup';
 import EmailVerificationModal from '../../components/auth/EmailVerificationModal';
+import { useTranslation } from 'react-i18next';
 
 export default function SignupSection() {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function SignupSection() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [needVerification, setNeedVerification] = useState(false);
+    const { t } = useTranslation();
 
     const handleSignup = async ({ email, password }) => {
         setIsLoading(true);
@@ -38,8 +40,8 @@ export default function SignupSection() {
 
     return (
         <section className="max-w-4xl mx-auto py-8 text-center">
-            <SectionTextBlack title="Create Your Account">
-                Join our community to unlock exclusive content, save your progress, and connect with others.
+            <SectionTextBlack title={t('signup.title')}>
+                {t('signup.subtitle')}
             </SectionTextBlack>
 
             <div className="mt-8 flex justify-center">

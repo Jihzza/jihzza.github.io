@@ -1,24 +1,30 @@
 // src/pages/sections/PitchDeckSection.jsx
 import React, { useRef } from 'react';
-
 import SectionText from '../../components/common/SectionTextWhite';
 import PitchDeckCard from '../../components/pitchdeck/PitchDeckCard';
 import StickyButton from '../../components/common/StickyButton';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
+// Keep icon imports, as they are not translatable
 import Perspetiv from '../../assets/images/Perspectiv Banner.svg';
 import GalowClub from '../../assets/images/Galow Banner.svg';
 
-const pitchDecks = [
-    { id: 'perspetiv', icon: Perspetiv, title: 'Perspectiv - AI Company', description: 'A tech startup helping businesses entering the automation age, with custom software solutions.' },
-    { id: 'galowclub', icon: GalowClub, title: 'Galow - Success Club', description: 'A social club with real world activities and digital software to help successful people connect and achieve their dreams.' },
-]
-
 export default function PitchDeckSection({ onBookPitchDeck }) {
-
+    const { t } = useTranslation(); // 2. Initialize hook
     const sectionRef = useRef(null);
+
+    // 3. Load translated deck data and map the static icons
+    const pitchDecks = t('pitchDeck.decks', { returnObjects: true }).map((deck, index) => ({
+        ...deck,
+        id: ['perspetiv', 'galowclub'][index], // Keep original IDs
+        icon: [Perspetiv, GalowClub][index]   // Map icons by order
+    }));
+
     return (
-        <section ref={sectionRef} className="max-w-4xl mx-auto py-4">
-            <SectionText title="My Ventures" />
+        // The id="invest-section" is important for anchor links
+        <section ref={sectionRef} id="invest-section" className="max-w-4xl mx-auto py-4">
+            {/* 4. Use translated title */}
+            <SectionText title={t('pitchDeck.title')} />
 
             <div className="grid grid-cols-1 gap-6">
                 {pitchDecks.map((deck) => (
@@ -30,17 +36,18 @@ export default function PitchDeckSection({ onBookPitchDeck }) {
                     />
                 ))}
             </div>
+
             <div className="mt-6">
-
-
-            <SectionText title="Invest With Me">
-                I'm constantly developing new projects and ventures. If you're interested in learning more about current and upcoming opportunities, request a pitch deck below.
-            </SectionText>
-
+                {/* 5. Use translated subtitle and body */}
+                <SectionText title={t('pitchDeck.investTitle')}>
+                    {t('pitchDeck.investSubtitle')}
+                </SectionText>
             </div>
+
+            {/* 6. Use translated button text */}
             <StickyButton containerRef={sectionRef} onClick={onBookPitchDeck}>
-                Request Pitch Deck
+                {t('pitchDeck.buttonText')}
             </StickyButton>
         </section>
-    )
+    );
 }

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { DocumentArrowDownIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 const statusStyles = {
     'Submitted': 'bg-blue-100 text-blue-800',
@@ -10,12 +11,8 @@ const statusStyles = {
     'Archived': 'bg-gray-100 text-gray-800',
 };
 
-/**
- * Displays the details of a single pitch deck request.
- *
- * @param {object} request - The pitch deck request object.
- */
-const PitchDeckRequestCard = ({ request }) => {
+export default function PitchDeckRequestCard({ request }) {
+    const { t } = useTranslation(); // 2. Initialize hook
     const formattedDate = new Date(request.submitted_at).toLocaleDateString();
 
     return (
@@ -25,7 +22,8 @@ const PitchDeckRequestCard = ({ request }) => {
                     <h3 className="text-xl font-bold text-gray-800">{request.company_name}</h3>
                     <div className="flex items-center text-sm text-gray-500 mt-1">
                         <ClockIcon className="h-4 w-4 mr-1.5" />
-                        Submitted on {formattedDate}
+                        {/* 3. Use translated "Submitted on" text */}
+                        {t('pitchDeckRequest.submittedOn')} {formattedDate}
                     </div>
                 </div>
                 <span className={`px-3 py-1 text-sm font-medium rounded-full capitalize ${statusStyles[request.status] || statusStyles['Archived']}`}>
@@ -40,11 +38,10 @@ const PitchDeckRequestCard = ({ request }) => {
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
                 >
                     <DocumentArrowDownIcon className="h-5 w-5 mr-2" />
-                    Download Submission
+                    {/* 4. Use translated button text */}
+                    {t('pitchDeckRequest.downloadButton')}
                 </a>
             </div>
         </div>
     );
 };
-
-export default PitchDeckRequestCard;

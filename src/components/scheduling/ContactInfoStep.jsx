@@ -5,6 +5,8 @@ import React from 'react';
 import Input from '../common/Forms/Input';
 import GoogleButton from '../common/Forms/GoogleButton';
 import FormButton from '../common/Forms/FormButton';
+import { useTranslation } from 'react-i18next'; // 1. Import hooks
+
 
 // COMPONENT DEFINITION
 
@@ -18,48 +20,49 @@ import FormButton from '../common/Forms/FormButton';
  * @param {function} onGoogleSignIn - Callback to trigger the Google sign-in flow
  */
 export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateField, onGoogleSignIn }) {
+    const { t } = useTranslation(); // 3. Initialize the hook
 
-    // RENDER LOGIC
     return (
         <div className="w-full">
-            <h2 className="text-xl font-bold text-center text- mb-4">
-                {/* We display a different title based  on the login state */}
-                {isLoggedIn ? 'Contact Info' : 'Tell Us About Yourself'}
+            <h2 className="text-xl font-bold text-center text-white mb-4">
+                {/* 4. Use translated titles based on login state */}
+                {isLoggedIn 
+                    ? t('scheduling.contactInfo.loggedInTitle') 
+                    : t('scheduling.contactInfo.loggedOutTitle')}
             </h2>
 
-            {/* This is the core logix: a conditional (ternary) operator that renders one of two entirely different blocks of JSX based on the `isLoggedIn` prop. */}
             {isLoggedIn ? (
                 // LOGGED IN VIEW
                 <div className="space-y-4">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-white">Full Name</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.fullNameLabel')}</label>
                         <Input
                             id="name"
                             name="name"
                             type="text"
-                            placeholder="Enter your full name"
+                            placeholder={t('scheduling.contactInfo.fullNamePlaceholder')}
                             value={contactInfoData.name}
-                            onChange={onUpdateField} // The parent's handler updates the state
+                            onChange={onUpdateField}
                         />
                     </div>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.emailLabel')}</label>
                         <Input 
                             id="email"
                             name="email"
                             type="email"
-                            placeholder="you@example.com"
+                            placeholder={t('scheduling.contactInfo.emailPlaceholder')}
                             value={contactInfoData.email}
                             onChange={onUpdateField}
                         />
                     </div>
                     <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-white">Phone Number</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.phoneLabel')}</label>
                         <Input
                             id="phone"
                             name="phone"
                             type="tel"
-                            placeholder="+1 (123) 456-7890"
+                            placeholder={t('scheduling.contactInfo.phonePlaceholder')}
                             value={contactInfoData.phone}
                             onChange={onUpdateField}
                         />
@@ -69,30 +72,30 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                 // GUEST / LOGGED-OUT VIEW
                 <div className="space-y-4">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-white">Full Name</label>
-                        <Input id="name" name="name" type="text" placeholder="Enter your full name" value={contactInfoData.name} onChange={onUpdateField} />
+                        <label htmlFor="name" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.fullNameLabel')}</label>
+                        <Input id="name" name="name" type="text" placeholder={t('scheduling.contactInfo.fullNamePlaceholder')} value={contactInfoData.name} onChange={onUpdateField} />
                     </div>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
-                        <Input id="email" name="email" type="email" placeholder="you@example.com" value={contactInfoData.email} onChange={onUpdateField} />
+                        <label htmlFor="email" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.emailLabel')}</label>
+                        <Input id="email" name="email" type="email" placeholder={t('scheduling.contactInfo.emailPlaceholder')} value={contactInfoData.email} onChange={onUpdateField} />
                     </div>
                     <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-white">Phone Number</label>
-                        <Input id="phone" name="phone" type="tel" placeholder="+1 (123) 456-7890" value={contactInfoData.phone} onChange={onUpdateField} />
+                        <label htmlFor="phone" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.phoneLabel')}</label>
+                        <Input id="phone" name="phone" type="tel" placeholder={t('scheduling.contactInfo.phonePlaceholder')} value={contactInfoData.phone} onChange={onUpdateField} />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-white">Create Password</label>
-                        <Input id="password" name="password" type="password" placeholder="**********" value={contactInfoData.password} onChange={onUpdateField} />
+                        <label htmlFor="password" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.passwordLabel')}</label>
+                        <Input id="password" name="password" type="password" placeholder={t('scheduling.contactInfo.passwordPlaceholder')} value={contactInfoData.password} onChange={onUpdateField} />
                     </div>
 
                     <div className="p-2">
-                        {/* The Google Sign-In button should trigger a function passed down from the parent */}
-                        <GoogleButton onClick={onGoogleSignIn} text="Sign up with Google" />
+                        {/* 5. Use translated text for the Google button */}
+                        <GoogleButton onClick={onGoogleSignIn} text={t('scheduling.contactInfo.googleButtonText')} />
                     </div>
                     <div className="text-center text-sm text-gray-600">
-                        Already have an account?{' '}
+                        {t('scheduling.contactInfo.loginPrompt')}{' '}
                         <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-                            Log in
+                            {t('scheduling.contactInfo.loginLink')}
                         </a>
                     </div>
                 </div>

@@ -1,70 +1,61 @@
+// src/components/notifications/NotificationsPanel.jsx
+
 import React from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation, Trans } from 'react-i18next'; // 1. Import hooks
 
-// A helper function to render the notification text based on its type and data
+// This helper component is now also used by NotificationCard, so we can define it once
+// in a shared location, but for now, we'll redefine it to show the translation logic clearly.
 const NotificationMessage = ({ notification }) => {
+    // Note: This is the same logic as in NotificationCard.jsx
+    const { t } = useTranslation();
     switch (notification.type) {
         case 'new_message':
-            return (
-                <>
-                    <span className="font-bold">{notification.data.sender_username}</span> sent you a new message.
-                </>
-            );
+            return <Trans i18nKey="notifications.types.newMessage" values={{ sender: notification.data.sender_username }} components={[<span className="font-bold" />]} />;
         case 'consultation_reminder':
-            return (
-                <>
-                    Reminder: Your consultation is tomorrow at <span className="font-bold">{notification.data.consultation_time}</span>.
-                </>
-            );
+            return <Trans i18nKey="notifications.types.consultationReminder" values={{ time: notification.data.consultation_time }} components={[<span className="font-bold" />]} />;
         case 'new_consultation_booking':
-            return (
-                 <>
-                    New Booking: A user purchased a <span className="font-bold">Consultation</span>.
-                </>
-            );
-        // Add cases for 'new_coaching_booking' and 'new_pitchdeck_booking' here
+             return <Trans i18nKey="notifications.types.newConsultationBooking" components={[<span className="font-bold" />]} />;
         default:
-            return 'You have a new notification.';
+            return t('notifications.types.default');
     }
 };
 
-
 export default function NotificationsPanel({ isOpen, onClose }) {
+    const { t } = useTranslation(); // 2. Initialize hook
     const { notifications, loading, markAsRead, markAllAsRead, unreadCount } = useNotifications();
     const navigate = useNavigate();
 
     if (!isOpen) return null;
 
     const handleNotificationClick = (notification) => {
-        // Mark as read even if we don't navigate
         if (!notification.is_read) {
             markAsRead(notification.id);
         }
-
-        // Navigate to the relevant page
         if (notification.type === 'new_message' && notification.data.conversation_id) {
             navigate(`/messages/${notification.data.conversation_id}`);
         }
-        // Add other navigation logic here, e.g., to an admin dashboard
-        // if (notification.type.includes('booking')) { navigate('/admin/bookings'); }
-        
-        onClose(); // Close the panel after clicking
+        onClose();
     };
 
     return (
         <div className="absolute right-0 mt-2 w-80 max-w-sm bg-white rounded-lg shadow-xl border border-gray-200 z-50">
             <div className="p-4 border-b flex justify-between items-center">
-                <h3 className="font-semibold text-gray-800">Notifications</h3>
+                {/* 3. Use translated text */}
+                <h3 className="font-semibold text-gray-800">{t('notifications.panel.title')}</h3>
                 {unreadCount > 0 && (
-                     <button onClick={markAllAsRead} className="text-sm text-indigo-600 hover:underline">Mark all as read</button>
+                     <button onClick={markAllAsRead} className="text-sm text-indigo-600 hover:underline">
+                        {t('notifications.panel.markAllAsRead')}
+                     </button>
                 )}
             </div>
             <div className="max-h-96 overflow-y-auto">
-                {loading && <p className="p-4 text-center text-gray-500">Loading...</p>}
+                {/* 4. Use translated text */}
+                {loading && <p className="p-4 text-center text-gray-500">{t('notifications.panel.loading')}</p>}
                 {!loading && notifications.length === 0 && (
-                    <p className="p-4 text-center text-gray-500">No notifications yet.</p>
+                    <p className="p-4 text-center text-gray-500">{t('notifications.panel.noNotifications')}</p>
                 )}
                 <ul>
                     {notifications.map((n) => (

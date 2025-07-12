@@ -1,12 +1,13 @@
-// src/pages/profile/UpdatePasswordForm.jsx
+// src/pages/profile/AccountSettings/UpdatePasswordForm.jsx
 
 import React, { useState } from 'react';
 import { updateUserPassword } from '../../../services/authService';
-// --- CHANGE: Import Input and FormButton ---
 import Input from '../../../components/common/Forms/Input';
 import FormButton from '../../../components/common/Forms/FormButton';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 const UpdatePasswordForm = () => {
+    const { t } = useTranslation(); // 2. Initialize hook
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -17,29 +18,31 @@ const UpdatePasswordForm = () => {
         setMessage('');
         const { error } = await updateUserPassword(password);
         if (error) {
-            setMessage(`Error: ${error.message}`);
+            setMessage(t('accountSettings.updateEmail.errorMessage', { message: error.message })); // Reuse error message key
         } else {
-            setMessage('Password updated successfully.');
+            // 3. Use translated success message
+            setMessage(t('accountSettings.updatePassword.successMessage'));
             setPassword('');
         }
         setLoading(false);
     };
     return (
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Change Password</h3>
+            {/* 4. Use translated title */}
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('accountSettings.updatePassword.title')}</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-                {/* --- CHANGE: Replaced with reusable Input component --- */}
                 <Input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="New Password"
+                    // 5. Use translated placeholder
+                    placeholder={t('accountSettings.updatePassword.placeholder')}
                     required
                     minLength="6"
                 />
-                {/* --- CHANGE: Replaced with FormButton for consistent styling and state handling --- */}
                 <FormButton type="submit" isLoading={loading} fullWidth>
-                    Update Password
+                    {/* 6. Use translated button text */}
+                    {t('accountSettings.updatePassword.button')}
                 </FormButton>
             </form>
             {message && <p className="mt-4 text-sm text-center text-gray-600">{message}</p>}

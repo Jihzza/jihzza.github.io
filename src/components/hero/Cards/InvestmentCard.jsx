@@ -2,14 +2,11 @@
 
 import React from 'react';
 import CtaButton from '../../common/Button';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
-/**
- * A UI card for the "Invest With Me" service.
- * Handles two click behaviors: scrolling to the section and initiating a request.
- *
- * @param {function} onScheduleClick - Function to initiate the pitch deck request flow.
- */
 export default function InvestmentCard({ onScheduleClick }) {
+  const { t } = useTranslation(); // 2. Initialize hook
+
   const handleCardClick = () => {
     document.getElementById('invest-section')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -24,16 +21,17 @@ export default function InvestmentCard({ onScheduleClick }) {
       onClick={handleCardClick}
       className="bg-transparent border-2 border-[#BFA200] rounded-lg p-6 text-center flex flex-col items-center cursor-pointer"
     >
-      <h3 className="text-3xl font-bold text-white">Invest With Me</h3>
+      {/* 3. Use translation keys */}
+      <h3 className="text-3xl font-bold text-white">{t('hero.services.investment.title')}</h3>
 
       <p className="text-white my-6 text-base">
-        I'm always launching new ventures. To explore current and upcoming opportunities, request a pitch deck below.
+        {t('hero.services.investment.description')}
       </p>
 
       <div className="w-full mt-auto flex flex-col justify-center items-center">
-        <CtaButton onClick={handleButtonClick}>Request Pitch Deck</CtaButton>
+        <CtaButton onClick={handleButtonClick}>{t('hero.services.investment.button')}</CtaButton>
         <a href="#" className="inline-block mt-3 text-sm text-white">
-          Learn More
+          {t('hero.services.investment.learnMore')}
         </a>
       </div>
     </div>

@@ -5,18 +5,14 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getProfile } from '../../services/authService';
 import { submitBugReport } from '../../services/bugReportService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 import SectionTextBlack from '../../components/common/SectionTextBlack';
 import BugReportForm from '../../components/bugReport/BugReportForm';
-import Signup from '../../components/auth/Signup'; // Import the "dumb" signup form
+import Signup from '../../components/auth/Signup';
 
-/**
- * A "smart" section component that handles the logic for bug reporting.
- * - If the user is authenticated, it displays the BugReportForm.
- * - If the user is logged out, it displays a Signup form to encourage registration.
- * - It manages form submission state (loading, error, success).
- */
 export default function BugReportSection() {
+    const { t } = useTranslation(); // 2. Initialize hook
     const { user, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
@@ -24,13 +20,9 @@ export default function BugReportSection() {
     const [success, setSuccess] = useState(false);
     const [formDefaults, setFormDefaults] = useState({ name: '', email: '' });
 
-    // When the component loads, if the user is logged in, fetch their profile
-    // to pre-fill the name and email fields for a better user experience.
     useEffect(() => {
         if (isAuthenticated && user) {
-            // Set the email from the auth user object immediately.
             setFormDefaults(prev => ({ ...prev, email: user.email }));
-
             const fetchProfile = async () => {
                 const { data: profileData } = await getProfile(user.id);
                 if (profileData?.full_name) {
@@ -41,14 +33,11 @@ export default function BugReportSection() {
         }
     }, [user, isAuthenticated]);
 
-    // This handler is for the Bug Report form submission.
     const handleBugSubmit = async (formData) => {
         setIsLoading(true);
         setError(null);
         setSuccess(false);
-
         const { error: submissionError } = await submitBugReport(formData, user?.id);
-
         if (submissionError) {
             setError(submissionError.message);
         } else {
@@ -57,31 +46,28 @@ export default function BugReportSection() {
         setIsLoading(false);
     };
     
-    // This handler is for the Signup form, it is not implemented in this component,
-    // so we'll just navigate to the main signup page for a consistent experience.
     const handleSignupRequest = () => {
         navigate('/signup');
     };
 
+    // 3. Render component with translated text
     return (
         <section className="max-w-4xl mx-auto py-8 text-center">
-            <SectionTextBlack title="Help Me Improve">
-            As the website is in beta, your feedback is crucial. Please provide detailed information about any issues you've encountered to help us enhance the user experience.
+            <SectionTextBlack title={t('bugReport.title')}>
+                {t('bugReport.subtitle')}
             </SectionTextBlack>
 
             <div className="mt-8 mx-auto w-full max-w-lg bg-[#002147] p-8 rounded-lg shadow-md">
-                {/* This is the core conditional logic based on authentication state */}
                 {isAuthenticated ? (
-                    // USER IS LOGGED IN
                     success ? (
-                        // Show a success message after submission
                         <div className="text-center">
-                            <h3 className="text-xl font-bold text-green-600">Thank You!</h3>
-                            <p className="text-gray-700 mt-2">Your bug report has been submitted successfully. We appreciate your help in making our platform better.</p>
-                            <button onClick={() => setSuccess(false)} className="mt-4 text-indigo-600 hover:underline">Submit another report</button>
+                            <h3 className="text-xl font-bold text-green-400">{t('bugReport.success.title')}</h3>
+                            <p className="text-gray-300 mt-2">{t('bugReport.success.message')}</p>
+                            <button onClick={() => setSuccess(false)} className="mt-4 text-yellow-400 hover:underline">
+                                {t('bugReport.success.button')}
+                            </button>
                         </div>
                     ) : (
-                        // Show the bug report form
                         <BugReportForm
                             onSubmit={handleBugSubmit}
                             isLoading={isLoading}
@@ -89,20 +75,14 @@ export default function BugReportSection() {
                         />
                     )
                 ) : (
-                    // USER IS LOGGED OUT
                     <div>
-                        <p className="text-center text-gray-700 mb-4">
-                            To report a bug, please create an account first. This helps us track issues and follow up with you.
+                        <p className="text-center text-gray-300 mb-4">
+                            {t('bugReport.loggedOut.message')}
                         </p>
-                        {/* We pass a dummy onSubmit to the Signup component. 
-                          A better approach for a truly embedded signup would be to implement the full signup logic here,
-                          but for simplicity and to reuse the main signup page's logic, we can just use it as a visual placeholder
-                          that encourages the user to go to the real signup page.
-                        */}
                         <Signup onSubmit={handleSignupRequest} isLoading={false} />
                     </div>
                 )}
-                {error && <p className="mt-4 text-sm text-red-600 text-center">{error}</p>}
+                {error && <p className="mt-4 text-sm text-red-500 text-center">{error}</p>}
             </div>
         </section>
     );

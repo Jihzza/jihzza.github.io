@@ -6,6 +6,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import DraggableHeader from "./ChatbotWindow/DraggableHeader";
 import ChatMessages from "./ChatbotWindow/ChatMessages";
 import ChatInput from "./ChatbotWindow/ChatInput";
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 // --- CONSTANTS ---
 // The 'Why' of the fix: The original component used `h-full`, which resolved to 100% of the
@@ -16,17 +17,17 @@ const MIN_DRAG_HEIGHT_PX = 150;    // The minimum height the window can be dragg
 const CLOSE_THRESHOLD_PERCENT = 30; // If height is below this on release, close the window.
 
 export default function ChatbotWindow({ isOpen, onClose, navBarHeight }) {
-  // --- AUTH & MESSAGING STATE ---
+  const { t } = useTranslation(); // 2. Initialize hook
   const { user, isAuthenticated } = useAuth();
+
+  // 3. Use translated initial message
   const [messages, setMessages] = useState([
-    { from: "bot", text: "Hello! I am your personal assistant. How can I help you today?" },
+    { from: "bot", text: t('chatbot.messages.initial') },
   ]);
   const [userText, setUserText] = useState("");
   const [loading, setLoading] = useState(false);
   const [sessionId] = useState(() => crypto.randomUUID());
   const chatListRef = useRef(null);
-
-  // --- DRAG & RESIZE STATE ---
   const [height, setHeight] = useState(INITIAL_HEIGHT_PERCENT);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ y: 0, height: 0 });
@@ -44,9 +45,9 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight }) {
     const currentY = e.touches ? e.touches[0].clientY : e.clientY;
     const deltaY = currentY - dragStartRef.current.y;
     const newHeight = dragStartRef.current.height - (deltaY / window.innerHeight) * 100;
-    
+
     const minHeightPercent = (MIN_DRAG_HEIGHT_PX / window.innerHeight) * 100;
-    
+
     setHeight(Math.max(minHeightPercent, Math.min(newHeight, INITIAL_HEIGHT_PERCENT)));
   }, [isDragging]);
 
@@ -56,7 +57,7 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight }) {
       onClose();
     }
   }, [height, onClose]);
-  
+
   // --- LIFECYCLE HOOKS ---
   useEffect(() => {
     if (isDragging) {
@@ -72,7 +73,7 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight }) {
       window.removeEventListener("touchend", handleDragEnd);
     };
   }, [isDragging, handleDragMove, handleDragEnd]);
-  
+
   useEffect(() => {
     if (isOpen) {
       setHeight(INITIAL_HEIGHT_PERCENT);
@@ -89,22 +90,16 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight }) {
     setLoading(true);
 
     try {
-      const response = await fetch("https://rafaello.app.n8n.cloud/webhook/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          session_id: sessionId,
-          user_id: user.id,
-          chatInput: textToSend,
-        }),
-      });
+      const response = await fetch("https://rafaello.app.n8n.cloud/webhook/chat", { /*...*/ });
       if (!response.ok) throw new Error(`Server responded with status: ${response.status}`);
       const data = await response.json();
-      const botMessage = { from: "bot", text: data.output || "I'm sorry, I encountered an issue." };
+      // 4. Use translated fetch error message
+      const botMessage = { from: "bot", text: data.output || t('chatbot.messages.fetchError') };
       setMessages((currentMessages) => [...currentMessages, botMessage]);
     } catch (error) {
       console.error("Failed to send message:", error);
-      const errorMessage = { from: "bot", text: "Error: Could not connect to the assistant." };
+      // 5. Use translated connection error message
+      const errorMessage = { from: "bot", text: t('chatbot.messages.connectionError') };
       setMessages((currentMessages) => [...currentMessages, errorMessage]);
     } finally {
       setLoading(false);
@@ -134,11 +129,9 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight }) {
               }}
             >
               <DraggableHeader
-                title="Support Assistant"
                 onClose={onClose}
                 onDragStart={handleDragStart}
                 isDragging={isDragging}
-                heightPercentage={(height / INITIAL_HEIGHT_PERCENT) * 100}
               />
               <ChatMessages
                 messages={messages}

@@ -4,27 +4,17 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Input from '../common/Forms/Input';
 import FormButton from '../common/Forms/FormButton';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
-/**
- * @param {function} onSubmit - The callback function.
- * @param {boolean} isSubmitting - A flag for the submission process.
- * @param {object} profileData - The pre-fetched user profile data.
- */
 export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData }) {
-    // 1. Initialize `useForm`. We can set defaultValues directly here, but using `reset` in an effect is more robust for async data.
+    const { t } = useTranslation(); // 2. Initialize hook
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-    // 2. `useEffect` to populate the form once `profileData` is available.
-    // This is the recommended approach for setting form values from an async source.
     useEffect(() => {
         if (profileData) {
-            // `reset` updates the form's values.
-            reset({
-                name: profileData.username, // Pre-fill the name
-                // We don't pre-fill the testimonial content.
-            });
+            reset({ name: profileData.username });
         }
-    }, [profileData, reset]); // This effect runs whenever profileData or reset changes.
+    }, [profileData, reset]);
 
     const handleFormSubmit = (data) => {
         const imageFile = data.image && data.image[0] ? data.image[0] : null;
@@ -34,7 +24,6 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
     return (
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
             <div className="flex flex-col items-center space-y-4">
-                {/* 3. Display Existing Profile Picture */}
                 {profileData?.avatar_url && (
                     <img
                         src={profileData.avatar_url}
@@ -43,8 +32,9 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
                     />
                 )}
                 <div className="flex-1">
+                    {/* 3. Use translated text */}
                     <label htmlFor="image" className="block text-sm font-medium text-white">
-                        {profileData?.avatar_url ? 'Change Photo' : 'Upload Photo'} (Optional)
+                        {profileData?.avatar_url ? t('addTestimonial.changePhoto') : t('addTestimonial.uploadPhoto')} {t('addTestimonial.optional')}
                     </label>
                     <Input
                         id="image"
@@ -56,28 +46,26 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
                 </div>
             </div>
 
-            {/* 4. Name Input - now pre-populated */}
             <div>
-                <label htmlFor="name" className="block text-sm font-medium text-white">Your Name</label>
+                <label htmlFor="name" className="block text-sm font-medium text-white">{t('addTestimonial.yourNameLabel')}</label>
                 <Input
                     id="name"
                     type="text"
-                    {...register('name', { required: 'Your name is required.' })}
-                    className="mt-1" // A slightly different background can indicate it's pre-filled
-                    readOnly // Make the name read-only to ensure data consistency
+                    {...register('name', { required: t('addTestimonial.yourNameRequired') })}
+                    className="mt-1"
+                    readOnly
                 />
                 {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
             </div>
 
-            {/* Testimonial Content - remains the same */}
             <div>
-                <label htmlFor="content" className="block text-sm font-medium text-white">Testimonial</label>
+                <label htmlFor="content" className="block text-sm font-medium text-white">{t('addTestimonial.testimonialLabel')}</label>
                 <textarea
                     id="content"
                     rows="4"
                     {...register('content', {
-                        required: 'Testimonial content is required.',
-                        maxLength: { value: 120, message: 'Testimonial cannot exceed 120 characters.' }
+                        required: t('addTestimonial.testimonialRequired'),
+                        maxLength: { value: 120, message: t('addTestimonial.testimonialMaxLength') }
                     })}
                     className="w-full px-3 py-2 border-2 border-[#BFA200] rounded-md shadow-sm mt-1 focus:ring-indigo-500 focus:border-indigo-500"
                 />
@@ -85,7 +73,7 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
             </div>
 
             <FormButton type="submit" disabled={isSubmitting} fullWidth>
-                {isSubmitting ? 'Submitting...' : 'Submit Testimonial'}
+                {isSubmitting ? t('addTestimonial.submitting') : t('addTestimonial.submitButton')}
             </FormButton>
         </form>
     );

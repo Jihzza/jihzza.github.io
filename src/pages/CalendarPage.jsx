@@ -4,71 +4,64 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getAppointmentsByUserId } from '../services/appointmentService';
 import { isSameDay, parseISO, format } from 'date-fns';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 // --- COMPONENT IMPORTS ---
 import SectionTextWhite from '../components/common/SectionTextWhite';
 import ProfileSectionLayout from '../components/profile/ProfileSectionLayout';
-// --- CHANGE: Import the new AppointmentCalendar ---
 import AppointmentCalendar from '../components/calendar/AppointmentCalendar';
 import ConsultationList from '../components/calendar/ConsultationList';
 import Button from '../components/common/Button';
 
-/**
- * Displays a user's scheduled consultations with a top-down calendar and list view.
- */
 export default function CalendarPage() {
-    // --- STATE MANAGEMENT ---
+    const { t } = useTranslation(); // 2. Initialize hook
     const { user } = useAuth();
     const [allAppointments, setAllAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
 
-    // --- DATA FETCHING (Remains here as the source of truth) ---
     useEffect(() => {
         const loadAppointments = async () => {
             if (!user) return;
             setLoading(true);
             try {
-                // Fetch all appointments for the user.
                 const { data, error: fetchError } = await getAppointmentsByUserId(user.id);
                 if (fetchError) throw fetchError;
                 setAllAppointments(data || []);
             } catch (err) {
-                setError("We couldn't load your appointments.");
+                // 3. Use translated error message
+                setError(t('calendar.error'));
             } finally {
                 setLoading(false);
             }
         };
         loadAppointments();
-    }, [user]);
+    }, [user, t]); // Add 't' to dependency array
 
-    // --- DERIVED STATE & MEMOIZATION ---
     const filteredAppointments = useMemo(() => {
         if (!selectedDate) return allAppointments;
-        // The date parsing is now done here before comparison.
         return allAppointments.filter(app => isSameDay(parseISO(app.appointment_date), selectedDate));
     }, [allAppointments, selectedDate]);
 
+    // 4. Use translated titles, with interpolation for the date
     const listTitle = useMemo(() => {
-        if (selectedDate) return `Appointments for ${format(selectedDate, 'PPP')}`;
-        return 'All Appointments';
-    }, [selectedDate]);
+        if (selectedDate) return t('calendar.listTitleForDate', { date: format(selectedDate, 'PPP') });
+        return t('calendar.listTitleAll');
+    }, [selectedDate, t]);
 
-    // --- RENDER LOGIC ---
     return (
         <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] min-h-screen">
             <ProfileSectionLayout>
-                <SectionTextWhite title="My Consultations">
-                    View and manage your scheduled appointments.
+                {/* 5. Use translated title and subtitle */}
+                <SectionTextWhite title={t('calendar.pageTitle')}>
+                    {t('calendar.pageSubtitle')}
                 </SectionTextWhite>
-                {loading && <p className="text-center text-gray-500">Loading...</p>}
+                {loading && <p className="text-center text-gray-500">{t('calendar.loading')}</p>}
                 {error && <p className="text-center text-red-500">{error}</p>}
 
                 {!loading && !error && (
                     <div className="flex flex-col space-y-6">
-
-                        {/* --- CHANGE: Use the new AppointmentCalendar component --- */}
                         <AppointmentCalendar
                             appointments={allAppointments}
                             selectedDate={selectedDate}
@@ -80,7 +73,8 @@ export default function CalendarPage() {
                                 onClick={() => setSelectedDate(null)}
                                 className="self-center"
                             >
-                                Show All Appointments
+                                {/* 6. Use translated button text */}
+                                {t('calendar.showAllButton')}
                             </Button>
                         )}
 
@@ -88,7 +82,6 @@ export default function CalendarPage() {
                             appointments={filteredAppointments}
                             title={listTitle}
                         />
-
                     </div>
                 )}
             </ProfileSectionLayout>

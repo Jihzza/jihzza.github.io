@@ -1,16 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import BotIcon from '../../../assets/icons/DaGalow Branco.svg';
+// src/components/chatbot/ChatbotWindow/ChatMessages.jsx
 
-/**
- * ChatMessages component for displaying conversation messages
- * Handles auto-scrolling to bottom and loading states
- * * @param {Object} props - Component props
- * @param {Array} props.messages - Array of message objects
- * @param {boolean} props.loading - Whether a message is being sent
- * @param {React.RefObject} props.scrollRef - Ref for the scroll container
- */
+import React, { useEffect } from 'react';
+import BotIcon from '../../../assets/icons/DaGalow Branco.svg';
+import { useTranslation } from 'react-i18next'; // 1. Import hook
+
 export default function ChatMessages({ messages, loading, scrollRef }) {
-  // Auto-scroll to bottom when new messages arrive
+  const { t } = useTranslation(); // 2. Initialize hook
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -18,50 +14,26 @@ export default function ChatMessages({ messages, loading, scrollRef }) {
   }, [messages, scrollRef]);
 
   return (
-    <div 
-      ref={scrollRef}
-      className="flex-1 py-2 overflow-y-auto"
-    >
-      {/* Messages List */}
+    <div ref={scrollRef} className="flex-1 py-2 overflow-y-auto">
       {messages.map((message, index) => (
-        <div 
-          key={index} 
-          className={`flex ${
-            message.from === 'user' ? 'justify-end' : 'justify-start'
-          } mb-4`}
-        >
-          <div className={`w-full p-4 flex items-start gap-2 ${
-            message.from === 'user'
-              ? 'justify-end'
-              : 'bg-[#333333]/70'
-          }`}>
-            
-            {/* Bot Avatar - Only show for bot messages */}
+        <div key={index} className={`flex ${message.from === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+          <div className={`w-full p-4 flex items-start gap-2 ${message.from === 'user' ? 'justify-end' : 'bg-[#333333]/70'}`}>
             {message.from === 'bot' && (
               <img
                 src={BotIcon}
-                alt="Bot Avatar"
+                alt={t('chatbot.messages.avatarAlt')} // 3. Use translated alt text
                 className="w-6 h-6 flex-shrink-0"
               />
             )}
-
-            {/* Message Text */}
-            <span className="text-white leading-relaxed">
-              {message.text}
-            </span>
+            <span className="text-white leading-relaxed">{message.text}</span>
           </div>
         </div>
       ))}
       
-      {/* Loading Indicator */}
       {loading && (
         <div className="flex justify-start mb-4">
           <div className="w-full px-3 py-2 flex items-center gap-2 bg-[#333333]/70 rounded-lg">
-            <img 
-              src={BotIcon} 
-              alt="Bot Avatar" 
-              className="w-6 h-6"
-            />
+            <img src={BotIcon} alt={t('chatbot.messages.avatarAlt')} className="w-6 h-6" />
             <div className="flex gap-1">
               <div className="w-2 h-2 bg-[#bfa200] rounded-full animate-bounce" />
               <div className="w-2 h-2 bg-[#bfa200] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />

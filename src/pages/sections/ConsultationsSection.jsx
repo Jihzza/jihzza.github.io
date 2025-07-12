@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
 import SectionText from '../../components/common/SectionTextWhite';
 import ServicesDetailBlock from '../../components/ServiceSections/ServicesDetailBlock';
-import ExpandableGrid from '../../components/common/ExpandableGrid'; // 1. Import the new component
+import ExpandableGrid from '../../components/common/ExpandableGrid';
 import StickyButton from '../../components/common/StickyButton';
+import { useTranslation } from 'react-i18next';
 
-// ICONS IMPORT
+// ICONS (Imports remain the same)
 import MindsetIcon from '../../assets/icons/Brain Branco.svg';
 import SocialMediaIcon from '../../assets/icons/Phone Branco.svg';
 import FinanceIcon from '../../assets/icons/MoneyBag Branco.svg';
@@ -15,85 +16,77 @@ import HealthIcon from '../../assets/icons/Fitness Branco.svg';
 import OnlyFansIcon from '../../assets/icons/OnlyFans Branco.svg';
 import AITechIcon from '../../assets/icons/Robot Branco.svg';
 import LifeAdviceIcon from '../../assets/icons/More Branco.svg';
-
 import Face2FaceIcon from '../../assets/icons/Face2Face Preto.svg';
 import DurationIcon from '../../assets/icons/Clock Preto.svg';
 import RecordingIcon from '../../assets/icons/Microphone Preto.svg';
 import FollowUpEmailIcon from '../../assets/icons/Email Preto.svg';
 import FollowUpConsultationIcon from '../../assets/icons/FollowUp Preto.svg';
 
-// Data remains the same
-const consultationTypes = [
-    { id: 1, icon: MindsetIcon, title: 'Mindset & Psychology', description: 'Unlock the power of your mind. Our Mindset & Psychology service provides you with tools and strategies to overcome limiting beliefs, enhance mental resilience, and cultivate a growth mindset. Achieve clarity, focus, and emotional balance to excel in all areas of your life..' },
-    { id: 2, icon: SocialMediaIcon, title: 'Social Media Growth', description: 'Amplify your online presence. We\'ll help you craft a winning social media strategy, create engaging content, and grow your audience effectively. This description is a bit longer to test how the animation handles varying text lengths and ensure smoothness.' },
-    { id: 3, icon: FinanceIcon, title: 'Finance & Wealth', description: 'Take control of your financial future. Learn sound investment principles, budgeting techniques, and wealth-building strategies tailored to your goals.' },
-    { id: 4, icon: MarketingIcon, title: 'Marketing & Sales', description: 'Boost your brand and sales. We offer expert marketing strategies, from digital campaigns to traditional outreach, to help you reach your target audience.' },
-    { id: 5, icon: BusinessIcon, title: 'Business Building', description: 'Turn your vision into reality. Get guidance on business planning, operational efficiency, and scaling your venture for sustainable success. Another longer description to check the animation smoothness when content varies significantly. This should push the items below down further, and the animation should remain fluid throughout the entire expansion and contraction process without any jerks or hard breaks, especially near the end of the animation sequence.' },
-    { id: 6, icon: RelationshipsIcon, title: 'Relationships', description: 'Fster deeper connections. Improve communication, build stronger bonds, and navigate relationship challenges with expert advice..' },
-    { id: 7, icon: HealthIcon, title: 'Health & Fitness', description: 'Achieve your peak physical condition. Personalized fitness plans, nutritional guidance, and motivational support to help you reach your health goals.' },
-    { id: 8, icon: OnlyFansIcon, title: 'OnlyFans', description: 'Maximize your OnlyFans success. Strategies for content creation, promotion, and subscriber engagement to boost your earnings.' },
-    { id: 9, icon: AITechIcon, title: 'AI & Tech', description: 'Leverage cutting-edge technology. Explore how AI and other tech solutions can optimize your business and personal productivity.' },
-    { id: 10, icon: LifeAdviceIcon, title: 'Life Advice', description: 'Have other needs? Let\'s discuss! We offer a wide range of consulting services and can tailor solutions to your unique challenges. This is a final test case with a medium length description.' },
-];
-
-const consultationDetails = [
-    { icon: Face2FaceIcon, title: 'Face-to-Face Video Call', description: 'Our consultations take place via video call, allowing us to connect personally. You\'ll be able to see me throughout the session, creating a more engaging and personal experience.' },
-    { icon: DurationIcon, title: 'Minimum 45-Minute Sessions', description: 'Each consultation lasts a minimum of 45 minutes, ensuring we have adequate time to explore your concerns in depth and develop meaningful insights and action plans.' },
-    { icon: RecordingIcon, title: 'Session Recordings', description: 'Join a one-on-one video call to discuss your challenges and opportunities.' },
-    { icon: FollowUpEmailIcon, title: 'Follow-up Email', description: 'After your session, you\'ll receive a personalized follow-up email summarizing key points and next steps, ensuring you stay on track.' },
-    { icon: FollowUpConsultationIcon, title: 'Follow-up Consultation', description: 'Book a follow-up consultation to review your progress, address new challenges, and receive continued support on your journey.' },
-];
-
-const buttonTextMap = {
-    1: "Transform Your Mindset - 90€/h",
-    2: "Boost Your Social Media - 90€/h",
-    3: "Master Your Finances - 90€/h",
-    4: "Elevate Your Marketing - 90€/h",
-    5: "Build Your Business - 90€/h",
-    6: "Improve Relationships - 90€/h",
-    7: "Achieve Fitness Goals - 90€/h",
-    8: "Grow on OnlyFans - 90€/h",
-    9: "Leverage AI & Tech - 90€/h",
-    10: "Life Advices - 90€/h",
-};
-
-
 export default function ConsultationsSection({ onBookConsultation }) {
+    const { t } = useTranslation();
     const sectionRef = useRef(null);
-
     const [selectedConsultation, setSelectedConsultation] = useState(null);
+
+    // --- DATA MAPPING ---
+    // We map icons to the translated data since icons can't be in JSON.
+    const consultationTypeIcons = [MindsetIcon, SocialMediaIcon, FinanceIcon, MarketingIcon, BusinessIcon, RelationshipsIcon, HealthIcon, OnlyFansIcon, AITechIcon, LifeAdviceIcon];
+    const consultationDetailIcons = [Face2FaceIcon, DurationIcon, RecordingIcon, FollowUpEmailIcon, FollowUpConsultationIcon];
+
+    // Load data from i18n and map icons/IDs
+    const consultationTypes = t('consultations.types', { returnObjects: true }).map((type, index) => ({
+        ...type,
+        id: index + 1,
+        icon: consultationTypeIcons[index]
+    }));
+
+    const consultationDetails = t('consultations.details', { returnObjects: true }).map((detail, index) => ({
+        ...detail,
+        icon: consultationDetailIcons[index]
+    }));
+
+    // --- BUTTON TEXT TRANSLATION ---
+    // 1. Define the keys for the buttons in the order they appear.
+    const buttonKeys = ["mindset", "social", "finance", "marketing", "business", "relationships", "health", "onlyfans", "ai", "life"];
+    
+    // 2. Create a map from the consultation ID (1, 2, 3...) to the translated button text.
+    //    e.g., { 1: "Transforma Tu Mentalidad - 90€/h", 2: "Impulsa Tus Redes Sociales - 90€/h", ... }
+    const buttonTextMap = buttonKeys.reduce((acc, key, index) => {
+        acc[index + 1] = t(`consultations.buttons.${key}`);
+        return acc;
+    }, {});
 
     const handleConsultationSelect = (item) => {
         setSelectedConsultation(item);
     };
 
+    // 3. Determine the button text. If a consultation is selected, use the map.
+    //    Otherwise, use the default translated text.
     const buttonText = selectedConsultation
-    ? buttonTextMap[selectedConsultation.id]
-    : "Book a Consultation - 90€/h";
+        ? buttonTextMap[selectedConsultation.id]
+        : t('consultations.buttons.default');
 
-return (
-    <section ref={sectionRef} className="max-w-4xl mx-auto py-4">
-        <SectionText title="How I Can Help You">
-            Whether you need guidance on mindset, social media growth, finance, marketing, business building, or relationships – I cover it all.
-        </SectionText>
+    return (
+        <section ref={sectionRef} id="consultations-section" className="max-w-4xl mx-auto py-4">
+            <SectionText title={t('consultations.title')}>
+                {t('consultations.subtitle')}
+            </SectionText>
 
-        {/* We pass our handler function down to the grid as the `onItemSelected` prop. */}
-        <ExpandableGrid
-            items={consultationTypes}
-            onItemSelected={handleConsultationSelect}
-        />
+            <ExpandableGrid
+                items={consultationTypes}
+                onItemSelected={handleConsultationSelect}
+            />
 
-        {/* The rest of your section content (no changes needed) */}
-        <div className="mt-10 space-y-8">
-            {consultationDetails.map((detail) => (
-                <ServicesDetailBlock key={detail.title} {...detail} />
-            ))}
-        </div>
+            <div className="mt-10 space-y-8">
+                {consultationDetails.map((detail) => (
+                    // Pass a unique key for React's rendering
+                    <ServicesDetailBlock key={detail.title} {...detail} />
+                ))}
+            </div>
 
-        {/* The StickyButton now receives the dynamic `buttonText` as its child. */}
-        <StickyButton containerRef={sectionRef} onClick={onBookConsultation}>
-            {buttonText}
-        </StickyButton>
-    </section>
-);
+            {/* 4. The StickyButton now displays the fully translated, dynamic text. */}
+            <StickyButton containerRef={sectionRef} onClick={() => onBookConsultation(selectedConsultation)}>
+                {buttonText}
+            </StickyButton>
+        </section>
+    );
 }

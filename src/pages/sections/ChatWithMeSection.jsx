@@ -1,54 +1,34 @@
 // src/pages/sections/ChatWithMeSection.jsx
 
 import React from 'react';
-
-// --- COMPONENT IMPORTS ---
-// We import our reusable components to build the section.
 import SectionTextBlack from '../../components/common/SectionTextBlack';
 import Button from '../../components/common/Button';
-import InfoBlock from '../../components/common/InfoBlock'; // Our new component.
-
-// --- ASSET IMPORTS ---
-// We import the icon needed for this section.
-// IMPORTANT: You will need to replace 'ChatIconBlack.svg' with the actual filename
-// of the icon you have in your 'src/assets/icons/' folder.
+import InfoBlock from '../../components/common/InfoBlock';
 import ChatIcon from '../../assets/icons/Dagalow Preto.svg';
+import { useTranslation } from 'react-i18next'; // 1. Import the hook
 
-/**
- * A dedicated section that invites the user to chat.
- * This component structures the content using reusable child components.
- */
 export default function ChatWithMeSection() {
-  // RENDER LOGIC
+  const { t } = useTranslation(); // 2. Initialize the hook
+
   return (
-    // The <section> tag is semantically correct for a content block.
-    // - `max-w-4xl mx-auto`: Constrains width and centers the section.
-    // - `py-8`: Provides vertical padding.
-    // - `text-center`: Ensures all text elements default to center alignment.
-    // - `space-y-8`: Adds consistent vertical spacing between all direct children.
-    <section className="max-w-4xl mx-auto py-8 text-center space-y-6">
-
-      {/* 1. SECTION TITLE */}
-      {/* We use the existing component for a consistent look. */}
-      <SectionTextBlack title="Smart Assistance: Our AI Chatbot">
-        {/* Children of SectionTextBlack are used for the subtitle. */}
-        Our AI assistant helps you find the right services and prepares us for your consultations, saving you time and money.
-
+    <section className="max-w-4xl mx-auto py-8 text-center space-y-6" id="chat-section">
+      
+      {/* 3. Use translated text for the title and subtitle */}
+      <SectionTextBlack title={t('chatWithMe.title')}>
+        {t('chatWithMe.subtitle')}
       </SectionTextBlack>
 
-      {/* 2. CENTRAL INFO BLOCK */}
-      {/* Here we use our new InfoBlock component. */}
+      {/* 4. Use translated text for the InfoBlock props and content */}
       <InfoBlock
         iconSrc={ChatIcon}
-        altText="Chat bubble icon"
+        altText={t('chatWithMe.iconAltText')}
       >
-        Chatbot Icon
+        {t('chatWithMe.iconLabel')}
       </InfoBlock>
-
-      {/* 3. CALL-TO-ACTION BUTTON */}
-      {/* We reuse the primary Button component. */}
+      
+      {/* 5. Use translated text for the button */}
       <div className="w-full flex justify-center">
-        <Button>Chatbot</Button>
+        <Button>{t('chatWithMe.buttonText')}</Button>
       </div>
 
     </section>
