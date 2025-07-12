@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import SectionText from '../../components/common/SectionTextWhite';
 import ServicesDetailBlock from '../../components/ServiceSections/ServicesDetailBlock';
 import ExpandableGrid from '../../components/common/ExpandableGrid'; // 1. Import the new component
@@ -44,31 +44,56 @@ const consultationDetails = [
     { icon: FollowUpConsultationIcon, title: 'Follow-up Consultation', description: 'Book a follow-up consultation to review your progress, address new challenges, and receive continued support on your journey.' },
 ];
 
+const buttonTextMap = {
+    1: "Transform Your Mindset - 90€/h",
+    2: "Boost Your Social Media - 90€/h",
+    3: "Master Your Finances - 90€/h",
+    4: "Elevate Your Marketing - 90€/h",
+    5: "Build Your Business - 90€/h",
+    6: "Improve Relationships - 90€/h",
+    7: "Achieve Fitness Goals - 90€/h",
+    8: "Grow on OnlyFans - 90€/h",
+    9: "Leverage AI & Tech - 90€/h",
+    10: "Life Advices - 90€/h",
+};
 
 
 export default function ConsultationsSection({ onBookConsultation }) {
     const sectionRef = useRef(null);
 
-    return (
-        <section ref={sectionRef} className="max-w-4xl mx-auto py-4">
-            <SectionText title="How I Can Help You">
-                Whether you need guidance on mindset, social media growth, finance, marketing, business building, or relationships – I cover it all.
-            </SectionText>
+    const [selectedConsultation, setSelectedConsultation] = useState(null);
 
-            {/* We render our smart component and pass it the data. It handles all complexity internally. */}
-            <ExpandableGrid items={consultationTypes} />
+    const handleConsultationSelect = (item) => {
+        setSelectedConsultation(item);
+    };
 
-            {/* The rest of your section content */}
-            <div className="mt-10 space-y-8">
-                {consultationDetails.map((detail) => (
-                    <ServicesDetailBlock key={detail.title} {...detail} />
-                ))}
-            </div>
+    const buttonText = selectedConsultation
+    ? buttonTextMap[selectedConsultation.id]
+    : "Book a Consultation - 90€/h";
 
-            {/* Sticky Button */}
-            <StickyButton containerRef={sectionRef} onClick={onBookConsultation}>
-                Book a Consultation
-            </StickyButton>
-        </section>
-    );
+return (
+    <section ref={sectionRef} className="max-w-4xl mx-auto py-4">
+        <SectionText title="How I Can Help You">
+            Whether you need guidance on mindset, social media growth, finance, marketing, business building, or relationships – I cover it all.
+        </SectionText>
+
+        {/* We pass our handler function down to the grid as the `onItemSelected` prop. */}
+        <ExpandableGrid
+            items={consultationTypes}
+            onItemSelected={handleConsultationSelect}
+        />
+
+        {/* The rest of your section content (no changes needed) */}
+        <div className="mt-10 space-y-8">
+            {consultationDetails.map((detail) => (
+                <ServicesDetailBlock key={detail.title} {...detail} />
+            ))}
+        </div>
+
+        {/* The StickyButton now receives the dynamic `buttonText` as its child. */}
+        <StickyButton containerRef={sectionRef} onClick={onBookConsultation}>
+            {buttonText}
+        </StickyButton>
+    </section>
+);
 }

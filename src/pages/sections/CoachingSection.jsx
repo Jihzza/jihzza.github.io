@@ -43,6 +43,17 @@ const tiers = [
     { id: 'premium', price: 230, planName: 'Premium', billingCycle: 'm', planDesc: 'Answer to all questions ASAP' },
   ];
 
+const buttonTextMap ={
+    1: "Start Investing Smarter",
+    2: "Get Your Fitness Plan",
+    3: "Enhance Your Dating Life",
+    4: "Boost Your Onlyfans",
+    5: "Advice Your Business",
+    6: "Build Better Habits",
+    7: "Excel on Social Media",
+    8: "Navigate the Stock Market",
+}
+
   export default function CoachingSection({ onBookCoaching }) {
     const sectionRef = useRef(null);
 
@@ -50,22 +61,31 @@ const tiers = [
     // The state for the selected plan now lives in this parent component.
     // It is the single source of truth.
     const [selectedPlanId, setSelectedPlanId] = useState(null);
+    // New: Track selected coaching type card
+    const [selectedCoachingType, setSelectedCoachingType] = useState(null);
 
     // --- DERIVED STATE ---
     // The details of the selected tier and the button text are derived from the
     // state on every render, ensuring the UI is always consistent.
     const selectedTier = tiers.find(tier => tier.id === selectedPlanId);
-    const buttonText = selectedTier
-        ? `Get My Number - ${selectedTier.price}€/${selectedTier.billingCycle}`
-        : 'Select a Plan';
+    // New: Button text logic based on selected card
+    let buttonText = 'Select a Coaching Type';
+    if (selectedCoachingType) {
+        buttonText = buttonTextMap[selectedCoachingType.id];
+        if (selectedTier) {
+            buttonText += ` - ${selectedTier.price}€/${selectedTier.billingCycle}`;
+        }
+    }
 
     // --- EVENT HANDLER ---
     const handleBookClick = () => {
-        // Only proceed if a tier is selected
-        if (selectedTier) {
-            // When the button is clicked, we pass the full details of the
-            // currently selected tier up to the parent (e.g., HomePage).
-            onBookCoaching(selectedTier);
+        // Only proceed if both a card and a tier are selected
+        if (selectedCoachingType && selectedTier) {
+            // Pass both selected type and tier up if needed
+            onBookCoaching({
+                coachingType: selectedCoachingType,
+                tier: selectedTier
+            });
         }
     }
 
@@ -76,7 +96,8 @@ const tiers = [
                 Personalized coaching to help you excel in specific areas of your life. Get direct access to expert guidance tailored to your unique situation and goals.
             </SectionText>
 
-            <ExpandableGrid items={coachingTypes} />
+            {/* Pass handler to ExpandableGrid for card selection */}
+            <ExpandableGrid items={coachingTypes} onItemSelected={setSelectedCoachingType} />
 
             <div className="mt-10 space-y-8">
                 {coachingDetails.map((detail) => (
@@ -89,12 +110,7 @@ const tiers = [
                 ))}
             </div>
 
-            {/*
-              The TierCards component is now "controlled".
-              1. `tiers`: We pass the data it needs to render.
-              2. `selectedPlanId`: We tell it which tier is currently active.
-              3. `onTierSelect`: We give it the function to call when the user selects a new tier.
-            */}
+            {/* The TierCards component is now "controlled". */}
             <TierCards
                 tiers={tiers}
                 selectedPlanId={selectedPlanId}
@@ -102,7 +118,7 @@ const tiers = [
             />
 
             {/* The StickyButton's text is now dynamic, derived from the state. */}
-            <StickyButton containerRef={sectionRef} onClick={handleBookClick}>
+            <StickyButton containerRef={sectionRef} onClick={handleBookClick} disabled={!(selectedCoachingType && selectedTier)}>
                 {buttonText}
             </StickyButton>
         </section>

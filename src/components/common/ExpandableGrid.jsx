@@ -1,3 +1,4 @@
+// src/components/common/ExpandableGrid.jsx
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ServicesTypeBox from '../ServiceSections/ServicesTypeBox';
@@ -18,9 +19,10 @@ const chunk = (arr = [], size = 1) => {
 /**
  * A smart, responsive, and expandable grid component with smooth animations.
  * @param {Array<Object>} items - The array of data for the grid.
+ * @param {function(Object | null): void} [onItemSelected] - Optional: A callback that fires when an item is selected or deselected.
  */
-export default function ExpandableGrid({ items = [] }) {
-  // State to track the ID of the currently expanded item.
+export default function ExpandableGrid({ items = [], onItemSelected }) {
+  // State to track the ID of the currently expanded item for visual purposes.
   const [selectedId, setSelectedId] = useState(null);
   const { width } = useWindowSize();
 
@@ -34,16 +36,31 @@ export default function ExpandableGrid({ items = [] }) {
   // Memoized chunking of items into rows.
   const rows = useMemo(() => chunk(items, columns), [items, columns]);
 
-  // Handler to toggle the selected item.
+  // --- MODIFICATION IS HERE ---
+  /**
+   * Handles the click on a service box.
+   * It toggles the internal state for the expansion animation AND
+   * calls the onItemSelected prop to notify the parent component of the change.
+   * @param {number} id - The ID of the clicked item.
+   */
   const handleBoxClick = (id) => {
-    setSelectedId((prevId) => (prevId === id ? null : id));
+    // Determine if we are selecting a new item or deselecting the current one.
+    const newSelectedId = selectedId === id ? null : id;
+    setSelectedId(newSelectedId);
+
+    // If the parent component provided the onItemSelected callback, call it.
+    if (onItemSelected) {
+      // Find the full item object that corresponds to the new ID.
+      const selectedItem = newSelectedId ? items.find((item) => item.id === newSelectedId) : null;
+      // Pass the entire selected item (or null if deselected) back to the parent.
+      onItemSelected(selectedItem);
+    }
   };
 
-  // Find the full object for the selected item.
+  // Find the full object for the selected item to display its description.
   const selectedItem = selectedId ? items.find((item) => item.id === selectedId) : null;
 
-  // --- Animation Variants for the description ---
-  // This defines the states for our animation.
+  // Animation variants for the description panel.
   const descriptionVariants = {
     hidden: { opacity: 0, height: 0, transition: { duration: 0.3, ease: 'easeInOut' } },
     visible: { opacity: 1, height: 'auto', transition: { duration: 0.5, ease: 'easeInOut' } }
@@ -63,17 +80,18 @@ export default function ExpandableGrid({ items = [] }) {
                   key={item.id}
                   {...item} // Spread the item properties as props.
                   isSelected={selectedId === item.id}
+                  // The onClick handler is now smarter.
                   onClick={() => handleBoxClick(item.id)}
                 />
               ))}
             </motion.div>
 
-            {/* THE EXPANDABLE CONTENT */}
+            {/* THE EXPANDABLE CONTENT (No changes needed here) */}
             <AnimatePresence>
               {isRowSelected && (
                 <motion.div
-                  key="description" // A unique key is required for AnimatePresence.
-                  className="overflow-hidden" // Prevents content spillover.
+                  key="description"
+                  className="overflow-hidden"
                   variants={descriptionVariants}
                   initial="hidden"
                   animate="visible"
