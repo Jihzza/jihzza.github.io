@@ -56,8 +56,8 @@ export default function StickyButton({ containerRef, onClick, children, classNam
   return (
     <div
       className={`
-        sticky bottom-[70px] w-full flex justify-center z-30
-        transition-all duration-500 ease-in-out
+        sticky bottom-[70px] w-full flex justify-center z-10
+        transition-all duration-200 ease-in-out
         ${isVisible ? 'opacity-100 translate-y-5' : 'opacity-0 translate-y-5 pointer-events-none'}
         ${className || ''}
       `}

@@ -1,80 +1,92 @@
 // src/components/testimonials/AddTestimonialForm.jsx
 
-// This is a "dumb" component that renders the form for creating a testimonial.
-// It uses react-hook-form for efficient state management and validation.
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Input from '../common/Forms/Input';
 import FormButton from '../common/Forms/FormButton';
 
 /**
- * @param {function} onSubmit - The callback function to execute when the form is submitted.
- * @param {boolean} isLoading - A flag to indicate if the form is currently being processed.
+ * @param {function} onSubmit - The callback function.
+ * @param {boolean} isSubmitting - A flag for the submission process.
+ * @param {object} profileData - The pre-fetched user profile data.
  */
-export default function AddTestimonialForm({ onSubmit, isLoading }) {
-    // Initialize react-hook-form.
-    const { register, handleSubmit, formState: { errors } } = useForm();
+export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData }) {
+    // 1. Initialize `useForm`. We can set defaultValues directly here, but using `reset` in an effect is more robust for async data.
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-    // This internal handler is needed to extract the image file from the form data.
+    // 2. `useEffect` to populate the form once `profileData` is available.
+    // This is the recommended approach for setting form values from an async source.
+    useEffect(() => {
+        if (profileData) {
+            // `reset` updates the form's values.
+            reset({
+                name: profileData.username, // Pre-fill the name
+                // We don't pre-fill the testimonial content.
+            });
+        }
+    }, [profileData, reset]); // This effect runs whenever profileData or reset changes.
+
     const handleFormSubmit = (data) => {
-        // The image file is located at data.image[0].
-        const imageFile = data.image[0] ? data.image[0] : null;
-        // We call the parent's onSubmit with the text data and the image file separately.
+        const imageFile = data.image && data.image[0] ? data.image[0] : null;
         onSubmit({ name: data.name, content: data.content }, imageFile);
     };
 
     return (
-        // When the form is submitted, react-hook-form's handleSubmit will validate the fields
-        // before calling our custom handleFormSubmit function.
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-            {/* Name Input */}
+            <div className="flex flex-col items-center space-y-4">
+                {/* 3. Display Existing Profile Picture */}
+                {profileData?.avatar_url && (
+                    <img
+                        src={profileData.avatar_url}
+                        alt="Current profile"
+                        className="h-20 w-20 rounded-full object-cover border-2 border-[#bfa200]"
+                    />
+                )}
+                <div className="flex-1">
+                    <label htmlFor="image" className="block text-sm font-medium text-white">
+                        {profileData?.avatar_url ? 'Change Photo' : 'Upload Photo'} (Optional)
+                    </label>
+                    <Input
+                        id="image"
+                        type="file"
+                        {...register('image')}
+                        accept="image/*"
+                        className="mt-1"
+                    />
+                </div>
+            </div>
+
+            {/* 4. Name Input - now pre-populated */}
             <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Your Name</label>
+                <label htmlFor="name" className="block text-sm font-medium text-white">Your Name</label>
                 <Input
                     id="name"
                     type="text"
-                    // Register this input with react-hook-form and add a validation rule.
                     {...register('name', { required: 'Your name is required.' })}
-                    className="mt-1"
+                    className="mt-1" // A slightly different background can indicate it's pre-filled
+                    readOnly // Make the name read-only to ensure data consistency
                 />
-                {/* Display an error message if the name field fails validation. */}
                 {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
             </div>
 
-            {/* Testimonial Content Textarea */}
+            {/* Testimonial Content - remains the same */}
             <div>
-                <label htmlFor="content" className="block text-sm font-medium text-gray-700">Testimonial</label>
+                <label htmlFor="content" className="block text-sm font-medium text-white">Testimonial</label>
                 <textarea
                     id="content"
                     rows="4"
-                    // Register this textarea with react-hook-form and add a validation rule.
-                    {...register('content', { required: 'Testimonial content is required.' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm mt-1"
+                    {...register('content', {
+                        required: 'Testimonial content is required.',
+                        maxLength: { value: 120, message: 'Testimonial cannot exceed 120 characters.' }
+                    })}
+                    className="w-full px-3 py-2 border-2 border-[#BFA200] rounded-md shadow-sm mt-1 focus:ring-indigo-500 focus:border-indigo-500"
                 />
-                {/* Display an error message if the content field fails validation. */}
                 {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
             </div>
 
-            {/* Image Upload Input */}
-            <div>
-                <label htmlFor="image" className="block text-sm font-medium text-gray-700">Your Photo (Optional)</label>
-                <Input
-                    id="image"
-                    type="file"
-                    // Register this input. We specify that it should only accept image files.
-                    {...register('image')}
-                    accept="image/*"
-                    className="mt-1"
-                />
-            </div>
-
-            {/* Submit Button */}
-            <div>
-                <FormButton type="submit" disabled={isLoading} fullWidth>
-                    {isLoading ? 'Submitting...' : 'Submit Testimonial'}
-                </FormButton>
-            </div>
+            <FormButton type="submit" disabled={isSubmitting} fullWidth>
+                {isSubmitting ? 'Submitting...' : 'Submit Testimonial'}
+            </FormButton>
         </form>
     );
 }

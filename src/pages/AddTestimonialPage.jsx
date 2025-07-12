@@ -1,18 +1,34 @@
 // src/pages/AddTestimonialPage.jsx
 
-// This page component manages the state and logic for submitting a new testimonial.
-// It now redirects immediately upon successful submission.
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { createTestimonial } from '../services/testimonialService';
+import { getProfile } from '../services/profileService';
 import AddTestimonialForm from '../components/testimonials/AddTestimonialForm';
+import SectionTextWhite from '../components/common/SectionTextWhite';
 
 export default function AddTestimonialPage() {
     const { user } = useAuth();
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+    const [profileData, setProfileData] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (user) {
+            const fetchProfile = async () => {
+                const { data, error: fetchError } = await getProfile(user.id);
+                if (fetchError) {
+                    setError('Could not load your profile. Please try again later.');
+                } else {
+                    setProfileData(data);
+                }
+            };
+            fetchProfile();
+        }
+    }, [user]);
 
     const handleSubmit = async (testimonialData, imageFile) => {
         if (!user) {
@@ -20,37 +36,37 @@ export default function AddTestimonialPage() {
             return;
         }
 
-        setIsLoading(true);
+        setIsSubmitting(true);
         setError(null);
 
-        const { error: createError } = await createTestimonial(
-            { ...testimonialData, userId: user.id },
-            imageFile
-        );
+        const fullData = {
+            ...testimonialData,
+            userId: user.id,
+            existingAvatarUrl: profileData?.avatar_url,
+        };
+
+        const { error: createError } = await createTestimonial(fullData, imageFile);
 
         if (createError) {
-            setIsLoading(false);
             setError(createError.message);
+            setIsSubmitting(false);
         } else {
-            // --- CHANGE: On success, navigate directly to the home page. ---
-            // The loading state is not turned off, as the component will unmount upon navigation.
             navigate('/');
         }
     };
 
+    // The container is now simplified. It will inherit the background and height from the main Layout component.
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center py-12">
-            {/* --- CHANGE: Removed the conditional rendering for the success message. --- */}
-            {/* The component will now always display the form until it redirects. */}
-            <div className="w-full max-w-lg p-8 space-y-8 bg-white rounded-xl shadow-md">
-                <div>
-                    <h2 className="text-center text-3xl font-extrabold text-gray-900">
-                        Leave a Testimonial
-                    </h2>
-                    <AddTestimonialForm onSubmit={handleSubmit} isLoading={isLoading} />
-                    {error && <p className="mt-4 text-sm text-red-600 text-center">{error}</p>}
-                </div>
-            </div>
+        <div className="w-full max-w-lg mx-auto p-8 space-y-8 bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
+            <SectionTextWhite title="Leave a Testimonial" />
+            
+            <AddTestimonialForm
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+                profileData={profileData}
+            />
+            
+            {error && <p className="mt-4 text-sm text-red-600 text-center">{error}</p>}
         </div>
     );
 }

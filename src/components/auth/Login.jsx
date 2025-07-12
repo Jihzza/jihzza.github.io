@@ -83,7 +83,7 @@ export default function Login({ onSubmit, isLoading, containerClassName = 'space
                     <div className="w-full border-t border-gray-400" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                    <span className="bg-white/10 px-2 text-white">or</span>
+                    <span className="bg-white px-2 text-black">or</span>
                 </div>
             </div>
             <GoogleButton />

@@ -45,7 +45,7 @@ export default function ScrollToTopButton({ scrollContainerRef }) { // 1. Accept
         <button
             onClick={scrollToTop}
             className={`
-                fixed bottom-17 right-2 z-50
+                fixed bottom-17 right-2 z-10
                 w-10 h-10 rounded-full bg-black
                 flex items-center justify-center
                 shadow-lg transition-all duration-300

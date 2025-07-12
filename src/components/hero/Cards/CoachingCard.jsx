@@ -18,13 +18,13 @@ const tiers = [
  */
 export default function CoachingCard({ onScheduleClick }) {
 
-  const [selectedPlanId, setSelectedPlanId] = useState(tiers[0].id);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
 
   const selectedTier = tiers.find(tier => tier.id === selectedPlanId);
 
   const buttonText = selectedTier
     ? `Get My Number - ${selectedTier.price}€/${selectedTier.billingCycle}`
-    : 'Get My Number';
+    : 'Select a Plan';
 
   const handleCardClick = () => {
     document.getElementById('coaching-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -32,7 +32,9 @@ export default function CoachingCard({ onScheduleClick }) {
 
   const handleButtonClick = (e) => {
     e.stopPropagation();
-    onScheduleClick(selectedTier);
+    if (selectedTier) {
+      onScheduleClick(selectedTier);
+    }
   };
 
   const handleTierClick = (e, planId) => {

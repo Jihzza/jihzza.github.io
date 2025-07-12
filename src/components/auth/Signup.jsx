@@ -21,7 +21,7 @@ export default function Signup({ onSubmit, isLoading }) {
             {/* Email field */}
             <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email Address
+                    Email
                 </label>
                 <Input
                     id="email"
@@ -66,12 +66,15 @@ export default function Signup({ onSubmit, isLoading }) {
 
                 {/* Google button */}
                 <GoogleButton />
-                <div className="relative">
-                    <hr className="my-6" />
-                    <span className="absolute top-3 left-1/2 -translate-x-1/2 bg-white px-2 text-xs text-gray-500">or
-                    </span>
+                <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-400" />
                 </div>
-                <p>
+                <div className="relative flex justify-center text-sm">
+                    <span className="bg-white px-2 text-black">or</span>
+                </div>
+            </div>
+                <p className="text-gray-400">
                     Already have an account?{' '}
                     <Link
                         to="/login"

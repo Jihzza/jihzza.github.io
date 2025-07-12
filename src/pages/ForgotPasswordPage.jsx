@@ -4,6 +4,8 @@ import { useState } from 'react';
 import ForgotPassword from '../components/auth/ForgotPassword';
 import { sendPasswordResetEmail } from '../services/authService';
 import { Link } from 'react-router-dom';
+import SectionTextWhite from '../components/common/SectionTextWhite';
+import Button from '../components/common/Button';
 
 export default function ForgotPasswordPage() {
     const [loading, setLoading] = useState(false);
@@ -19,23 +21,20 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6">
+        <div className="h-full bg-gradient-to-b from-[#002147] to-[#ECEBE5] flex flex-col items-center justify-center p-6">
             {sent ? (
                 /* Success Banner */
                 <div className="space-y-4 max-w-sm text-center">
-                    <h2 className="text-2xl font-bold">Check your inbox</h2>
-                    <p className="text-gray-600">
-                        If an account exists for that address you'll receive an email&nbsp;shortly.
-                    </p>
-                    <a 
+                    <SectionTextWhite title="Check Your Inbox">If an account exists for that address you'll receive an email&nbsp;shortly.</SectionTextWhite>
+                        
+                    <Button 
                         href="https://mail.google.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="underline text-indigo-600 hover:text-indigo-500"
                         >
                         Open Gmail
-                    </a>
-                    <Link to="/login" className="block underline text-sm text-gray-500">
+                    </Button>
+                    <Link to="/login" className="block underline text-sm text-black">
                         Back to Login
                     </Link>
                 </div>

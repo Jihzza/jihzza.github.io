@@ -1,4 +1,5 @@
 // src/App.jsx
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Layout from './components/layout/Layout';
@@ -21,8 +22,6 @@ import ChatbotHistoryPage from './pages/profile/ChatbotHistoryPage';
 import AccountSettingsPage from './pages/profile/AccountSettingsPage';
 import CalendarPage from './pages/CalendarPage';
 import NotificationsPage from './pages/NotificationsPage';
-
-// --- NEW IMPORTS ---
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 
@@ -31,19 +30,25 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/add-testimonial" element={<AddTestimonialPage />} />
-        
-        {/* --- NEW ROUTES FOR LEGAL PAGES (can be public) --- */}
-        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-
+        {/* All pages now render within the main Layout */}
         <Route element={<Layout />}>
+          {/* Public & Authentication Pages */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+          
+          {/* Scheduling is public but has internal auth-aware logic */}
           <Route path="/scheduling" element={<SchedulingPage />} />
+
+          {/* Protected Routes */}
+          <Route 
+            path="/add-testimonial" 
+            element={<ProtectedRoute><AddTestimonialPage /></ProtectedRoute>} 
+          />
           <Route 
             path="/profile" 
             element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} 

@@ -1,7 +1,8 @@
 // src/components/scheduling/consultations/CustomCalendar.jsx
 
 import React, { useState } from 'react';
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay } from 'date-fns';
+// Add isSaturday and isSunday from date-fns
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, isSaturday, isSunday } from 'date-fns';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 
 /**
@@ -13,17 +14,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
  * @param {function(Date): void} onDateSelect - The callback function to execute when a date is selected.
  */
 export default function CustomCalendar({ selectedDate, onDateSelect }) {
-    // --- STATE MANAGEMENT ---
-    // This state is internal to the calendar and only tracks the currently *viewed* month.
-    // The actual *selected date* state is managed by the parent component.
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
-    // --- HANDLERS ---
     const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
     const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
-    // --- RENDER LOGIC: HEADER ---
-    // This section renders the month/year title and the navigation arrows.
     const renderHeader = () => (
         <div className="flex justify-between items-center py-2 px-1">
             <button onClick={prevMonth} className="p-2 rounded-full hover:bg-gray-700 transition-colors">
@@ -38,12 +33,9 @@ export default function CustomCalendar({ selectedDate, onDateSelect }) {
         </div>
     );
 
-    // --- RENDER LOGIC: DAYS OF THE WEEK ---
-    // This renders the "Sun, Mon, Tue..." header row.
     const renderDays = () => {
         const days = [];
-        const date = startOfWeek(currentMonth); // Start from Sunday of the current month's week.
-
+        const date = startOfWeek(currentMonth);
         for (let i = 0; i < 7; i++) {
             days.push(
                 <div key={i} className="text-center text-sm font-medium text-gray-400">
@@ -54,49 +46,46 @@ export default function CustomCalendar({ selectedDate, onDateSelect }) {
         return <div className="grid grid-cols-7 mt-4">{days}</div>;
     };
 
-    // --- RENDER LOGIC: CALENDAR CELLS ---
-    // This is the core logic for rendering the grid of days.
     const renderCells = () => {
         const monthStart = startOfMonth(currentMonth);
         const monthEnd = endOfMonth(monthStart);
         const startDate = startOfWeek(monthStart);
         const endDate = endOfWeek(monthEnd);
-
         const rows = [];
         let days = [];
         let day = startDate;
-        let formattedDate = '';
 
         while (day <= endDate) {
             for (let i = 0; i < 7; i++) {
-                formattedDate = format(day, 'd');
-                const cloneDay = day; // Important for the onClick handler closure.
+                const cloneDay = day;
+                const isWeekend = isSaturday(cloneDay) || isSunday(cloneDay);
 
-                // --- DYNAMIC STYLING LOGIC ---
-                // We build the `className` string dynamically based on the day's state.
                 const cellClasses = [
                     'h-7', 'w-7', 'flex', 'items-center', 'justify-center',
-                    'rounded-lg', 'border', 'cursor-pointer', 'transition-colors', 'duration-200', 'text-sm'
+                    'rounded-lg', 'border', 'transition-colors', 'duration-200', 'text-sm'
                 ];
 
-                if (!isSameMonth(day, monthStart)) {
-                    // Day is not in the current month.
+                if (isWeekend) {
+                    // --- CHANGE: WEEKEND STYLING ---
+                    // "Why": Add styles to visually disable weekends and prevent clicks.
+                    cellClasses.push('text-gray-600', 'border-transparent', 'cursor-not-allowed', 'line-through');
+                } else if (!isSameMonth(day, monthStart)) {
                     cellClasses.push('text-gray-500', 'border-transparent');
                 } else if (isSameDay(day, selectedDate)) {
-                    // Day is the selected day.
                     cellClasses.push('bg-transparent', 'border-[#BFA200]', 'border-2', 'font-bold', 'text-white', 'scale-105');
                 } else {
-                    // Day is in the current month but not selected.
-                    cellClasses.push('text-white', 'border-gray-600', 'hover:bg-gray-700');
+                    cellClasses.push('text-white', 'border-gray-600', 'hover:bg-gray-700', 'cursor-pointer');
                 }
 
                 days.push(
                     <div
                         key={day.toString()}
                         className={cellClasses.join(' ')}
-                        onClick={() => onDateSelect(cloneDay)}
+                        // --- CHANGE: PREVENT WEEKEND SELECTION ---
+                        // "Why": We only call onDateSelect if the day is not a weekend.
+                        onClick={() => !isWeekend && onDateSelect(cloneDay)}
                     >
-                        <span>{formattedDate}</span>
+                        <span>{format(day, 'd')}</span>
                     </div>
                 );
                 day = addDays(day, 1);
@@ -106,13 +95,11 @@ export default function CustomCalendar({ selectedDate, onDateSelect }) {
                     {days}
                 </div>
             );
-            days = []; // Reset for the next row.
+            days = [];
         }
         return <div className="space-y-2 mt-2">{rows}</div>;
     };
 
-
-    // --- FINAL COMPONENT RENDER ---
     return (
         <div className="w-full max-w-md mx-auto rounded-lg bg-[#002147]">
             {renderHeader()}

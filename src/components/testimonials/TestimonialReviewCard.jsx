@@ -7,7 +7,7 @@ const TestimonialReviewCard = ({ testimonial, onApprove, onReject }) => {
     const avatarUrl = author?.avatar_url || `https://i.pravatar.cc/150?u=${authorName}`;
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <div className="bg-black p-6 rounded-lg shadow-md border border-gray-200">
             <div className="flex items-center mb-4">
                 <img src={avatarUrl} alt={authorName} className="w-12 h-12 rounded-full mr-4" />
                 <div>

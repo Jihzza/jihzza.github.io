@@ -8,6 +8,7 @@ import { signUpNewUser } from '../services/authService';
 import { useAuth } from '../contexts/AuthContext';
 import SignUp from '../components/auth/Signup';
 import EmailVerificationModal from '../components/auth/EmailVerificationModal';
+import SectionTextWhite from '../components/common/SectionTextWhite';
 
 export default function SignupPage() {
     const navigate = useNavigate();
@@ -44,10 +45,10 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 p-6">
-            <h2 className="text-3xl font-bold text-white mb-8">Create an Account</h2>
+        <div className="h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#002147] to-[#ECEBE5] p-6">
+            <SectionTextWhite title="Create an Account"></SectionTextWhite>
 
-            <div className="bg-white rounded-lg shadow p-8 w-full max-w-md">
+            <div className="bg-white rounded-lg shadow p-6 w-full max-w-md">
                 <SignUp onSubmit={handleSignup} isLoading={isLoading} />
 
                 {error && <p className="text-red-500 text-sm mt-4">{error}</p>}

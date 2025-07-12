@@ -49,7 +49,7 @@ const tiers = [
     // --- STATE MANAGEMENT (LIFTED STATE) ---
     // The state for the selected plan now lives in this parent component.
     // It is the single source of truth.
-    const [selectedPlanId, setSelectedPlanId] = useState(tiers[0].id);
+    const [selectedPlanId, setSelectedPlanId] = useState(null);
 
     // --- DERIVED STATE ---
     // The details of the selected tier and the button text are derived from the
@@ -57,13 +57,16 @@ const tiers = [
     const selectedTier = tiers.find(tier => tier.id === selectedPlanId);
     const buttonText = selectedTier
         ? `Get My Number - ${selectedTier.price}€/${selectedTier.billingCycle}`
-        : 'Get My Number';
+        : 'Select a Plan';
 
     // --- EVENT HANDLER ---
     const handleBookClick = () => {
-        // When the button is clicked, we pass the full details of the
-        // currently selected tier up to the parent (e.g., HomePage).
-        onBookCoaching(selectedTier);
+        // Only proceed if a tier is selected
+        if (selectedTier) {
+            // When the button is clicked, we pass the full details of the
+            // currently selected tier up to the parent (e.g., HomePage).
+            onBookCoaching(selectedTier);
+        }
     }
 
     return (

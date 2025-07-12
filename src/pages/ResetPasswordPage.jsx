@@ -30,7 +30,7 @@ export default function ResetPasswordPage() {
         return <p className="min-h-screen flex items-center justify-center">Loadind...</p>;
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6">
+        <div className="h-full bg-gradient-to-b from-[#002147] to-[#ECEBE5] flex flex-col items-center justify-center p-6">
             <ResetPassword onSubmit={handleReset} isLoading={loading} />
             {error && <p className="mt-4 text-red-600">{error}</p>}
         </div>

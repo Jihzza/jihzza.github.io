@@ -1,6 +1,6 @@
 // src/components/bugReport/BugReportForm.jsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Input from '../common/Forms/Input';
 import FormButton from '../common/Forms/FormButton';
@@ -15,9 +15,14 @@ import FormButton from '../common/Forms/FormButton';
  */
 
 export default function BugReportForm({ onSubmit, isLoading, defaultValues = {} }) {
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit, formState: { errors }, reset } = useForm({
             defaultValues
         });
+
+    // Reset form when defaultValues change (e.g., when user profile is loaded)
+    useEffect(() => {
+        reset(defaultValues);
+    }, [defaultValues, reset]);
 
         return (
             // handleSubmit validates the form before calling the onSubmit prop from the parent

@@ -32,15 +32,13 @@ export const getTestimonials = async () => {
  * @returns {{ data: object, error: object|null }} - The newly created testimonial data or an error
  */
 export const createTestimonial = async (testimonialData, imageFile) => {
-    const { name, content, userId } = testimonialData;
+    // 1. Destructure all the data we now receive from the page.
+    const { name, content, userId, existingAvatarUrl } = testimonialData;
 
-    let imageUrl = null;
+    let finalImageUrl = existingAvatarUrl || null; // Default to the existing avatar.
 
-    // Image Upload Logic
-    // If an image file is provided, upload it to Supabase Storage first
+    // 2. If a *new* image is provided, upload it and overwrite the URL.
     if (imageFile) {
-        // Create a unique file path to prevent name collisions
-        // The path includes the user's ID and a timestamp
         const filePath = `public/${userId}/${Date.now()}_${imageFile.name}`;
 
         const { error: uploadError } = await supabase.storage
@@ -48,34 +46,33 @@ export const createTestimonial = async (testimonialData, imageFile) => {
             .upload(filePath, imageFile);
 
         if (uploadError) {
-            console.error('Error uploading image:', uploadError.message);
+            console.error('Error uploading new image:', uploadError.message);
             return { data: null, error: uploadError };
         }
 
-        // If upload is successful, get the public URL for the image
-        // This URL will be stored in our testimonials table
         const { data: urlData } = supabase.storage
             .from('testimonials')
             .getPublicUrl(filePath);
 
-        imageUrl = urlData.publicUrl;
+        finalImageUrl = urlData.publicUrl; // Use the newly uploaded image's URL.
     }
 
-    // DATABASE INSERT LOGIC
+    // 3. Insert the record with the determined image URL.
     const { data, error } = await supabase
         .from('testimonials')
         .insert({
             name,
             content,
-            image_url: imageUrl,
+            image_url: finalImageUrl, // Use the final URL
             user_id: userId,
+            is_approved: false,
         })
-        .select() 
+        .select()
         .single();
 
     if (error) {
         console.error('Error creating testimonial:', error.message);
     }
 
-    return { data, error};
+    return { data, error };
 };
