@@ -46,9 +46,16 @@ export const signInWithGoogle = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin + '/profile', // after success
+      // The redirect must point to the page where the form lives.
+      redirectTo: window.location.origin, 
     },
   });
+
+  // It's good practice to log potential errors.
+  if (error) {
+    console.error("Error signing in with Google:", error.message);
+  }
+
   return { data, error };
 };
 

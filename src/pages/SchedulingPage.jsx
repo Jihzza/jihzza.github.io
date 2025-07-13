@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 import { getProfile } from '../services/authService';
+import { signInWithGoogle } from '../services/authService';
 
 // COMPONENT IMPORTS
 // We import the first "step" component we created.
@@ -20,11 +21,11 @@ import ChatbotStep from '../components/scheduling/ChatbotStep';
 
 // COMPONENT DEFINITION
 // This is our "smart" component or "wizard". It will manage the state and logic for the entire scheduling flow
-export default function SchedulingPage({ initialService, initialCoachingPlan, onFlowStart }) {
+export default function SchedulingPage({ initialService, initialCoachingPlan, onFlowStart, initialStep }) {
     // STATE MANAGEMENT
 
     // Get user and sign-in method from context
-    const { user, googleSignIn } = useAuth();
+    const { user } = useAuth();
     /// 'formData' will be our single source of truth. It's an object that will accumulate all the data from the user across all steps of the form.
     // We initialize it with default values.
     const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
     // ´currentStep´ will track which step of the process the user is on.
     // We'll start at step 1: the service selection.
     const [profile, setProfile] = useState(null);
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(initialStep || 1);
     const [paymentStatus, setPaymentStatus] = useState('awaiting');
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -74,6 +75,8 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
         };
         fetchProfile();
     }, [user]);
+
+
 
     const handleServiceSelect = (serviceId) => {
         // We update the 'formData' object with the selected service type
@@ -187,7 +190,25 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
             setIsProcessing(false);
         }
     };
+    const handleGoogleSignIn = async () => {
+        // 1. Capture the current state into a single object.
+        const stateToPreserve = {
+            formData: formData,
+            currentStep: currentStep,
+            scrollPosition: window.scrollY // Capture the exact vertical scroll position.
+        };
 
+        // 2. Save the state to sessionStorage.
+        // We use JSON.stringify because storage can only hold strings.
+        try {
+            sessionStorage.setItem('schedulingState', JSON.stringify(stateToPreserve));
+        } catch (error) {
+            console.error("Could not save scheduling state to sessionStorage:", error);
+        }
+
+        // 3. Initiate the Google sign-in flow.
+        await signInWithGoogle();
+    };
     const flowConfig = {
         consultation: { totalSteps: 5 },
         coaching: { totalSteps: 5 },
@@ -208,29 +229,31 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
     }, []);
 
     useEffect(() => {
+        // This effect runs whenever the initial state props from HomePage are provided.
         if (initialService) {
-            let step = 2; // Default to step 2 (service-specific options)
-            let newFormData = { ...formData, serviceType: initialService };
-
-            // THE CORE LOGIC FOR YOUR REQUEST
-            // WHY: If the service is 'coaching' AND we received an initial plan, we have all the information we need to bypass the plan selection step
-            if (initialService === 'coaching' && initialCoachingPlan) {
-                // Pre-populate the form data with the selected plan's ID
-                newFormData.coaching.plan = initialCoachingPlan.id;
-                // Set the current step to 3, effectively skipping step 2
-                step = 3;
-            }
-
-            // Update the component's state based on our logic
-            setFormData(newFormData);
-            setCurrentStep(step);
-
-            // Notify the parent that the flow has started, so it can reset its own state
+            // 1. Update the form data based on the restored service and plan.
+            setFormData(prev => ({
+                ...prev,
+                serviceType: initialService,
+                coaching: {
+                    ...prev.coaching,
+                    // Use the full plan object if available, otherwise keep it as is.
+                    plan: initialCoachingPlan || prev.coaching.plan
+                }
+            }));
+    
+            // 2. Set the current step. Trust the initialStep prop from the parent if it exists.
+            //    This is the key to resuming on Step 3.
+            //    If no specific step is provided, default to step 2.
+            setCurrentStep(initialStep || 2);
+    
+            // 3. CRITICAL: Notify the parent component that we have consumed the initial props
+            //    so it can reset its own state and prevent this logic from running again.
             if (onFlowStart) {
                 onFlowStart();
             }
         }
-    }, [initialService, initialCoachingPlan, onFlowStart]);
+    }, [initialService, initialCoachingPlan, initialStep, onFlowStart]);
 
 
     // This effects runs when the user object or current step changes.
@@ -250,38 +273,6 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
             }
         }
     }, [user, profile, currentStep]); // Dependency array
-
-    // --- ADD THIS NEW USEEFFECT HOOK FOR STATE RESTORATION ---
-    useEffect(() => {
-        // 1. Check if saved state exists in sessionStorage
-        const savedStateJSON = sessionStorage.getItem('schedulingState');
-
-        if (savedStateJSON) {
-            try {
-                // 2. Parse the JSON string back into an object
-                const savedState = JSON.parse(savedStateJSON);
-
-                // 3. Restore the component's state from the saved data
-                setFormData(savedState.formData);
-                setCurrentStep(savedState.currentStep);
-
-                // 4. Restore the scroll position. We use a small timeout
-                // to ensure the page has re-rendered before scrolling.
-                setTimeout(() => {
-                    window.scrollTo(0, savedState.scrollPosition);
-                }, 100); // 100ms delay is usually sufficient
-
-                // 5. IMPORTANT: Clean up the stored state so it's not reused
-                sessionStorage.removeItem('schedulingState');
-
-            } catch (error) {
-                console.error("Failed to parse or restore scheduling state:", error);
-                // Clean up in case of a parsing error
-                sessionStorage.removeItem('schedulingState');
-            }
-        }
-    }, []); // The empty dependency array [] ensures this runs only once on mount
-
 
     {/* Get the total steps for the currently selected flow */ }
     const totalSteps = formData.serviceType ? flowConfig[formData.serviceType].totalSteps : 0;
@@ -335,7 +326,8 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
                         isLoggedIn={!!user} // Pass true/false if user object exists
                         contactInfoData={formData.contactInfo}
                         // The event object from onChange is passed directly to our handler
-                        onUpdateField={(e) => handleUpdateField('contactInfo', e.target.name, e.target.value)} onGoogleSignIn={googleSignIn}
+                        onUpdateField={(e) => handleUpdateField('contactInfo', e.target.name, e.target.value)}
+                        onGoogleSignIn={handleGoogleSignIn}
                     />
                 )}
 

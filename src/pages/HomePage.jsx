@@ -1,6 +1,6 @@
 // src/pages/HomePage.jsx
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import HeroSection from './sections/HeroSection';
 import AboutMeSection from './sections/AboutMeSection';
 import ConsultationsSection from './sections/ConsultationsSection';
@@ -14,31 +14,19 @@ import ChatWithMeSection from './sections/ChatWithMeSection';
 import InteractiveSections from './sections/InteractiveSections';
 import SchedulingPage from './SchedulingPage';
 
-
 export default function HomePage() {
-
-        // This allows us to directly call browser functions on it, like `scrollIntoView`.
     const schedulingRef = useRef(null);
-
-        // It starts as `null`, meaning the user hasn't chosen a service from the hero section yet.
     const [initialService, setInitialService] = useState(null);
-
     const [initialCoachingPlan, setInitialCoachingPlan] = useState(null);
-
+    const [initialStep, setInitialStep] = useState(null);
 
     const handleScheduleService = (serviceId, details = null) => {
-        // 3. Set State: We update the `initialService` state with the ID from the clicked button.
-        // This state will be passed as a prop to the SchedulingPage.
         setInitialService(serviceId);
-
         if (serviceId === 'coaching' && details) {
-            setInitialCoachingPlan(details)
+            setInitialCoachingPlan(details);
         } else {
             setInitialCoachingPlan(null);
         }
-
-        // 4. Scroll to the Form: We use the ref to smoothly scroll the scheduling form into the user's view.
-        // The timeout ensures the state update is processed before we scroll, creating a smoother transition.
         setTimeout(() => {
             schedulingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
@@ -47,7 +35,59 @@ export default function HomePage() {
     const handleFlowStart = () => {
         setInitialService(null);
         setInitialCoachingPlan(null);
+        setInitialStep(null); // Also reset the initial step
     };
+
+    useEffect(() => {
+        const handlePageReady = () => {
+            const savedStateJSON = sessionStorage.getItem('schedulingState');
+            const legacyScrollTo = localStorage.getItem('scrollTo');
+
+            if (savedStateJSON) {
+                console.log("Page is fully loaded. Restoring scheduling state and scrolling...");
+                try {
+                    const savedState = JSON.parse(savedStateJSON);
+                    
+                    // Set all the state that SchedulingPage needs
+                    setInitialService(savedState.formData.serviceType);
+                    setInitialStep(savedState.currentStep); // Set the step to resume on
+                    if (savedState.formData.serviceType === 'coaching' && savedState.formData.coaching.plan) {
+                        setInitialCoachingPlan(savedState.formData.coaching.plan);
+                    }
+
+                    schedulingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                } catch (error) {
+                    console.error("Failed to restore state in HomePage:", error);
+                } finally {
+                    sessionStorage.removeItem('schedulingState');
+                    if (legacyScrollTo) localStorage.removeItem('scrollTo');
+                }
+            } else if (legacyScrollTo) {
+                console.log(`Page is fully loaded. Performing legacy scroll to: #${legacyScrollTo}`);
+                const targetElement = document.getElementById(legacyScrollTo);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+                localStorage.removeItem('scrollTo');
+            }
+        };
+
+        if (document.readyState === 'complete') {
+            handlePageReady();
+        } else {
+            window.addEventListener('load', handlePageReady, { once: true });
+        }
+
+        return () => {
+            window.removeEventListener('load', handlePageReady);
+        };
+    }, []); // The dependency array ensures this runs only once.
+
+    // =================================================================
+    // THE ERROR WAS HERE: The useEffect hook was not closed.
+    // The `return` statement must be OUTSIDE the `useEffect` block.
+    // =================================================================
 
     return (
         <div
@@ -55,14 +95,11 @@ export default function HomePage() {
             className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#002147] to-[#ECEBE5] text-white px-4"
         >
             <HeroSection
-               onScheduleConsultation={() => handleScheduleService('consultation')}
-               onScheduleCoaching={() => handleScheduleService('coaching')}
-               onScheduleInvestment={() => handleScheduleService('pitchdeck')}
+                onScheduleConsultation={() => handleScheduleService('consultation')}
+                onScheduleCoaching={() => handleScheduleService('coaching')}
+                onScheduleInvestment={() => handleScheduleService('pitchdeck')}
             />
             <AboutMeSection />
-
-            {/* --- CHANGES START HERE --- */}
-            {/* We add IDs to these divs to make them linkable from the sidebar */}
             <div id="consultations-section" className="w-full">
                 <ConsultationsSection onBookConsultation={() => handleScheduleService('consultation')} />
             </div>
@@ -91,6 +128,7 @@ export default function HomePage() {
                 <SchedulingPage
                     initialService={initialService}
                     initialCoachingPlan={initialCoachingPlan}
+                    initialStep={initialStep}
                     onFlowStart={handleFlowStart}
                 />
             </div>

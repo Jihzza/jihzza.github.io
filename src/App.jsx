@@ -11,7 +11,6 @@ import EditProfilePage from './pages/profile/EditProfilePage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import SchedulingPage from './pages/SchedulingPage';
 import MessagesPage from './pages/MessagesPage';
 import ConversationPage from './pages/ConversationPage';
 import AddTestimonialPage from './pages/AddTestimonialPage';
@@ -41,9 +40,6 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           
-          {/* Scheduling is public but has internal auth-aware logic */}
-          <Route path="/scheduling" element={<SchedulingPage />} />
-
           {/* Protected Routes */}
           <Route 
             path="/add-testimonial" 
