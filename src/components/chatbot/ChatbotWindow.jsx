@@ -1,143 +1,252 @@
 import React, { useState, useEffect, useRef, Fragment, useCallback } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 // --- CHILD COMPONENT IMPORTS ---
 import DraggableHeader from "./ChatbotWindow/DraggableHeader";
 import ChatMessages from "./ChatbotWindow/ChatMessages";
 import ChatInput from "./ChatbotWindow/ChatInput";
-import { useTranslation } from 'react-i18next'; // 1. Import hook
 
-// --- CONSTANTS ---
-// The 'Why' of the fix: The original component used `h-full`, which resolved to 100% of the
-// viewport height. This constant was incorrectly set to 90. Setting it to 100 restores
-// the original, correct "full screen" initial height.
-const INITIAL_HEIGHT_PERCENT = 100; // The default height of the chat window (100% of screen).
-const MIN_DRAG_HEIGHT_PX = 150;    // The minimum height the window can be dragged to.
-const CLOSE_THRESHOLD_PERCENT = 30; // If height is below this on release, close the window.
+/** -------------------------------------------------------------------------
+ *  HOOK: useVisualViewport --------------------------------------------------
+ *  Returns real‑time {@link window.visualViewport} width & height. This is a
+ *  critical building‑block for mobile UX because it automatically shrinks when
+ *  the software keyboard is shown – giving us an accurate "safe" area.
+ * ------------------------------------------------------------------------ */
+function useVisualViewport() {
+  const [vp, setVp] = useState({ width: window.innerWidth, height: window.innerHeight });
 
-export default function ChatbotWindow({ isOpen, onClose, navBarHeight }) {
-  const { t } = useTranslation(); // 2. Initialize hook
+  useEffect(() => {
+    if (!window.visualViewport) return;
+    const handleResize = () => setVp({ width: window.visualViewport.width, height: window.visualViewport.height });
+    window.visualViewport.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.visualViewport.removeEventListener("resize", handleResize);
+  }, []);
+
+  return vp;
+}
+
+/** -------------------------------------------------------------------------
+ *  COMPONENT: ChatbotWindow -------------------------------------------------
+ *  • Sheet is offset upward by the NavigationBar height **only when** the
+ *    keyboard is not showing, so the NavBar remains visible. While typing
+ *    (keyboard visible) we lock the sheet to the very bottom (offset = 0),
+ *    thereby covering the NavBar (which is also physically behind the
+ *    software keyboard on most devices).
+ * ------------------------------------------------------------------------ */
+export default function ChatbotWindow({ isOpen, onClose, navBarHeight = 0 }) {
+  const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
+  const viewport = useVisualViewport();
 
-  // 3. Use translated initial message
-  const [messages, setMessages] = useState([
-    { from: "bot", text: t('chatbot.messages.initial') },
-  ]);
+  // ----------------------------- LOCAL STATE ------------------------------
+  const [messages, setMessages] = useState(() => [{ from: "bot", text: t("chatbot.messages.initial") }]);
   const [userText, setUserText] = useState("");
   const [loading, setLoading] = useState(false);
   const [sessionId] = useState(() => crypto.randomUUID());
   const chatListRef = useRef(null);
-  const [height, setHeight] = useState(INITIAL_HEIGHT_PERCENT);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartRef = useRef({ y: 0, height: 0 });
 
-  // --- DRAG HANDLERS ---
-  const handleDragStart = useCallback((e) => {
-    setIsDragging(true);
-    const startY = e.touches ? e.touches[0].clientY : e.clientY;
-    dragStartRef.current = { y: startY, height };
-    e.preventDefault();
-  }, [height]);
+  // -----------------------------------------------------------------------
+  // Detect software‑keyboard presence. We assume that if the viewport height
+  // shrank by >= 120px relative to the *original* window.innerHeight then the
+  // keyboard is up. Tune the 120px threshold if needed for edge cases.
+  // -----------------------------------------------------------------------
+  const initialWindowHeight = useRef(window.innerHeight);
+  const keyboardOpen = viewport.height < initialWindowHeight.current - 120;
 
-  const handleDragMove = useCallback((e) => {
-    if (!isDragging) return;
-    const currentY = e.touches ? e.touches[0].clientY : e.clientY;
-    const deltaY = currentY - dragStartRef.current.y;
-    const newHeight = dragStartRef.current.height - (deltaY / window.innerHeight) * 100;
+  //    Panel height logic --------------------------------------------------
+  const MIN_HEIGHT = 120; // Header (~60) + last message stub
+  const [panelHeight, setPanelHeight] = useState(() => viewport.height);
+  const [dragState, setDragState] = useState({ active: false, startY: 0, startHeight: viewport.height });
 
-    const minHeightPercent = (MIN_DRAG_HEIGHT_PX / window.innerHeight) * 100;
-
-    setHeight(Math.max(minHeightPercent, Math.min(newHeight, INITIAL_HEIGHT_PERCENT)));
-  }, [isDragging]);
-
-  const handleDragEnd = useCallback(() => {
-    setIsDragging(false);
-    if (height < CLOSE_THRESHOLD_PERCENT) {
-      onClose();
-    }
-  }, [height, onClose]);
-
-  // --- LIFECYCLE HOOKS ---
+  // Re‑clamp height when viewport changes ---------------------------------
+  const prevVpHeightRef = useRef(viewport.height);
   useEffect(() => {
-    if (isDragging) {
-      window.addEventListener("mousemove", handleDragMove);
-      window.addEventListener("touchmove", handleDragMove);
-      window.addEventListener("mouseup", handleDragEnd);
-      window.addEventListener("touchend", handleDragEnd);
+    const prev = prevVpHeightRef.current;
+    if (viewport.height === prev) return;
+    setPanelHeight((current) => {
+      const filledPrevViewport = Math.abs(current - prev) < 24;
+      if (filledPrevViewport) return viewport.height;
+      return Math.min(current, viewport.height);
+    });
+    prevVpHeightRef.current = viewport.height;
+  }, [viewport.height]);
+
+  // -----------------------------------------------------------------------
+  // Detect mobile OS navigation bar "go back" button press
+  // This listens for the popstate event which is triggered when the user
+  // presses the OS back button or uses browser back navigation
+  // 
+  // HOW IT WORKS:
+  // 1. When the chatbot opens, we push a new history state with a unique identifier
+  // 2. When the user presses the OS back button, the popstate event fires
+  // 3. We check if the popped state is our chatbot state
+  // 4. If it is, we close the chatbot (this was an OS back button press)
+  // 5. If the chatbot is closed normally (via X button), we clean up the history
+  //
+  // BENEFITS:
+  // - Provides native mobile UX where OS back button closes the chatbot
+  // - Doesn't interfere with React Router's internal navigation
+  // - Works across all mobile browsers and PWA environments
+  // - Maintains proper browser history state
+  // -----------------------------------------------------------------------
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Push a new history state when chatbot opens to track OS back button
+    const chatbotState = { chatbotOpen: true, timestamp: Date.now() };
+    
+    try {
+      window.history.pushState(chatbotState, '', window.location.href);
+    } catch (error) {
+      // Fallback: if history manipulation fails, we can't track OS back button
+      console.warn('Could not set history state for chatbot:', error);
+      return;
     }
-    return () => {
-      window.removeEventListener("mousemove", handleDragMove);
-      window.removeEventListener("touchmove", handleDragMove);
-      window.removeEventListener("mouseup", handleDragEnd);
-      window.removeEventListener("touchend", handleDragEnd);
+    
+    const handlePopState = (event) => {
+      try {
+        // Check if the popped state is our chatbot state
+        if (event.state && event.state.chatbotOpen) {
+          // This means the user pressed the OS back button - close the chatbot
+          onClose();
+        }
+      } catch (error) {
+        // Fallback: if state checking fails, close the chatbot anyway
+        console.warn('Error checking popstate:', error);
+        onClose();
+      }
     };
-  }, [isDragging, handleDragMove, handleDragEnd]);
 
-  useEffect(() => {
-    if (isOpen) {
-      setHeight(INITIAL_HEIGHT_PERCENT);
+    // Add event listener for popstate (OS back button)
+    window.addEventListener('popstate', handlePopState);
+
+    // Cleanup function to remove the event listener and restore history
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      
+      // If the chatbot is being closed normally (not via OS back), 
+      // we need to clean up the history state we added
+      try {
+        if (window.history.state && window.history.state.chatbotOpen) {
+          window.history.back();
+        }
+      } catch (error) {
+        // Fallback: if history cleanup fails, just log it
+        console.warn('Could not clean up chatbot history state:', error);
+      }
+    };
+  }, [isOpen, onClose]);
+
+  /** Handlers: Drag to resize ------------------------------------------- */
+  const beginDrag = (e) => {
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    setDragState({ active: true, startY: clientY, startHeight: panelHeight });
+  };
+
+  const onDragMove = useCallback(
+    (e) => {
+      if (!dragState.active) return;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const delta = dragState.startY - clientY; // positive when dragging up
+      const tentative = dragState.startHeight + delta;
+      const clamped = Math.max(MIN_HEIGHT, Math.min(tentative, viewport.height));
+      setPanelHeight(clamped);
+    },
+    [dragState, viewport.height]
+  );
+
+  const endDrag = () => {
+    // Check if panel height is less than 30% of viewport height
+    const thirtyPercentHeight = viewport.height * 0.4;
+    if (panelHeight < thirtyPercentHeight) {
+      onClose(); // Automatically close the chatbot
     }
-  }, [isOpen]);
+    setDragState((s) => ({ ...s, active: false }));
+  };
 
-  // --- MESSAGING LOGIC (Unchanged) ---
+  // Register global listeners only while dragging -------------------------
+  useEffect(() => {
+    if (!dragState.active) return;
+    window.addEventListener("mousemove", onDragMove);
+    window.addEventListener("touchmove", onDragMove);
+    window.addEventListener("mouseup", endDrag);
+    window.addEventListener("touchend", endDrag);
+    return () => {
+      window.removeEventListener("mousemove", onDragMove);
+      window.removeEventListener("touchmove", onDragMove);
+      window.removeEventListener("mouseup", endDrag);
+      window.removeEventListener("touchend", endDrag);
+    };
+  }, [dragState.active, onDragMove]);
+
+  // --------------------------- MESSAGE LOGIC -----------------------------
   const sendMessage = async () => {
     if (!userText.trim() || loading || !isAuthenticated) return;
+
     const newUserMessage = { from: "user", text: userText.trim() };
-    setMessages((currentMessages) => [...currentMessages, newUserMessage]);
+    setMessages((prev) => [...prev, newUserMessage]);
     const textToSend = userText.trim();
     setUserText("");
     setLoading(true);
 
     try {
-      const response = await fetch("https://rafaello.app.n8n.cloud/webhook/chat", { /*...*/ });
-      if (!response.ok) throw new Error(`Server responded with status: ${response.status}`);
+      const response = await fetch("https://rafaello.app.n8n.cloud/webhook/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId, chatInput: textToSend, user_id: user?.id }),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      // 4. Use translated fetch error message
-      const botMessage = { from: "bot", text: data.output || t('chatbot.messages.fetchError') };
-      setMessages((currentMessages) => [...currentMessages, botMessage]);
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      // 5. Use translated connection error message
-      const errorMessage = { from: "bot", text: t('chatbot.messages.connectionError') };
-      setMessages((currentMessages) => [...currentMessages, errorMessage]);
+      const botMsg = { from: "bot", text: data.output || t("chatbot.messages.fetchError") };
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (err) {
+      console.error(err);
+      setMessages((prev) => [...prev, { from: "bot", text: t("chatbot.messages.connectionError") }]);
     } finally {
       setLoading(false);
     }
   };
 
+  // Reset panel height and clear input each time the window opens --------------------------------
+  useEffect(() => {
+    if (isOpen) {
+      setUserText("");
+      setPanelHeight(viewport.height); // Reset to full viewport height
+    }
+  }, [isOpen, viewport.height]);
+
+  // ----------------------------- RENDER ----------------------------------
+  const sheetBottomOffset = keyboardOpen ? 0 : navBarHeight; // core requirement
+
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={onClose}>
-        <div className="fixed inset-0" />
-        <div className="fixed inset-0 flex items-end">
+    <Transition.Root show={isOpen} as={Fragment} appear>
+      <Dialog as="div" className="relative z-50" onClose={onClose} static>
+        {/* Transparent backdrop so underlying content remains touchable except for the sheet area */}
+        <div className="fixed inset-0 bg-transparent" />
+
+        {/* Sheet container (fixed to bottom). Offset dynamically so NavBar peeks */}
+        <div
+          className="fixed inset-x-0 flex justify-center pointer-events-none"
+          style={{ bottom: sheetBottomOffset }}
+        >
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-300"
+            enter="transform transition ease-out duration-300"
             enterFrom="translate-y-full"
             enterTo="translate-y-0"
-            leave="ease-in duration-200"
+            leave="transform transition ease-in duration-200"
             leaveFrom="translate-y-0"
             leaveTo="translate-y-full"
           >
             <Dialog.Panel
-              className="w-full bg-[#002147] border-t-2 border-[#bfa200] text-white rounded-t-2xl shadow-2xl flex flex-col"
-              style={{
-                height: `${height}vh`,
-                paddingBottom: `${navBarHeight}px`,
-                transition: isDragging ? 'none' : 'height 0.3s ease-in-out',
-              }}
+              className="pointer-events-auto w-full max-w-md sm:max-w-lg md:max-w-xl bg-[#002147] border-t-2 border-[#bfa200] text-white rounded-t-2xl shadow-2xl flex flex-col"
+              style={{ height: panelHeight, maxHeight: viewport.height }}
             >
-              <DraggableHeader
-                onClose={onClose}
-                onDragStart={handleDragStart}
-                isDragging={isDragging}
-              />
-              <ChatMessages
-                messages={messages}
-                loading={loading}
-                scrollRef={chatListRef}
-              />
+              <DraggableHeader onClose={onClose} onDragStart={beginDrag} isDragging={dragState.active} />
+              <ChatMessages messages={messages} loading={loading} scrollRef={chatListRef} />
               <ChatInput
                 userText={userText}
                 setUserText={setUserText}
