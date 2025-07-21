@@ -11,7 +11,7 @@ export default function OtherWinsSection() {
     const { t } = useTranslation(); // 2. Initialize the hook
 
     return (
-        <section className="w-full mx-auto py-8 text-center flex flex-col">
+        <section className="w-full mx-auto py-8 md:py-4 text-center flex flex-col md:px-6">
             {/* 3. Use translated text for the title and subtitle */}
             <SectionTextBlack title={t('otherWins.title')}>
                 {t('otherWins.bodyTransformation')}
@@ -19,7 +19,7 @@ export default function OtherWinsSection() {
 
             <InteractiveVideo
                 videoSrc={TransformationVideo}
-                className="w-45 self-center rounded-xl"
+                className="w-45 self-center rounded-xl mt-6"
             />
             
             {/* 4. Use translated text for the second text block */}

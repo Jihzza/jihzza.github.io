@@ -32,6 +32,7 @@ export default function ConsultationsSection({ onBookConsultation }) {
     const consultationTypeIcons = [MindsetIcon, SocialMediaIcon, FinanceIcon, MarketingIcon, BusinessIcon, RelationshipsIcon, HealthIcon, OnlyFansIcon, AITechIcon, LifeAdviceIcon];
     const consultationDetailIcons = [Face2FaceIcon, DurationIcon, RecordingIcon, FollowUpEmailIcon, FollowUpConsultationIcon];
 
+
     // Load data from i18n and map icons/IDs
     const consultationTypes = t('consultations.types', { returnObjects: true }).map((type, index) => ({
         ...type,
@@ -66,7 +67,7 @@ export default function ConsultationsSection({ onBookConsultation }) {
         : t('consultations.buttons.default');
 
     return (
-        <section ref={sectionRef} id="consultations-section" className="max-w-4xl mx-auto py-4">
+        <section ref={sectionRef} id="consultations-section" className="max-w-4xl mx-auto py-4 md:px-6">
             <SectionText title={t('consultations.title')}>
                 {t('consultations.subtitle')}
             </SectionText>

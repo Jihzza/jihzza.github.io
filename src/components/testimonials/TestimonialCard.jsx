@@ -19,7 +19,7 @@ export default function TestimonialCard({ testimonial }) {
     return (
         // The main card container with a white background, rounded corners, padding, and a flex column layout.
         // `h-full` ensures that all cards in the carousel have the same height.
-        <div className="bg-white text-black rounded-lg p-6 flex flex-col items-center text-center h-full shadow-lg">
+        <div className="bg-white text-black rounded-lg p-6 flex flex-col items-center text-center h-full md:h-80 shadow-lg">
 
             {/* Author's Image Container */}
             {/* The image is placed at the top, centered, and styled as a circle. */}

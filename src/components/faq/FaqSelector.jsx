@@ -30,36 +30,36 @@ export default function FaqSelector({ items }) {
 
     return (
         <div>
-        {/* POSITIONING CONTEXT WRAPPER */}
-        <div className="relative">
-            {/* CLICKABLE QUESTION RECTANGLE */}
-            <button
-                onClick={handleQuestionClick}
-                className="w-full flex justify-between items-center text-left border-b border-black px-2 pb-4 cursor-pointer"
-                aria-haspopup="true"
-                aria-expanded={isDropdownOpen}
-            >
-                <span className="text-lg font-medium text-gray-800">{items[activeIndex].question}</span>
-                
-                <svg className={`w-8 h-8 text-black transform transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
-            </button>
+            {/* POSITIONING CONTEXT WRAPPER */}
+            <div className="relative">
+                {/* CLICKABLE QUESTION RECTANGLE */}
+                <button
+                    onClick={handleQuestionClick}
+                    className="w-full flex justify-between items-center text-left border-b border-black px-2 pb-4 cursor-pointer"
+                    aria-haspopup="true"
+                    aria-expanded={isDropdownOpen}
+                >
+                    <span className="text-lg font-medium text-black md:text-xl">{items[activeIndex].question}</span>
 
-            {/* DROPDOWN COMPONENT */}
-            {isDropdownOpen && (
-                <FaqDropdown
-                    items={items}
-                    onSelect={handleSelectQuestion}
-                    onClose={() => setIsDropdownOpen(false)}
-                />
-            )}
-        </div>
+                    <svg className={`w-8 h-8 text-black transform transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
 
-        {/* VISIBLE ANSWER AREA */}
-        <div className="mt-4 p-4 text-black">
-            <p>{items[activeIndex].answer}</p>
+                {/* DROPDOWN COMPONENT */}
+                {isDropdownOpen && (
+                    <FaqDropdown
+                        items={items}
+                        onSelect={handleSelectQuestion}
+                        onClose={() => setIsDropdownOpen(false)}
+                    />
+                )}
+            </div>
+
+            {/* VISIBLE ANSWER AREA */}
+            <div className="mt-4 p-4 text-black">
+                <p className="md:text-lg">{items[activeIndex].answer}</p>
+            </div>
         </div>
-    </div>
-);
+    );
 }

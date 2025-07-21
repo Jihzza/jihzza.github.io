@@ -35,7 +35,7 @@ export default function MediaAppearancesSection() {
     }));
 
     return (
-        <section className="w-full mx-auto py-8 text-center">
+        <section className="w-full mx-auto py-8 text-center md:px-6">
             
             {/* 4. Use translated text for title and subtitle */}
             <SectionTextBlack title={t('mediaAppearances.title')}>
@@ -46,11 +46,11 @@ export default function MediaAppearancesSection() {
                 <img 
                     src={MediaAppearances}
                     alt={t('mediaAppearances.mainImageAlt')} // 5. Use translated alt text
-                    className="w-full max-w-3xl mx-auto"
+                    className="w-full max-w-3xl mx-auto md:w-80"
                 />
             </div>
 
-            <div className="flex justify-center items-center gap-14 mt-12 px-6">
+            <div className="flex justify-center items-center gap-14 mt-12 px-6  md:px-30 md:gap-24">
                 {mediaLinks.map((media, index) => (
                     <a 
                         key={index}

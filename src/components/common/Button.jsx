@@ -17,7 +17,7 @@ export default function Button({ children, className = '', ...props }) {
       className={`
         w-auto px-4 py-3 rounded-lg transition-colors duration-300
         bg-[#BFA200] hover:bg-yellow-600 
-        text-black font-semibold      
+        text-black font-semibold md:text-lg    
         focus:outline-none focus:ring-2 focus:ring-offset-2 
         focus:ring-yellow-400 focus:ring-offset-gray-800 
         ${className} 

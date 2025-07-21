@@ -29,7 +29,7 @@ export default function ExpandableGrid({ items = [], onItemSelected }) {
   // Memoized calculation for the number of columns based on screen width.
   const columns = useMemo(() => {
     if (width >= 1024) return 5; // Large screens
-    if (width >= 768) return 3;  // Medium screens
+    if (width >= 768) return 4;  // Medium screens
     return 2;                    // Small screens
   }, [width]);
 
@@ -74,7 +74,7 @@ export default function ExpandableGrid({ items = [], onItemSelected }) {
         return (
           <React.Fragment key={rowIndex}>
             {/* The row of selectable items. */}
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <motion.div layout className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {row.map((item) => (
                 <ServicesTypeBox
                   key={item.id}

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
+import { supabase } from '../lib/supabaseClient';
 import { getProfile } from '../services/authService';
 import { signInWithGoogle } from '../services/authService';
 
@@ -16,7 +16,7 @@ import PitchDeckStep from '../components/scheduling/pitchdeck/PitchDeckStep';
 import ContactInfoStep from '../components/scheduling/ContactInfoStep';
 import PaymentStep from '../components/scheduling/PaymentStep';
 import ChatbotStep from '../components/scheduling/ChatbotStep';
-
+import ConfirmationStep from '../components/scheduling/ConfirmationStep';
 // We will add imports for our other steps here as we build them.
 
 // COMPONENT DEFINITION
@@ -149,47 +149,54 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
     const handleInitiateCheckout = async () => {
         setIsProcessing(true);
 
-        // --- NEW ARCHITECTURE: Map services to their Payment Link URLs ---
-        // Replace these placeholder URLs with the real ones you created in your Stripe Dashboard.
-        const paymentLinkMapping = {
-            consultation_45: 'https://buy.stripe.com/test_28E8wPgq10NEeub2Lb1oI01',
-            consultation_60: 'https://buy.stripe.com/test_aFadR9a1D9kacm3clL1oI00',
-            consultation_75: 'https://buy.stripe.com/test_9B65kD8Xzcwm1HpetT1oI03',
-            consultation_90: 'https://buy.stripe.com/test_7sY7sLb5Haoe71J85v1oI04',
-            consultation_105: 'https://buy.stripe.com/test_9B600jb5HgMCcm3etT1oI05',
-            consultation_120: 'https://buy.stripe.com/test_14A28r2zb9kacm3bhH1oI06',
-            coaching_basic: 'https://buy.stripe.com/test_14A28r2zb9kacm3bhH1oI06',
-            coaching_standard: 'https://buy.stripe.com/test_9B6dR95Ln1RIcm35Xn1oI08',
-            coaching_premium: 'https://buy.stripe.com/test_6oU6oHflXfIycm385v1oI09',
-        };
+        try {
+            const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout-session`;
 
-        // CAPTURE THE STATE TO PRESERVE
-        const stateToPreserve = {
-            formData: formData,
-            currentStep: currentStep,
-            scrollPosition: window.scrollY
-        };
+            
+            // --- THIS IS THE FIX ---
+            // "Why": Replaced supabase.auth.session() with the new async method 
+            // supabase.auth.getSession() which is correct for Supabase v2.
+            const { data: { session } } = await supabase.auth.getSession();
+            const accessToken = session?.access_token;
 
-        // --- 2. SAVE STATE TO SESSION STORAGE ---
-        // We convert the object to a JSON string because storage can only hold strings.
-        sessionStorage.setItem('schedulingState', JSON.stringify(stateToPreserve));
+            if (!accessToken) {
+                throw new Error("User is not authenticated.");
+            }
+            // --- END OF FIX ---
 
-        // Determine the correct Payment Link URL
-        let paymentLinkUrl = '';
-        if (formData.serviceType === 'consultation') {
-            paymentLinkUrl = paymentLinkMapping[`consultation_${formData.consultation.duration}`];
-        } else if (formData.serviceType === 'coaching') {
-            paymentLinkUrl = paymentLinkMapping[`coaching_${formData.coaching.plan}`];
-        }
+            const response = await fetch(functionUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`, // Now this will work
+                },
+                body: JSON.stringify({
+                    formData: formData,
+                    userId: user.id,
+                    userEmail: user.email,
+                }),
+            });
 
-        if (paymentLinkUrl) {
-            window.location.href = paymentLinkUrl;
-        } else {
-            console.error("No payment link found for the selected service.");
-            sessionStorage.removeItem('schedulingState'); // Clean up if there's an error
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(errorBody.error || 'Failed to create checkout session.');
+            }
+
+            const { url: checkoutUrl } = await response.json();
+
+            if (checkoutUrl) {
+                window.location.href = checkoutUrl;
+            } else {
+                throw new Error("Did not receive a checkout URL.");
+            }
+
+        } catch (error) {
+            console.error("Checkout initiation failed:", error);
             setIsProcessing(false);
         }
     };
+
+
     const handleGoogleSignIn = async () => {
         // 1. Capture the current state into a single object.
         const stateToPreserve = {
@@ -216,17 +223,31 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
     };
 
     useEffect(() => {
+        console.log("SchedulingPage mounted. Checking URL.");
         const query = new URLSearchParams(window.location.search);
-
+        
         if (query.get('payment_status') === 'success') {
+            console.log("SUCCESS detected in URL. Setting paymentStatus to 'success'.");
             setPaymentStatus('success');
-            // You mmight also want to trigger saving the final order to your databse here.
-        }
-
-        if (query.get('payment_status') === 'cancelled') {
+            // Clean the URL to prevent re-triggering on refresh
+            window.history.replaceState(null, '', '');
+        } else if (query.get('payment_status') === 'cancelled') {
+            console.log("CANCEL detected in URL. Setting paymentStatus to 'cancelled'.");
             setPaymentStatus('cancelled');
+            window.history.replaceState(null, '', '');
         }
     }, []);
+
+    if (paymentStatus === 'success') {
+        console.log("Rendering ConfirmationStep because paymentStatus is 'success'.");
+        return (
+            <div className="h-auto flex flex-col items-center justify-center py-12 px-4">
+                <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
+                    <ConfirmationStep />
+                </div>
+            </div>
+        );
+    }
 
     useEffect(() => {
         // This effect runs whenever the initial state props from HomePage are provided.
@@ -241,12 +262,12 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
                     plan: initialCoachingPlan || prev.coaching.plan
                 }
             }));
-    
+
             // 2. Set the current step. Trust the initialStep prop from the parent if it exists.
             //    This is the key to resuming on Step 3.
             //    If no specific step is provided, default to step 2.
             setCurrentStep(initialStep || 2);
-    
+
             // 3. CRITICAL: Notify the parent component that we have consumed the initial props
             //    so it can reset its own state and prevent this logic from running again.
             if (onFlowStart) {
@@ -284,7 +305,13 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
             <SectionTextBlack title="Schedule Your Consultation" />
             <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
 
-                {/* Conditional Rendering: Display the correct component for the current step */}
+                {/* --- START OF THE MODIFIED LOGIC --- */}
+                {paymentStatus === 'success' ? (
+                    // If payment is successful, show only the confirmation
+                    <ConfirmationStep />
+                ) : (
+                    // Otherwise, show the normal multi-step form
+                    <>
                 {currentStep === 1 && (
                     <ServiceSelectionStep
                         // We pass the currently selected service from our state down as prop.
@@ -333,13 +360,13 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
 
                 {currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && (
                     <PaymentStep
-                        paymentStatus={paymentStatus}
                         formData={formData}
-                        price={price}
+                        price={price} // Assuming price calculation is still valid
                         onInitiateCheckout={handleInitiateCheckout}
                         isProcessing={isProcessing}
                     />
                 )}
+
 
                 {currentStep === 5 && (
                     <ChatbotStep />
@@ -369,12 +396,15 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
 
                         {/* Finish Button: Shown only on the last step */}
                         {currentStep === totalSteps && (
-                            <button onClick={() => alert("Flow Finished!")} className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors hover:bg-yellow-500">
-                                Finish
-                            </button>
+                                    <button onClick={() => alert("Flow Finished!")} className="...">
+                                        Finish
+                                    </button>
+                                )}
+                            </div>
                         )}
-                    </div>
+                    </>
                 )}
+
             </div>
         </div>
     );

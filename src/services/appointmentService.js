@@ -1,30 +1,76 @@
 // src/services/appointmentService.js
 
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../lib/supabaseClient'; // Ensure this path is correct
+import { startOfDay, endOfDay } from 'date-fns';
 
 /**
- * Fetches all appointments for a specific user.
- * This function encapsulates the database query, separating data access logic
- * from the UI components. This is a core principle of good architecture.
- *
- * @param {string} userId - The UUID of the user whose appointments are being requested.
- * @returns {Promise<{data: any[] | null, error: any | null}>} An object containing the fetched data or an error.
+ * @typedef {Object} Booking
+ * @property {string} id
+ * @property {string} appointment_start - The combined ISO 8601 timestamp for the appointment.
+ * @property {number} duration_minutes
+ * @property {string} user_id
  */
-export const getAppointmentsByUserId = async (userId) => {
-    // We select all columns from the 'appointments' table.
-    // We filter the rows where the 'user_id' column matches the provided userId.
-    // We order the results by the appointment_date in descending order (newest first).
-    const { data, error } = await supabase
-        .from('appointments')
-        .select('*')
-        .eq('user_id', userId)
-        .order('appointment_date', { ascending: false });
 
-    // Log errors to the console for easier debugging during development.
+/**
+ * Fetches appointments for a specific date directly from Supabase.
+ * This function now correctly queries the 'appointment_start' column.
+ *
+ * @param {Date} date - The date to fetch appointments for.
+ * @returns {Promise<{data: Booking[] | null, error: any | null}>}
+ */
+export const getAppointmentsForDate = async (date) => {
+  if (!date) {
+    return { data: null, error: new Error("Date is required.") };
+  }
+
+  const dayStart = startOfDay(date).toISOString();
+  const dayEnd = endOfDay(date).toISOString();
+
+  try {
+    // --- THE ONLY CHANGE IS HERE ---
+    // We are now querying the 'appointment_start' column to match your new database schema.
+    const { data, error } = await supabase
+      .from('appointments')
+      .select('*')
+      .gte('appointment_start', dayStart) // Changed from 'appointment_date'
+      .lte('appointment_start', dayEnd);   // Changed from 'appointment_date'
+
     if (error) {
-        console.error('Error fetching appointments:', error.message);
+      throw error;
     }
 
-    // Return the data and error to the calling component for state management.
-    return { data, error };
+    return { data, error: null };
+
+  } catch (error) {
+    console.error(`Failed to fetch appointments for date ${date.toISOString()}:`, error);
+    return { data: null, error };
+  }
+};
+
+/**
+ * Fetches all appointments for a given user.
+ *
+ * @param {string} userId - The user's UUID.
+ * @returns {Promise<{data: Booking[] | null, error: any | null}>}
+ */
+export const getAppointmentsByUserId = async (userId) => {
+    if (!userId) {
+        return { data: null, error: new Error("User ID is required.") };
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('appointments')
+            .select('*')
+            .eq('user_id', userId)
+            .order('appointment_start', { ascending: true }); // Also updated here for consistency
+
+        if (error) throw error;
+        
+        return { data, error: null };
+
+    } catch (error) {
+        console.error(`Failed to fetch appointments for user ${userId}:`, error);
+        return { data: null, error };
+    }
 };

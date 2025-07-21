@@ -1,53 +1,57 @@
-// src/pages/profile/AppointmentsPage.jsx
+// src/components/appointments/AppointmentCard.jsx
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { getAppointmentsByUserId } from '../../services/appointmentService';
-import AppointmentCard from '../../components/appointments/AppointmentCard';
-// 1. Import our new layout component.
-import ProfileSectionLayout from '../../components/profile/ProfileSectionLayout';
+import React from 'react';
+import { format, parseISO, addMinutes } from 'date-fns';
+import { ClockIcon, TagIcon, CalendarIcon } from '@heroicons/react/24/outline';
 
-export default function AppointmentsPage() {
-    const { user } = useAuth();
-    const [appointments, setAppointments] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+/**
+ * A reusable card component to display the summary of a single appointment.
+ * This is a presentational component that receives all its data via props.
+ *
+ * @param {object} appointment - The appointment data object from Supabase.
+ */
+export default function AppointmentCard({ appointment }) {
+    if (!appointment) return null;
 
-    // Data fetching logic remains unchanged.
-    useEffect(() => {
-        const loadAppointments = async () => {
-            if (!user) return;
-            try {
-                setLoading(true);
-                const { data, error: fetchError } = await getAppointmentsByUserId(user.id);
-                if (fetchError) throw fetchError;
-                setAppointments(data || []);
-            } catch (err) {
-                console.error("Failed to fetch appointments:", err);
-                setError("We couldn't load your appointments. Please try again later.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadAppointments();
-    }, [user]);
+    // --- DATA FORMATTING ---
+    // The "Why": We parse the ISO string from the database into a Date object
+    // that date-fns can work with. This is a critical step for reliability.
+    const startDateTime = parseISO(appointment.appointment_start);
+    const endDateTime = addMinutes(startDateTime, appointment.duration_minutes);
 
-    // The content rendering logic is now cleaner, as it doesn't worry about layout.
-    const renderContent = () => {
-        if (loading) return <p className="text-center text-gray-500">Loading your appointments...</p>;
-        if (error) return <p className="text-center text-red-500">{error}</p>;
-        if (appointments.length === 0) return <p className="text-center text-gray-500">You have no scheduled appointments.</p>;
-        return appointments.map(app => <AppointmentCard key={app.id} appointment={app} />);
-    };
+    const formattedDate = format(startDateTime, 'eeee, MMMM d, yyyy');
+    const formattedStartTime = format(startDateTime, 'p'); // e.g., "10:00 AM"
+    const formattedEndTime = format(endDateTime, 'p');     // e.g., "11:00 AM"
 
-    // 2. Wrap everything in the ProfileSectionLayout.
-    // Notice we pass the title as a prop. The layout handles rendering it.
-    // The `h1` and the main `div` have been removed from this file.
+    // Capitalize the service type for display
+    const serviceType = appointment.service_type
+        ? appointment.service_type.charAt(0).toUpperCase() + appointment.service_type.slice(1)
+        : 'Appointment';
+
+    // --- RENDER LOGIC ---
     return (
-        <ProfileSectionLayout title="My Appointments">
-            <div className="space-y-4">
-                {renderContent()}
+        // The main card container. It's a simple, styled div.
+        // It should NOT use ProfileSectionLayout.
+        <div className="bg-white shadow-md rounded-lg p-5 border border-gray-200 text-gray-800">
+            <div className="flex justify-between items-start">
+                <div>
+                    <h3 className="text-lg font-bold text-gray-900 flex items-center">
+                        <TagIcon className="h-5 w-5 mr-2 text-indigo-500" />
+                        {serviceType}
+                    </h3>
+                    <div className="flex items-center text-sm text-gray-600 mt-2">
+                        <CalendarIcon className="h-4 w-4 mr-1.5" />
+                        {formattedDate}
+                    </div>
+                </div>
+                <div className="text-right">
+                     <div className="flex items-center text-sm font-semibold text-gray-700">
+                        <ClockIcon className="h-4 w-4 mr-1.5" />
+                        <span>{`${formattedStartTime} - ${formattedEndTime}`}</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">{`(${appointment.duration_minutes} minutes)`}</p>
+                </div>
             </div>
-        </ProfileSectionLayout>
+        </div>
     );
 }

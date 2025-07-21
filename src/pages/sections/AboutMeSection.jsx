@@ -8,7 +8,7 @@ export default function AboutMeSection() {
     const { t } = useTranslation(); // 2. Initialize the hook
 
     return (
-        <section className="max-w-full py-4">
+        <section className="max-w-full py-4 md:px-6">
             {/* 3. Use the 't' function for the title and body */}
             <SectionText title={t('aboutMe.title')}>
                 {t('aboutMe.body')}

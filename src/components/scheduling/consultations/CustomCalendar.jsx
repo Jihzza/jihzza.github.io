@@ -1,8 +1,7 @@
 // src/components/scheduling/consultations/CustomCalendar.jsx
 
 import React, { useState } from 'react';
-// Add isSaturday and isSunday from date-fns
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, isSaturday, isSunday } from 'date-fns';
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, isSaturday, isSunday, isBefore, startOfToday, addHours } from 'date-fns';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 
 /**
@@ -12,8 +11,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
  *
  * @param {Date | null} selectedDate - The currently selected date from the parent component.
  * @param {function(Date): void} onDateSelect - The callback function to execute when a date is selected.
+ * @param {boolean} [isDateSelectionRestricted=false] - If true, disables past dates and weekends for scheduling.
  */
-export default function CustomCalendar({ selectedDate, onDateSelect }) {
+export default function CustomCalendar({ selectedDate, onDateSelect, isDateSelectionRestricted = false }) { // --- CHANGE #1: ADD NEW PROP ---
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
     const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
@@ -51,6 +51,7 @@ export default function CustomCalendar({ selectedDate, onDateSelect }) {
         const monthEnd = endOfMonth(monthStart);
         const startDate = startOfWeek(monthStart);
         const endDate = endOfWeek(monthEnd);
+
         const rows = [];
         let days = [];
         let day = startDate;
@@ -58,16 +59,27 @@ export default function CustomCalendar({ selectedDate, onDateSelect }) {
         while (day <= endDate) {
             for (let i = 0; i < 7; i++) {
                 const cloneDay = day;
-                const isWeekend = isSaturday(cloneDay) || isSunday(cloneDay);
+                let isDisabled = false;
+
+                // --- CHANGE #2: CONDITIONAL RESTRICTION LOGIC ---
+                // "The Why": All the disabling logic is now wrapped inside this 'if' block.
+                // It will only run when the component is explicitly told to restrict dates,
+                // making it flexible for both viewing and scheduling contexts.
+                if (isDateSelectionRestricted) {
+                    const isWeekend = isSaturday(cloneDay) || isSunday(cloneDay);
+                    const bookingCutoff = addHours(new Date(), 48);
+                    const isPastCutoff = isBefore(cloneDay, startOfToday()) || isBefore(cloneDay, bookingCutoff);
+                    if (isWeekend || isPastCutoff) {
+                        isDisabled = true;
+                    }
+                }
 
                 const cellClasses = [
                     'h-7', 'w-7', 'flex', 'items-center', 'justify-center',
                     'rounded-lg', 'border', 'transition-colors', 'duration-200', 'text-sm'
                 ];
-
-                if (isWeekend) {
-                    // --- CHANGE: WEEKEND STYLING ---
-                    // "Why": Add styles to visually disable weekends and prevent clicks.
+                
+                if (isDisabled) {
                     cellClasses.push('text-gray-600', 'border-transparent', 'cursor-not-allowed', 'line-through');
                 } else if (!isSameMonth(day, monthStart)) {
                     cellClasses.push('text-gray-500', 'border-transparent');
@@ -81,9 +93,7 @@ export default function CustomCalendar({ selectedDate, onDateSelect }) {
                     <div
                         key={day.toString()}
                         className={cellClasses.join(' ')}
-                        // --- CHANGE: PREVENT WEEKEND SELECTION ---
-                        // "Why": We only call onDateSelect if the day is not a weekend.
-                        onClick={() => !isWeekend && onDateSelect(cloneDay)}
+                        onClick={() => !isDisabled && onDateSelect(cloneDay)} // --- CHANGE #3: SIMPLIFIED CLICK HANDLER ---
                     >
                         <span>{format(day, 'd')}</span>
                     </div>

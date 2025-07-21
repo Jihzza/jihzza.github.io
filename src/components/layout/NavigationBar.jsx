@@ -45,7 +45,7 @@ export default function NavigationBar({ onChatClick, isChatbotOpen, onNavigate }
 
     return (
         <nav className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-700 bg-black shadow-lg z-50">
-            <div className="flex justify-around items-center w-full h-14 mx-auto">
+            <div className="flex justify-around items-center w-full h-14 md:h-16 mx-auto">
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     const isChatItem = !!item.onClick;
@@ -61,7 +61,7 @@ export default function NavigationBar({ onChatClick, isChatbotOpen, onNavigate }
                             className="flex flex-col items-center justify-center w-20 h-full"
                             aria-label={item.label}
                         >
-                            <Icon className={`h-7 w-7 transition-colors duration-300 ${isActiveItem ? 'text-yellow-400' : 'text-gray-400'}`} />
+                            <Icon className={`h-7 w-7 md:h-9 w-9 transition-colors duration-300 ${isActiveItem ? 'text-yellow-400' : 'text-gray-400'}`} />
                             {isActiveItem && (
                                 <span className="text-xs mt-1 font-semibold text-yellow-400">
                                     {item.label}

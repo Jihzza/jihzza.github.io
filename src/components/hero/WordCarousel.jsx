@@ -48,9 +48,9 @@ export default function WordCarousel() {
 
     // RENDER LOGIC
     return (
-        <div className="w-full flex justify-center py-6">
+        <div className="w-full flex justify-center py-6 lg:py-4">
             <div
-                className="w-[60%] overflow-x-auto cursor-grab active:cursor-grabbing word-carousel-container"
+                className="w-[60%] md:w-[50%] lg:w-[30%] overflow-x-auto cursor-grab active:cursor-grabbing word-carousel-container"
                 ref={carouselRef}
                 onMouseDown={handleDragStart}
                 onMouseMove={handleDragMove}
@@ -63,7 +63,7 @@ export default function WordCarousel() {
                 {/* 4. The rest of the component works as before, but with translated words */}
                 <div className="word-carousel-track flex">
                     {duplicateWords.map((word, index) => (
-                        <div key={index} className="flex-shrink-0 mx-8 text-lg text-white whitespace-nowrap">
+                        <div key={index} className="flex-shrink-0 mx-8 text-lg md:text-xl text-white whitespace-nowrap">
                             {word}
                         </div>
                     ))}

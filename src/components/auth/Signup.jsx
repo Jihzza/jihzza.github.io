@@ -69,9 +69,7 @@ export default function Signup({ onSubmit, isLoading }) {
             {/* Google button */}
             <GoogleButton />
             <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-400" />
-                </div>
+                
                 <div className="relative flex justify-center text-sm">
                     <span className="bg-white px-2 text-black">{t('signup.form.orSeparator')}</span>
                 </div>

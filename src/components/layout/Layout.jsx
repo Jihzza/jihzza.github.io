@@ -116,7 +116,7 @@ export default function Layout() {
 
       <main 
         ref={mainContentRef} 
-        className="flex-grow overflow-y-auto w-full"
+        className="flex-grow overflow-y-auto w-full overflow-x-hidden"
         
       >
         <Outlet />

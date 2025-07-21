@@ -21,13 +21,13 @@ export default function SocialMediaIcon({ href, iconSrc, altText }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={altText} // Provides an accessible name for screen readers.
-      className="group flex items-center justify-center rounded-xl border-2 border-[#BFA200] p-3 shadow-lg transition-all duration-300 ease-in-out hover:bg-[#BFA200] hover:shadow-xl hover:scale-110"
+      className="group flex items-center justify-center rounded-xl border-2 border-[#BFA200] p-3 md:p-4 shadow-lg transition-all duration-300 ease-in-out hover:bg-[#BFA200] hover:shadow-xl hover:scale-110"
     >
       <img
         src={iconSrc}
         alt={altText}
         // We control the size of the icon here for consistency.
-        className="w-8 h-8"
+        className="w-8 h-8 md:w-12 md:h-12"
       />
     </a>
   );

@@ -23,6 +23,8 @@ import CalendarPage from './pages/CalendarPage';
 import NotificationsPage from './pages/NotificationsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
+import SuccessPage from './pages/SuccessPage'; // Import the new SuccessPage
+
 
 
 function App() {
@@ -39,56 +41,61 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-          
+
           {/* Protected Routes */}
-          <Route 
-            path="/add-testimonial" 
-            element={<ProtectedRoute><AddTestimonialPage /></ProtectedRoute>} 
+          <Route
+            path="/add-testimonial"
+            element={<ProtectedRoute><AddTestimonialPage /></ProtectedRoute>}
           />
-          <Route 
-            path="/profile" 
-            element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} 
+          <Route
+            path="/profile"
+            element={<ProtectedRoute><ProfilePage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/profile/edit"
             element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/profile/account-settings"
             element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>}
           />
-          <Route 
-            path="/messages" 
-            element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} 
+          <Route
+            path="/messages"
+            element={<ProtectedRoute><MessagesPage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/messages/:conversationId"
             element={<ProtectedRoute><ConversationPage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/profile/appointments"
             element={<ProtectedRoute><AppointmentsPage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/profile/subscriptions"
             element={<ProtectedRoute><SubscriptionsPage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/profile/pitch-requests"
             element={<ProtectedRoute><PitchDeckRequestsPage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/profile/chatbot-history"
             element={<ProtectedRoute><ChatbotHistoryPage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/calendar"
             element={<ProtectedRoute><CalendarPage /></ProtectedRoute>}
           />
-          <Route 
+          <Route
             path="/notifications"
             element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}
           />
+          <Route 
+            path="/success" 
+            element={<SuccessPage />} 
+            />
+
         </Route>
       </Routes>
     </BrowserRouter>

@@ -14,17 +14,15 @@ import CustomCalendar from '../scheduling/consultations/CustomCalendar';
 export default function AppointmentCalendar({ appointments, selectedDate, onDateSelect }) {
     
     const highlightedDates = useMemo(() => {
-        return appointments ? appointments.map(app => parseISO(app.appointment_date)) : [];
+        return appointments ? appointments.map(app => parseISO(app.appointment_start)) : [];
     }, [appointments]);
 
     return (
-        // --- STYLING CHANGE IS HERE ---
-        // This wrapper provides the "card" styling and padding around the calendar.
         <div className="bg-[#002147] p-4 rounded-lg shadow-md w-full max-w-md mx-auto">
             <CustomCalendar
                 selectedDate={selectedDate}
                 onDateSelect={onDateSelect}
-                highlightedDates={highlightedDates}
+                isDateSelectionRestricted={false} // <-- ADD THIS LINE
             />
         </div>
     );

@@ -95,7 +95,7 @@
         "title": "Direct Coaching",
         "spots": "Limited Spots",
         "button": "Get My Number",
-        "selectPlan": "Select a Plan",
+        "selectPlan": "Get My Number",
         "learnMore": "Learn More",
         "tiers": {
           "basic": "Basic",
@@ -262,7 +262,7 @@
       }
     ],
     "buttons": {
-      "default": "Select a Coaching Type",
+      "default": "Get My Number",
       "invest": "Start Investing Smarter",
       "trainer": "Get Your Fitness Plan",
       "dating": "Enhance Your Dating Life",

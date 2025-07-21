@@ -1,13 +1,11 @@
-// src/components/hero/FeatureCarousel.jsx
+// src/components/hero/FeatureCarousel.jsx - RECOMMENDED CHANGES
 
 import React from 'react';
 import BaseCarousel from '../carousel/BaseCarousel';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import { useTranslation } from 'react-i18next';
 
 export default function FeatureCarousel() {
-    const { t } = useTranslation(); // 2. Initialize hook
-
-    // 3. Get the features array from the translation file
+    const { t } = useTranslation();
     const features = t('hero.featureCarousel', { returnObjects: true });
 
     const swiperConfig = {
@@ -25,21 +23,30 @@ export default function FeatureCarousel() {
     };
 
     const renderFeatureSlide = (feature, index) => (
-        <div className="bg-[#333333] px-4 py-2 space-y-2 justify-center items-center flex flex-col rounded-lg text-center h-full">
-            <h3 className="font-bold text-white text-lg">{feature.title}</h3>
-            <p className="text-white">{feature.subtitle}</p>
+        <div className="bg-[#333333] px-4 py-2 md:px-6 md:py-4 space-y-2 justify-center items-center flex flex-col rounded-lg text-center h-full">
+            <h3 className="font-bold text-white text-lg md:text-2xl">{feature.title}</h3>
+            <p className="text-white md:text-lg">{feature.subtitle}</p>
         </div>
     );
 
     return (
+        // --- OUTER WRAPPER ---
+        // Its only job is to be full-bleed on mobile/tablet.
         <div className="full-bleed py-8">
-            <BaseCarousel
-                items={features}
-                renderItem={renderFeatureSlide}
-                swiperConfig={swiperConfig}
-                containerClassName="feature-swiper"
-                slideClassName="swiper-slide-custom"
-            />
+            {/* --- INNER WRAPPER ---
+                - Centers itself (`mx-auto`).
+                - On desktop (`lg`), gets a max-width (`lg:max-w-6xl`).
+                - Applies our responsive gradient class.
+            */}
+            <div className="w-full lg:max-w-6xl mx-auto desktop-fade-container">
+                <BaseCarousel
+                    items={features}
+                    renderItem={renderFeatureSlide}
+                    swiperConfig={swiperConfig}
+                    containerClassName="feature-swiper"
+                    slideClassName="swiper-slide-custom"
+                />
+            </div>
         </div>
     );
 }

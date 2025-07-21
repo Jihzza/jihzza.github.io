@@ -15,8 +15,8 @@ export default function ServicesDetailBlock({ icon, title, description }) {
                 <img src={icon} alt={`${title} icon`} className="w-8 h-8" />
             </div>
             <div className="flex flex-col items-center text-center space-y-2">
-                <h4 className="font-medium text-white text-xl">{title}</h4>
-                <p className="text-white">{description}</p>
+                <h4 className="font-medium text-white text-xl md:text-2xl">{title}</h4>
+                <p className="text-white md:text-lg">{description}</p>
             </div>
         </div>
     );

@@ -54,7 +54,7 @@ export default function TestimonialsSection() {
     );
 
     return (
-        <section id="testimonials-section" className="w-full mx-auto py-8 text-center">
+        <section id="testimonials-section" className="w-full mx-auto py-8 text-center md:px-6">
             {/* 3. Use translated text */}
             <SectionTextWhite title={t('testimonials.title')}>
                 {t('testimonials.subtitle')}
@@ -74,7 +74,7 @@ export default function TestimonialsSection() {
                 )}
             </div>
 
-            <div className="mt-10">
+            <div className="mt-10 md:mt-0">
                 <Button onClick={handleAddTestimonialClick}>{t('testimonials.leaveButton')}</Button>
             </div>
         </section>

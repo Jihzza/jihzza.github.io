@@ -14,10 +14,10 @@ export default function LearnFromHeader() {
 
     return (
         // The main container uses flexbox to align items horizontally and center them vertically
-        <div className="flex items-center justify-center py-2">
+        <div className="flex items-center justify-center py-2 lg:py-0">
             {/* 3. Use the 't' function with our key */}
-            <span className="text-lg font-bold text-white mr-2">{t('hero.learnFrom')}</span>
-            <img src={DaGalowLogo} alt="DaGalow Logo" className="h-6" />
+            <span className="text-lg md:text-2xl font-bold text-white mr-2">{t('hero.learnFrom')}</span>
+            <img src={DaGalowLogo} alt="DaGalow Logo" className="h-6 md:h-7" />
         </div>
     );
 }

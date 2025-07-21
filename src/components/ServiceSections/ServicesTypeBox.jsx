@@ -13,28 +13,25 @@ import { motion } from 'framer-motion';
 export default function ServicesTypeBox({ icon, title, onClick, isSelected }) {
     return (
         <motion.div
-            layout // Animate layout changes (e.g., when grid columns change).
+            layout // Animate layout changes.
             onClick={onClick}
             className={`
-                p-4 border-2 rounded-lg cursor-pointer 
-                flex flex-col items-center justify-center text-center 
-                transition-colors duration-300
+                p-4 border-2 rounded-lg cursor-pointer
+                flex flex-col items-center justify-center text-center space-y-2 transition-colors duration-300 h-full
                 ${isSelected
-                    // If selected, we apply a scale transform to make it pop.
                     ? 'border-yellow-400 scale-105 shadow-lg'
-                    // If not selected, we use the default gold border.
                     : 'border-[#BFA200]'
                 }
             `}
-            whileTap={{ scale: 0.95 }} // Add a subtle shrink effect on tap for better UX.
+            whileTap={{ scale: 0.95 }} // Subtle shrink effect on tap.
         >
-            {/* Icon and Title */}
-            <div className="flex-grow flex items-center justify-center">
-                <img src={icon} alt={`${title} icon`} className="w-8 h-8" />
-            </div>
-            <div className="h-auto mt-2 flex items-center justify-center">
-                <h3 className="font-semibold text-white text-xs leading-tight">{title}</h3>
-            </div>
+            <img src={icon} alt={`${title} icon`} className="w-8 h-8" />
+            {/* --- MODIFICATION START --- */}
+            {/* By giving the h3 a fixed height (h-8 which is 2rem) and using flex to center its content,
+                we guarantee that this element's vertical space is always the same, whether the text
+                wraps to a second line or not. This is the key to uniform card heights. */}
+            <h3 className="font-semibold text-white text-xs md:text-sm leading-tight h-8 flex items-center justify-center">{title}</h3>
+            {/* --- MODIFICATION END --- */}
         </motion.div>
     );
 }

@@ -11,7 +11,7 @@ export default function ChatWithMeSection() {
   const { t } = useTranslation(); // 2. Initialize the hook
 
   return (
-    <section className="max-w-4xl mx-auto py-8 text-center space-y-6" id="chat-section">
+    <section className="max-w-4xl mx-auto py-8 text-center space-y-6 md:px-6" id="chat-section">
       
       {/* 3. Use translated text for the title and subtitle */}
       <SectionTextBlack title={t('chatWithMe.title')}>

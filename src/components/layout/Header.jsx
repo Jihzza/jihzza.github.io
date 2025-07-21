@@ -25,20 +25,20 @@ const Header = forwardRef(({ onMenuClick }, ref) => {
     };
 
     return (
-        <header ref={ref} className="sticky top-0 z-10 bg-black shadow-md h-14 flex items-center justify-between px-4 py-2 relative">
+        <header ref={ref} className="sticky top-0 z-10 bg-black shadow-md h-14 flex items-center justify-between px-4 py-2 md:px-6 md:py-8 relative">
             <div className="flex items-center">
                 <button
                     type="button"
                     className="p-2 text-gray-400 hover:text-white"
                     onClick={onMenuClick}
                 >
-                    <img src={HamburgerIcon} alt="Hamburger Icon" className="h-5 w-5" />
+                    <img src={HamburgerIcon} alt="Hamburger Icon" className="h-5 w-5 md:h-7 md:w-7" />
                 </button>
             </div>
 
             <div className="flex-1 flex justify-center px-2">
                 <Link to="/" onClick={handleLogoClick}>
-                    <img src={DaGalowLogo} alt="DaGalow Logo" className="w-[134px]" />
+                    <img src={DaGalowLogo} alt="DaGalow Logo" className="w-[134px] md:w-[180px]" />
                 </Link>
             </div>
 

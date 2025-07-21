@@ -32,7 +32,7 @@ export default function NotificationsBell() {
                 aria-label={t('notifications.bellAriaLabel', { count: unreadCount })}
             >
                 {/* 4. Use translated alt text */}
-                <img src={NotificationIcon} alt={t('notifications.bellIconAlt')} className={`h-5 w-5 ${isActive ? 'text-yellow-400' : 'text-white'}`} />
+                <img src={NotificationIcon} alt={t('notifications.bellIconAlt')} className={`h-5 w-5 md:h-7 md:w-7 ${isActive ? 'text-yellow-400' : 'text-white'}`} />
                 {unreadCount > 0 && (
                     <span className="absolute top-1 right-1 block h-5 w-5 transform -translate-y-1/2 translate-x-1/2 rounded-full bg-red-500 text-white text-xs flex items-center justify-center ring-2 ring-black">
                         {unreadCount > 9 ? '9+' : unreadCount}

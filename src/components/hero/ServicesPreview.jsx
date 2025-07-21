@@ -15,17 +15,25 @@ export default function ServicesPreview({ onScheduleConsultation, onScheduleCoac
   return (
     // `px-4` for horizontal padding.
     // `py-8` for vertical spacing.
-    <div className="py-2">
+    <div className="py-2 md:py-0 md:py-4 lg:py-0 lg:pt-8 lg:pb-4">
       {/* This is the main container for the service cards.
         - `flex flex-col`: Stacks the items vertically.
         - `space-y-4`: Adds vertical space between each card.
         - `max-w-xl mx-auto`: Constrains the width and centers it on larger screens.
       */}
-      <div className="flex flex-col space-y-4 max-w-xl mx-auto">
-        {/* We render each of our new card components in order. */}
-        <ConsultationCard onScheduleClick={onScheduleConsultation} />
-        <CoachingCard onScheduleClick={onScheduleCoaching} />
-        <InvestmentCard onScheduleClick={onScheduleInvestment} />
+      <div className="flex flex-col md:px-30 lg:flex-row space-y-4 lg:space-y-0 lg:space-x-6 mx-auto justify-center">
+      {/* We render each of our new card components in order. */}
+      <div className="lg:flex-1">
+          <ConsultationCard onScheduleClick={onScheduleConsultation} />
+        </div>
+        
+        <div className="lg:flex-1">
+          <CoachingCard onScheduleClick={onScheduleCoaching} />
+        </div>
+
+        <div className="lg:flex-1">
+          <InvestmentCard onScheduleClick={onScheduleInvestment} />
+        </div>
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ export default function LanguageSelector() {
                 className="flex items-center text-white rounded-full"
                 aria-label="Change language"
             >
-                <img src={GlobeIcon} alt="Globe" className="h-5 w-5" />
+                <img src={GlobeIcon} alt="Globe" className="h-5 w-5 md:h-7 md:w-7" />
             </button>
 
             {isOpen && (
@@ -40,7 +40,7 @@ export default function LanguageSelector() {
                             <li key={lang.key}>
                                 <button
                                     onClick={() => handleLanguageChange(lang.key)}
-                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center justify-between"
+                                    className="w-full text-left px-4 py-2 text-sm md:text-base text-gray-700 hover:bg-gray-100 flex items-center justify-between"
                                 >
                                     <span>{lang.label}</span>
                                     {i18n.language === lang.key && (

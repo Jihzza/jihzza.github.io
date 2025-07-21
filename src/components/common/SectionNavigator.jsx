@@ -20,6 +20,7 @@ export default function SectionNavigator({ sections, activeSectionId, onSelectSe
                     onClick={() => onSelectSection(section.id)}
                     className={`
                         px-3 py-1 rounded-lg text-sm 
+                        md:px-4 md:py-2 md:text-lg
                         ${activeSectionId === section.id
                             ? 'bg-[#BFA200] text-black shadow-lg scale-105' // Active state
                             : 'bg-transparent text-black border-2 border-[#BFA200] hover:bg-[#BFA200] hover:text-black'    // Inactive state

@@ -82,7 +82,7 @@ export default function CoachingSection({ onBookCoaching }) {
     }
 
     return (
-        <section id="coaching-section" ref={sectionRef} className="max-w-4xl mx-auto py-4">
+        <section id="coaching-section" ref={sectionRef} className="max-w-4xl mx-auto py-4 md:px-6">
             <SectionText title={t('coaching.title')}>
                 {t('coaching.subtitle')}
             </SectionText>

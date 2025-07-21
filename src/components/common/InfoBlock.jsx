@@ -24,12 +24,12 @@ export default function InfoBlock({ iconSrc, altText, children }) {
       <img
         src={iconSrc}
         alt={altText}
-        className="w-4" // A medium, distinct size for the icon.
+        className="w-4 md:w-6" // A medium, distinct size for the icon.
       />
 
       {/* The text content passed in as children is rendered here. */}
       {/* We ensure the text is centered and has a constrained width for readability. */}
-      <div className="text-black text-xs text-center max-w-md">
+      <div className="text-black text-xs text-center max-w-md md:text-base">
         {children}
       </div>
 
