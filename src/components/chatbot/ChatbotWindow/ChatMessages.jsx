@@ -17,7 +17,7 @@ export default function ChatMessages({ messages, loading, scrollRef }) {
     <div ref={scrollRef} className="flex-1 py-2 overflow-y-auto">
       {messages.map((message, index) => (
         <div key={index} className={`flex ${message.from === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-          <div className={`w-full p-4 flex items-start gap-2 ${message.from === 'user' ? 'justify-end' : 'bg-[#333333]/70'}`}>
+          <div className={`w-full px-4 flex items-start gap-2 ${message.from === 'user' ? 'justify-end' : 'py-4 bg-[#333333]/70'}`}>
             {message.from === 'bot' && (
               <img
                 src={BotIcon}

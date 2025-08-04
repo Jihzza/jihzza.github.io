@@ -1,4 +1,5 @@
 // supabase/functions/stripe-webhooks/index.ts
+// FINAL VERSION: This code is now fully aligned with the production database schema.
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@11.1.0";
@@ -118,11 +119,15 @@ serve(async (req) => {
 
       if (serviceType === 'consultation') {
         console.log("Inserting into 'appointments' table...");
+        
+        // Combine date and time from metadata into a single ISO 8601 timestamp string.
+        const appointmentStart = `${metadata.date}T${metadata.time}:00Z`;
+
         const { error } = await supabaseAdmin.from('appointments').insert({
           user_id: userId,
-          appointment_date: metadata.date,
+          // THE FINAL FIX: Aligning all column names with the user-provided SQL schema.
+          appointment_start: appointmentStart,
           duration_minutes: parseInt(metadata.duration, 10),
-          appointment_time: metadata.time,
           contact_name: metadata.name,
           contact_email: metadata.email,
           contact_phone: metadata.phone,
@@ -137,7 +142,6 @@ serve(async (req) => {
         const { error } = await supabaseAdmin.from('subscriptions').insert({
           user_id: userId,
           plan_id: metadata.plan,
-          // THE FINAL FIX: Use a lowercase 'active' to match the likely DB enum value.
           status: 'active',
           stripe_subscription_id: session.subscription as string,
         });

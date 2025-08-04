@@ -20,7 +20,14 @@ export default function ChatInterface({
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
-    const [sessionId] = useState(() => crypto.randomUUID());
+    const SESSION_KEY = 'chatbot-session-id';
+    const [sessionId] = useState(() => {
+        const cached = sessionStorage.getItem(SESSION_KEY);
+        if (cached) return cached;            // ✅ reuse on refresh / welcome call
+        const id = crypto.randomUUID();       // RFC-4122 v4 UUID
+        sessionStorage.setItem(SESSION_KEY, id);
+        return id;
+    });
 
     // HOOKS (No changes needed here)
     useEffect(() => {
@@ -69,16 +76,14 @@ export default function ChatInterface({
                 {messages.map((msg, index) => (
                     <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`}>
                         {/* Step 4: Update message bubble styling */}
-                        <div className={`w-full p-1 flex items-start gap-2 ${
-                            msg.sender === 'bot' ? 'rounded-xl rounded-tl-sm bg-[#333333]/70' : ''
-                        }`}>
-                            
-                            {/* Step 5: Wrap user message to align it properly */}
-                            <span className={`max-w-xs lg:max-w-md px-4 py-2 text-white ${
-                                msg.sender === 'user' 
-                                    ? 'bg-[#BFA200] text-black ml-auto rounded-xl rounded-tr-sm' 
-                                    : 'rounded-xl rounded-tl-sm'
+                        <div className={`w-full p-1 flex items-start gap-2 ${msg.sender === 'bot' ? 'rounded-xl rounded-tl-sm bg-[#333333]/70' : ''
                             }`}>
+
+                            {/* Step 5: Wrap user message to align it properly */}
+                            <span className={`max-w-xs lg:max-w-md px-4 py-2 text-white ${msg.sender === 'user'
+                                ? 'bg-[#BFA200] text-black ml-auto rounded-xl rounded-tr-sm'
+                                : 'rounded-xl rounded-tl-sm'
+                                }`}>
                                 {msg.text}
                             </span>
                         </div>
@@ -88,7 +93,7 @@ export default function ChatInterface({
                 {isLoading && (
                     <div className="flex justify-start">
                         <div className="w-full p-4 flex items-center gap-2 bg-[#333333]/70">
-                            <img src={BotIcon} alt="Bot Avatar" className="w-6 h-6"/>
+                            <img src={BotIcon} alt="Bot Avatar" className="w-6 h-6" />
                             <span className="animate-pulse text-white">...</span>
                         </div>
                     </div>

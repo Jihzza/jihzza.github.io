@@ -42,11 +42,19 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight = 0 }) {
   const viewport = useVisualViewport();
 
   // ----------------------------- LOCAL STATE ------------------------------
-  const [messages, setMessages] = useState(() => [{ from: "bot", text: t("chatbot.messages.initial") }]);
+  const [messages, setMessages] = useState([]);
   const [userText, setUserText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sessionId] = useState(() => crypto.randomUUID());
-  const chatListRef = useRef(null);
+  const SESSION_KEY = 'chatbot-session-id';
+  const [sessionId] = useState(() => {
+    const cached = sessionStorage.getItem(SESSION_KEY);
+    if (cached) return cached;            // reuse across welcome + prompts
+    const id = crypto.randomUUID();       // generate once per tab
+    sessionStorage.setItem(SESSION_KEY, id);
+    return id;
+  }); const chatListRef = useRef(null);
+  const hasFetchedWelcome = useRef(false);
+  const WELCOME_ENDPOINT = import.meta.env.VITE_N8N_WELCOME_WEBHOOK_URL;
 
   // -----------------------------------------------------------------------
   // Detect software‑keyboard presence. We assume that if the viewport height
@@ -97,7 +105,7 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight = 0 }) {
 
     // Push a new history state when chatbot opens to track OS back button
     const chatbotState = { chatbotOpen: true, timestamp: Date.now() };
-    
+
     try {
       window.history.pushState(chatbotState, '', window.location.href);
     } catch (error) {
@@ -105,7 +113,7 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight = 0 }) {
       console.warn('Could not set history state for chatbot:', error);
       return;
     }
-    
+
     const handlePopState = (event) => {
       try {
         // Check if the popped state is our chatbot state
@@ -126,7 +134,7 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight = 0 }) {
     // Cleanup function to remove the event listener and restore history
     return () => {
       window.removeEventListener('popstate', handlePopState);
-      
+
       // If the chatbot is being closed normally (not via OS back), 
       // we need to clean up the history state we added
       try {
@@ -191,24 +199,114 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight = 0 }) {
     const textToSend = userText.trim();
     setUserText("");
     setLoading(true);
+    console.log("→ Sending to chatbots:", textToSend, { sessionId, userId: user?.id });
+
+    // Define multiple webhook endpoints
+    const webhooks = [
+      "https://rafaello.app.n8n.cloud/webhook/filter",
+      "https://rafaello.app.n8n.cloud/webhook/decision",
+    ];
 
     try {
-      const response = await fetch("https://rafaello.app.n8n.cloud/webhook/chat", {
+      // Send to all webhooks simultaneously using Promise.allSettled
+      const webhookPromises = webhooks.map(async (webhookUrl) => {
+        try {
+          const response = await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              session_id: sessionId,
+              chatInput: textToSend,
+              user_id: user?.id
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const raw = await response.json();
+          const item = Array.isArray(raw) ? raw[0] : raw;
+          const { content, value, output } = item;
+          const text = content ?? value ?? output ?? t("chatbot.messages.fetchError");
+
+          return { success: true, text, source: webhookUrl };
+        } catch (error) {
+          console.error(`Error with webhook ${webhookUrl}:`, error);
+          return {
+            success: false,
+            error: error.message,
+            source: webhookUrl
+          };
+        }
+      });
+
+      // Fire-and-forget filter
+      await fetch("https://rafaello.app.n8n.cloud/webhook/filter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId, chatInput: textToSend, user_id: user?.id }),
+        body: JSON.stringify({ session_id: sessionId, chatInput: textToSend, user_id: user?.id })
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      const botMsg = { from: "bot", text: data.output || t("chatbot.messages.fetchError") };
-      setMessages((prev) => [...prev, botMsg]);
+
+      // Now fetch the only reply you’ll display
+      const res = await fetch("https://rafaello.app.n8n.cloud/webhook/decision", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId, chatInput: textToSend, user_id: user?.id })
+      });
+      const data = await res.json();
+      const { content, value, output } = Array.isArray(data) ? data[0] : data;
+      const text = content ?? value ?? output ?? t("chatbot.messages.fetchError");
+      setMessages(prev => [...prev, { from: "bot", text }]);
+
+
     } catch (err) {
-      console.error(err);
-      setMessages((prev) => [...prev, { from: "bot", text: t("chatbot.messages.connectionError") }]);
+      console.error("ChatbotWindow.sendMessage error:", err);
+      setMessages((prev) => [...prev, {
+        from: "bot",
+        text: t("chatbot.messages.connectionError")
+      }]);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isOpen && !hasFetchedWelcome.current) {
+      fetchWelcome();
+      hasFetchedWelcome.current = true;      // block repeats for this session
+    }
+    // reset the guard if the user closes the window
+    if (!isOpen) hasFetchedWelcome.current = false;
+  }, [isOpen]);
+
+  async function fetchWelcome() {
+    setLoading(true);
+    try {
+      const res = await fetch(WELCOME_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: sessionId,
+          user_id: user?.id           // matches what the workflow expects
+        })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const raw = await res.json();
+      const item = Array.isArray(raw) ? raw[0] : raw;   // <- n8n returns an array when “Last Node” is used :contentReference[oaicite:0]{index=0}
+      const { content, value, output } = item;          // handle any of the 3 possible names
+      const text = content ?? value ?? output ?? "👋";
+      setMessages(prev => [...prev, { from: "bot", text }]);
+    } catch (err) {
+      console.error(err);
+      setMessages(prev => [
+        ...prev,
+        { from: "bot", text: "Sorry, I couldn’t fetch the welcome message." }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   // Reset panel height and clear input each time the window opens --------------------------------
   useEffect(() => {
