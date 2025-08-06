@@ -56,7 +56,15 @@ export default function ChatInterface({
             if (!response.ok) throw new Error('Network response was not ok');
 
             const data = await response.json();
-            const text = data.output ?? data.reply ?? "Sorry, I had an issue processing that.";
+
+            const extractText = (obj) => {
+                const keys = ['output', 'content', 'value', 'text', 'message', 'reply'];
+                for (const k of keys) if (typeof obj?.[k] === 'string' && obj[k].trim()) return obj[k];
+                for (const k in obj) if (typeof obj[k] === 'string' && obj[k].trim()) return obj[k];
+                return null;
+            };
+
+            const text = extractText(data) ?? "Sorry, I had an issue processing that.";
             setMessages(prev => [...prev, { text, sender: 'bot' }]);
         } catch (error) {
             console.error("Error communicating with the chatbot:", error);

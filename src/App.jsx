@@ -1,6 +1,8 @@
 // src/App.jsx
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useAuth } from './contexts/AuthContext';
 
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
@@ -23,11 +25,14 @@ import CalendarPage from './pages/CalendarPage';
 import NotificationsPage from './pages/NotificationsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
-import SuccessPage from './pages/SuccessPage'; // Import the new SuccessPage
-
-
+import SuccessPage from './pages/SuccessPage';
 
 function App() {
+  const hasFetchedWelcome = useRef(false);
+  const { user, loading } = useAuth();
+
+  // Note: Welcome workflow is now handled by ChatbotWindow.jsx to avoid duplicate calls
+  // and ensure the welcome message is displayed in the correct context
   return (
     <BrowserRouter>
       <Routes>
@@ -91,10 +96,10 @@ function App() {
             path="/notifications"
             element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}
           />
-          <Route 
-            path="/success" 
-            element={<SuccessPage />} 
-            />
+          <Route
+            path="/success"
+            element={<SuccessPage />}
+          />
 
         </Route>
       </Routes>

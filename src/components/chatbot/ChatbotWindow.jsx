@@ -272,13 +272,11 @@ export default function ChatbotWindow({ isOpen, onClose, navBarHeight = 0 }) {
   };
 
   useEffect(() => {
-    if (isOpen && !hasFetchedWelcome.current) {
-      fetchWelcome();
-      hasFetchedWelcome.current = true;      // block repeats for this session
+    if (user?.id && !hasFetchedWelcome.current) {
+      fetchWelcome();            // includes both session_id and user_id
+      hasFetchedWelcome.current = true;
     }
-    // reset the guard if the user closes the window
-    if (!isOpen) hasFetchedWelcome.current = false;
-  }, [isOpen]);
+  }, [user?.id]); 
 
   async function fetchWelcome() {
     setLoading(true);
