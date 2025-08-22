@@ -26,6 +26,7 @@ import NotificationsPage from './pages/NotificationsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import SuccessPage from './pages/SuccessPage';
+import ChatbotPage from './pages/ChatbotPage';
 
 function App() {
   const hasFetchedWelcome = useRef(false);
@@ -100,7 +101,10 @@ function App() {
             path="/success"
             element={<SuccessPage />}
           />
-
+          <Route 
+            path="/chat"
+            element={<ChatbotPage />} 
+          />
         </Route>
       </Routes>
     </BrowserRouter>

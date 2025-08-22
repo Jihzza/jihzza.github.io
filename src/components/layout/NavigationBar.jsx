@@ -1,76 +1,96 @@
 // src/components/layout/NavigationBar.jsx
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  HomeIcon,
+  CalendarIcon,
+  ChatBubbleLeftRightIcon,
+  InboxIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
+import { useAuth } from "../../contexts/AuthContext";      // ← get current user
+import OctagonAvatar from "../common/OctagonAvatar";
 
-import { useLocation, useNavigate } from 'react-router-dom';
-import { HomeIcon, CalendarIcon, ChatBubbleLeftRightIcon, InboxIcon, UserIcon } from "@heroicons/react/24/outline";
+export default function NavigationBar({ onNavigate }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();                              // ← user may be null if logged out
+  const avatarSrc = user?.user_metadata?.avatar_url || ""; // ← keep empty if none
 
-// The component now takes an `onNavigate` prop and no longer uses `Maps` directly for page changes.
-export default function NavigationBar({ onChatClick, isChatbotOpen, onNavigate }) {
-    const location = useLocation();
-    const navigate = useNavigate(); // Still needed for the pure chatbot navigation case.
+  const navItems = [
+    { icon: HomeIcon, label: "Home", path: "/" },
+    { icon: CalendarIcon, label: "Calendar", path: "/calendar" },
+    { icon: ChatBubbleLeftRightIcon, label: "Chat", path: "/chat" },
+    { icon: InboxIcon, label: "Messages", path: "/messages" },
+    { icon: UserIcon, label: "Profile", path: "/profile" }, // we'll replace the icon at render time if we have an avatar
+  ];
 
-    const navItems = [
-        { icon: HomeIcon, label: 'Home', path: '/' },
-        { icon: CalendarIcon, label: 'Calendar', path: '/calendar' },
-        { icon: ChatBubbleLeftRightIcon, label: 'Chat', onClick: onChatClick },
-        { icon: InboxIcon, label: 'Messages', path: '/messages' },
-        { icon: UserIcon, label: 'Profile', path: '/profile' }
-    ];
+  const isActive = (path) => {
+    if (!path) return false;
+    if (path === "/") return location.pathname === "/";
+    return location.pathname === path || location.pathname.startsWith(path + "/");
+  };
 
-    const isActive = (path) => {
-        if (!path) return false;
-        return location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
-    };
+  const handleItemClick = (item) => {
+    const targetPath = item.path;
+    if (!targetPath) return;
 
-    const handleItemClick = (item) => {
-        // Rule #1: The Chat icon is a simple toggle. No navigation involved.
-        if (item.onClick) {
-            item.onClick();
-            return;
-        }
+    if (typeof onNavigate === "function") {
+      onNavigate(targetPath);
+    } else {
+      navigate(targetPath);
+    }
+  };
 
-        const targetPath = item.path;
+  return (
+    <nav className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-800 bg-black/90 backdrop-blur z-50">
+      <div className="flex justify-around items-center w-full h-14 md:h-16 mx-auto">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.path);
+          const isProfile = item.label === "Profile";
+          const showAvatar = isProfile && !!avatarSrc;
 
-        // Rule #2: If the chatbot is open, its state takes absolute priority.
-        // The goal is to close the chatbot and navigate to the target page.
-        if (isChatbotOpen) {
-            onChatClick(); // Close the chatbot
-            navigate(targetPath); // Directly navigate to the destination
-            return; // Stop further execution.
-        }
-        
-        // Rule #3: If the chatbot is closed, use the robust parent handler.
-        // This handles both new navigation and the "go back" feature explicitly.
-        onNavigate(targetPath);
-    };
+          return (
+            <button
+              key={item.label}
+              onClick={() => handleItemClick(item)}
+              className="flex flex-col items-center justify-center w-20 h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 rounded-lg"
+              aria-label={item.label}
+              aria-current={active ? "page" : undefined}
+              type="button"
+            >
+              {showAvatar ? (
+                <OctagonAvatar
+                  src={avatarSrc}
+                  alt="Your profile"
+                  size={24}          // ~ h-7 / w-7
+                  ringWidth={1}
+                  gap={2}
+                  ringColor={active ? "#FACC15" : "#9CA3AF"} // yellow-400 when active, gray-400 when inactive
+                  className={active ? "scale-105 transition-transform duration-150" : "transition-transform duration-150"}
+                />
+              ) : (
+                <Icon
+                  className={[
+                    "h-7 w-7 md:h-8 md:w-8 transition-transform duration-150",
+                    active ? "text-yellow-400 scale-105" : "text-gray-400",
+                  ].join(" ")}
+                />
+              )}
 
-    return (
-        <nav className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-700 bg-black shadow-lg z-50">
-            <div className="flex justify-around items-center w-full h-14 md:h-16 mx-auto">
-                {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isChatItem = !!item.onClick;
-                    
-                    const isActiveItem = isChatItem
-                        ? isChatbotOpen
-                        : (isActive(item.path) && !isChatbotOpen);
-
-                    return (
-                        <button
-                            key={item.label}
-                            onClick={() => handleItemClick(item)}
-                            className="flex flex-col items-center justify-center w-20 h-full"
-                            aria-label={item.label}
-                        >
-                            <Icon className={`h-7 w-7 md:h-9 w-9 transition-colors duration-300 ${isActiveItem ? 'text-yellow-400' : 'text-gray-400'}`} />
-                            {isActiveItem && (
-                                <span className="text-xs mt-1 font-semibold text-yellow-400">
-                                    {item.label}
-                                </span>
-                            )}
-                        </button>
-                    );
-                })}
-            </div>
-        </nav>
-    );
+              <span
+                className={[
+                  "text-[10px] mt-0.5 md:mt-1 font-medium transition-opacity",
+                  active ? "text-yellow-400 opacity-100" : "text-gray-400 opacity-80",
+                ].join(" ")}
+              >
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
 }

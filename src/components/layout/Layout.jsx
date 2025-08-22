@@ -5,11 +5,9 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import NavigationBar from './NavigationBar';
 import SidebarMenu from './SidebarMenu';
-import ChatbotWindow from '../chatbot/ChatbotWindow'; // Ensure correct path
 import { useAuth } from '../../contexts/AuthContext';
 
 // --- HOOKS ---
-// This should be the exact same hook used in ChatbotWindow.jsx
 // For maintainability, this should be in its own file (e.g., /src/hooks/useVisualViewport.js)
 // and imported here, but is included for completeness.
 function useVisualViewport() {
@@ -122,12 +120,6 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      {/* The ChatbotWindow is now controlled by its own internal viewport logic */}
-      <ChatbotWindow
-        isOpen={isChatbotOpen}
-        onClose={handleChatClick}
-        // navBarHeight is no longer needed, the new hook handles layout shifts
-      />
       
       {/* The NavigationBar is now conditionally rendered.
         This prevents it from occupying space or being visible when the chat is open,
