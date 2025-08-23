@@ -1,25 +1,25 @@
-// Coaching.jsx
-import { useRef } from "react";
-import SectionCta from "../../components/ui/SectionCta";
-import SectionText from "../../components/ui/SectionText";
+// src/pages/sections/PitchDeckSection.jsx
+import React, { useRef } from 'react';
+import SectionText from '../../components/common/SectionTextWhite';
 import PitchDeckCard from '../../components/pitchdeck/PitchDeckCard';
-
-import Button from "../../components/ui/Button";
+import StickyButton from '../../components/common/StickyButton';
 import { useTranslation } from 'react-i18next';
+
 import Perspetiv from '../../assets/images/Perspectiv Banner.svg';
 import GalowClub from '../../assets/images/Galow Banner.svg';
 
-export default function Consultations() {
-    const sectionRef = useRef(null);
+export default function PitchDeckSection({ onBookPitchDeck }) {
     const { t } = useTranslation();
+    const sectionRef = useRef(null);
 
     const pitchDecks = t('pitchDeck.decks', { returnObjects: true }).map((deck, index) => ({
         ...deck,
         id: ['perspetiv', 'galowclub'][index],
         icon: [Perspetiv, GalowClub][index]
     }));
+
     return (
-        <section ref={sectionRef} className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4">
+        <section ref={sectionRef} id="invest-section" className="max-w-4xl mx-auto py-4">
             <SectionText title={t('pitchDeck.title')} />
 
             <div className="flex flex-col md:flex-row gap-6 md:px-6">
@@ -39,13 +39,15 @@ export default function Consultations() {
                 ))}
             </div>
 
-            <SectionText title={t('pitchDeck.investTitle')}>
-                {t('pitchDeck.investSubtitle')}
-            </SectionText>
+            <div className="mt-6 md:px-6">
+                <SectionText title={t('pitchDeck.investTitle')}>
+                    {t('pitchDeck.investSubtitle')}
+                </SectionText>
+            </div>
 
-            <SectionCta sectionRef={sectionRef}>
-                <Button>{t('pitchDeck.buttonText')}</Button>
-            </SectionCta>
+            <StickyButton containerRef={sectionRef} onClick={onBookPitchDeck}>
+                {t('pitchDeck.buttonText')}
+            </StickyButton>
         </section>
     );
 }

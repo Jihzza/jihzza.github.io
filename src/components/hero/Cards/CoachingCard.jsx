@@ -20,7 +20,7 @@ export default function CoachingCard({ onScheduleClick }) {
   // 4. Update button text logic to use translations
   const buttonText = selectedTier
     ? `${t('hero.services.coaching.button')} - ${selectedTier.price}€/${selectedTier.billingCycle}`
-    : t('hero.services.coaching.selectPlan');
+    : t('hero.services.coaching.button'); // Always actionable: "Schedule Coaching"
 
   const handleCardClick = () => {
     document.getElementById('coaching-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -28,9 +28,7 @@ export default function CoachingCard({ onScheduleClick }) {
 
   const handleButtonClick = (e) => {
     e.stopPropagation();
-    if (selectedTier) {
-      onScheduleClick(selectedTier);
-    }
+    onScheduleClick?.(selectedTier?.id ?? null);
   };
 
   const handleTierClick = (e, planId) => {
@@ -44,7 +42,7 @@ export default function CoachingCard({ onScheduleClick }) {
       className="bg-transparent border-2 md:border-3 border-[#BFA200] rounded-lg p-6 text-center flex flex-col items-center cursor-pointer h-full"
     >
       <h3 className="text-3xl font-bold text-white">{t('hero.services.coaching.title')}</h3>
-      
+
       <div className="flex justify-center space-x-2 my-6 lg:my-0 lg:mt-6 lg:mb-2 w-full">
         {tiers.map((tier) => (
           <div
