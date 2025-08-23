@@ -3,9 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import HeroSection from './sections/HeroSection';
 import AboutMeSection from './sections/AboutMeSection';
-import ConsultationsSection from './sections/ConsultationsSection';
-import CoachingSection from './sections/CoachingSection';
-import PitchDeckSection from './sections/PitchDeckSection';
+import ConsultationsSection from './sections/Consultations';
+import CoachingSection from './sections/Coaching';
+import PitchDeckSection from './sections/PitchDeck';
 import OtherWinsSection from './sections/OtherWinsSection';
 import MediaAppearancesSection from './sections/MediaAppearancesSection';
 import TestimonialsSection from './sections/TestimonialsSection';
@@ -22,14 +22,23 @@ export default function HomePage() {
 
     const handleScheduleService = (serviceId, details = null) => {
         setInitialService(serviceId);
+
+        // If Coaching, normalize details to a plan id string
         if (serviceId === 'coaching' && details) {
-            setInitialCoachingPlan(details);
+            // accept either { tier } payload or a direct id
+            const planId = details?.tier?.id ?? details?.id ?? details ?? null;
+            setInitialCoachingPlan(planId);
         } else {
             setInitialCoachingPlan(null);
         }
+
+        // ensure SchedulingPage opens at step 2 (the service-specific step)
+        setInitialStep(2);
+
+        // scroll to the embedded scheduler
         setTimeout(() => {
             schedulingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        }, 0);
     };
 
     const handleFlowStart = () => {
@@ -47,7 +56,7 @@ export default function HomePage() {
                 console.log("Page is fully loaded. Restoring scheduling state and scrolling...");
                 try {
                     const savedState = JSON.parse(savedStateJSON);
-                    
+
                     // Set all the state that SchedulingPage needs
                     setInitialService(savedState.formData.serviceType);
                     setInitialStep(savedState.currentStep); // Set the step to resume on

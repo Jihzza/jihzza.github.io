@@ -301,7 +301,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
     // RENDER LOGIC
     return (
         // We use a container to center the form on the page and provide padding
-        <div className="h-auto flex flex-col items-center justify-center py- px-4">
+        <div className="h-auto flex flex-col items-center justify-center py-4">
             <SectionTextBlack title="Schedule Your Consultation" />
             <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
 

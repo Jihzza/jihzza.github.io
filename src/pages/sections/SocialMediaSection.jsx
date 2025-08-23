@@ -50,7 +50,7 @@ export default function SocialMediaSection() {
             {/* The title is now fetched from the translation file. */}
             <SectionTextBlack title={t('socialMedia.title')} />
 
-            <div className="flex justify-center items-center gap-6 md:gap-10 mt-8 md:mt-0">
+            <div className="flex justify-center items-center gap-6">
                 {/* 5. We map over the newly merged `socialLinks` array. */}
                 {socialLinks.map((social, index) => (
                     <SocialMediaIcon

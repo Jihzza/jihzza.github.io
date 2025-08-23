@@ -21,7 +21,7 @@ export default function NavigationBar({ onNavigate }) {
     { icon: HomeIcon, label: "Home", path: "/" },
     { icon: CalendarIcon, label: "Calendar", path: "/calendar" },
     { icon: ChatBubbleLeftRightIcon, label: "Chat", path: "/chat" },
-    { icon: InboxIcon, label: "Messages", path: "/messages" },
+    { icon: InboxIcon, label: "Messages", path: "" },
     { icon: UserIcon, label: "Profile", path: "/profile" }, // we'll replace the icon at render time if we have an avatar
   ];
 
@@ -43,7 +43,11 @@ export default function NavigationBar({ onNavigate }) {
   };
 
   return (
-    <nav className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-800 bg-black/90 backdrop-blur z-50">
+    <nav
+      id="bottom-nav"
+      className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-800 bg-black/90 backdrop-blur z-50"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
       <div className="flex justify-around items-center w-full h-14 md:h-16 mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;

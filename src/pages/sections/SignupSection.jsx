@@ -39,7 +39,7 @@ export default function SignupSection() {
     };
 
     return (
-        <section className="max-w-4xl mx-auto py-8 text-center md:px-6">
+        <section className="max-w-4xl mx-auto py-4 text-center md:px-6">
             <SectionTextBlack title={t('signup.title')}>
                 {t('signup.subtitle')}
             </SectionTextBlack>

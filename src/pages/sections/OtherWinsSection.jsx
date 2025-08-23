@@ -11,7 +11,7 @@ export default function OtherWinsSection() {
     const { t } = useTranslation(); // 2. Initialize the hook
 
     return (
-        <section className="w-full mx-auto py-8 md:py-4 text-center flex flex-col md:px-6">
+        <section className="w-full mx-auto py-4 md:py-4 text-center flex flex-col md:px-6">
             {/* 3. Use translated text for the title and subtitle */}
             <SectionTextBlack title={t('otherWins.title')}>
                 {t('otherWins.bodyTransformation')}

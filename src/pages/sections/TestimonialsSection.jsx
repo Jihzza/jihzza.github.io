@@ -54,7 +54,7 @@ export default function TestimonialsSection() {
     );
 
     return (
-        <section id="testimonials-section" className="w-full mx-auto py-8 text-center md:px-6">
+        <section id="testimonials-section" className="w-full mx-auto pt-8 pb-4 text-center md:px-6">
             {/* 3. Use translated text */}
             <SectionTextWhite title={t('testimonials.title')}>
                 {t('testimonials.subtitle')}

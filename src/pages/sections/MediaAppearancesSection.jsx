@@ -35,7 +35,7 @@ export default function MediaAppearancesSection() {
     }));
 
     return (
-        <section className="w-full mx-auto py-8 text-center md:px-6">
+        <section className="w-full mx-auto py-4 text-center md:px-6">
             
             {/* 4. Use translated text for title and subtitle */}
             <SectionTextBlack title={t('mediaAppearances.title')}>

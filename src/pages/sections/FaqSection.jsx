@@ -22,12 +22,12 @@ export default function FaqSection() {
     const faqData = t('faq.items', { returnObjects: true });
 
     return (
-        <section className="py-8 md:px-6">
+        <section className="py-4 md:px-6">
             <div className="max-w-4xl mx-auto">
                 {/* 4. Use the translated title */}
                 <SectionTextBlack title={faqTitle} />
 
-                <div className="mt-8">
+                <div>
                     {/* 5. Pass the translated data to the selector component */}
                     <FaqSelector items={faqData} />
                 </div>

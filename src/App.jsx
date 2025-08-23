@@ -13,8 +13,6 @@ import EditProfilePage from './pages/profile/EditProfilePage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import MessagesPage from './pages/MessagesPage';
-import ConversationPage from './pages/ConversationPage';
 import AddTestimonialPage from './pages/AddTestimonialPage';
 import AppointmentsPage from './pages/profile/AppointmentsPage';
 import SubscriptionsPage from './pages/SubscriptionsPage';
@@ -29,11 +27,6 @@ import SuccessPage from './pages/SuccessPage';
 import ChatbotPage from './pages/ChatbotPage';
 
 function App() {
-  const hasFetchedWelcome = useRef(false);
-  const { user, loading } = useAuth();
-
-  // Note: Welcome workflow is now handled by ChatbotWindow.jsx to avoid duplicate calls
-  // and ensure the welcome message is displayed in the correct context
   return (
     <BrowserRouter>
       <Routes>
@@ -64,14 +57,6 @@ function App() {
           <Route
             path="/profile/account-settings"
             element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>}
-          />
-          <Route
-            path="/messages"
-            element={<ProtectedRoute><MessagesPage /></ProtectedRoute>}
-          />
-          <Route
-            path="/messages/:conversationId"
-            element={<ProtectedRoute><ConversationPage /></ProtectedRoute>}
           />
           <Route
             path="/profile/appointments"
