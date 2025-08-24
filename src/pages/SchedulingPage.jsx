@@ -223,23 +223,19 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
     };
 
     useEffect(() => {
-        console.log("SchedulingPage mounted. Checking URL.");
         const query = new URLSearchParams(window.location.search);
         
         if (query.get('payment_status') === 'success') {
-            console.log("SUCCESS detected in URL. Setting paymentStatus to 'success'.");
             setPaymentStatus('success');
             // Clean the URL to prevent re-triggering on refresh
             window.history.replaceState(null, '', '');
         } else if (query.get('payment_status') === 'cancelled') {
-            console.log("CANCEL detected in URL. Setting paymentStatus to 'cancelled'.");
             setPaymentStatus('cancelled');
             window.history.replaceState(null, '', '');
         }
     }, []);
 
     if (paymentStatus === 'success') {
-        console.log("Rendering ConfirmationStep because paymentStatus is 'success'.");
         return (
             <div className="h-auto flex flex-col items-center justify-center py-12 px-4">
                 <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">

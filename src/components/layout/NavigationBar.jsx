@@ -1,5 +1,6 @@
 // src/components/layout/NavigationBar.jsx
 import React from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
@@ -24,6 +25,36 @@ export default function NavigationBar({ onNavigate }) {
     { icon: InboxIcon, label: "Messages", path: "" },
     { icon: UserIcon, label: "Profile", path: "/profile" }, // we'll replace the icon at render time if we have an avatar
   ];
+
+  // inside NavigationBar.jsx (or the component that renders the bottom nav element)
+useEffect(() => {
+  const nav = document.getElementById("bottom-nav");
+  if (!nav) {
+    console.warn("[Nav] #bottom-nav not found — SectionCta will treat nav height as 0.");
+    return;
+  }
+  const read = () => {
+    const vv = window.visualViewport;
+    const vb = (vv?.offsetTop ?? 0) + (vv?.height ?? window.innerHeight);
+    const r = nav.getBoundingClientRect();
+    const atBottom = Math.abs(vb - r.bottom) < 1;
+    const pos = getComputedStyle(nav).position;
+  };
+  const ro = new ResizeObserver(read);
+  ro.observe(nav);
+  window.addEventListener("resize", read);
+  window.visualViewport?.addEventListener("resize", read);
+  window.addEventListener("scroll", read, { passive: true });
+  window.visualViewport?.addEventListener("scroll", read);
+  read();
+  return () => {
+    ro.disconnect();
+    window.removeEventListener("resize", read);
+    window.visualViewport?.removeEventListener("resize", read);
+    window.removeEventListener("scroll", read);
+    window.visualViewport?.removeEventListener("scroll", read);
+  };
+}, []);
 
   const isActive = (path) => {
     if (!path) return false;

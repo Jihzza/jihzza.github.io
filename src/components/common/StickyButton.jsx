@@ -11,7 +11,6 @@ import Button from './Button';
  * opacity 100 and remains usable. When the visible portion of the section drops
  * below 10 %, the button fades out again and stops receiving pointer events.
  *
- * A console.log shows the current `intersectionRatio` so that you can verify
  * the observer behaviour in DevTools.
  *
  * @param {object}   props

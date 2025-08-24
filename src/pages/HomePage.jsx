@@ -53,7 +53,6 @@ export default function HomePage() {
             const legacyScrollTo = localStorage.getItem('scrollTo');
 
             if (savedStateJSON) {
-                console.log("Page is fully loaded. Restoring scheduling state and scrolling...");
                 try {
                     const savedState = JSON.parse(savedStateJSON);
 
@@ -73,7 +72,6 @@ export default function HomePage() {
                     if (legacyScrollTo) localStorage.removeItem('scrollTo');
                 }
             } else if (legacyScrollTo) {
-                console.log(`Page is fully loaded. Performing legacy scroll to: #${legacyScrollTo}`);
                 const targetElement = document.getElementById(legacyScrollTo);
                 if (targetElement) {
                     targetElement.scrollIntoView({ behavior: 'smooth' });

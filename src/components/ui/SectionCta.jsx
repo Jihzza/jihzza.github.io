@@ -1,22 +1,16 @@
 // src/components/ui/SectionCta.jsx
 import { useEffect, useRef, useState, cloneElement, isValidElement } from "react";
-import { createPortal } from "react-dom";
 
 /**
- * Exact-crossing Section CTA
+ * Exact-crossing Section CTA (container-aware)
  * - FLOATS above bottom nav while the section is on screen.
  * - When the floating button’s TOP crosses the docked button’s TOP while scrolling *down* → DOCK.
  * - When scrolling *up* and the floating TOP crosses upward over the docked TOP → FLOAT.
- * - Once docked, it remains visible (persists) even if the section leaves the viewport.
- * - No fade between floating <-> docked. Fade only when appearing/disappearing.
+ * - Once docked, it can persist while leaving downward (like the working project).
+ * - Uses the scroll container (if present) as the visibility root so the CTA hides correctly
+ *   when the section leaves the container’s viewport.
  */
-export default function SectionCta({
-  sectionRef,
-  children,
-  minVisibleRatio = 0.25,
-  bottomOffsetOverride,          // <- optional px number
-  navSelector = "#bottom-nav",   // <- optional custom selector
-}) {
+export default function SectionCta({ sectionRef, children, minVisibleRatio = 0.25 }) {
   const anchorRef = useRef(null);    // exact TOP of the docked button
   const floatWrapRef = useRef(null); // floating wrapper (to measure actual height)
 
@@ -31,55 +25,60 @@ export default function SectionCta({
   const lastDeltaRef = useRef(null);      // previous (topFloating - anchorTop)
   const scheduledRef = useRef(false);     // rAF throttle
   const prevModeRef = useRef(mode);       // for transition control
+  const scrollerRef = useRef(null);       // scroll container if present
 
   const BOTTOM_PAD = 12; // breathing room above nav
 
+  // Find first scrollable ancestor of the section (overflow-y: auto|scroll)
+  const getScrollParent = (node) => {
+    for (let p = node && node.parentElement; p; p = p.parentElement) {
+      const oy = getComputedStyle(p).overflowY;
+      if (/(auto|scroll|overlay)/.test(oy) && p.scrollHeight > p.clientHeight) return p;
+    }
+    return null;
+  };
+
+  // Resolve and store the scroller once
+  useEffect(() => {
+    const el = sectionRef?.current;
+    if (!el) return;
+    scrollerRef.current = getScrollParent(el);
+  }, [sectionRef]);
+
   // Measure bottom nav (and keep updated)
   useEffect(() => {
-    if (typeof bottomOffsetOverride === "number") {
-      setNavOffset(bottomOffsetOverride);
-      return;
-    }
-    const findNav = () =>
-      document.querySelector(navSelector) ||
-      document.getElementById("bottom-nav") ||
-      document.querySelector("nav.sticky.bottom-0, nav.fixed.bottom-0");
-
-    let nav = findNav();
+    const nav = document.getElementById("bottom-nav");
     const readNav = () => setNavOffset(nav?.offsetHeight ?? 64);
 
     readNav();
     const ro = nav ? new ResizeObserver(readNav) : null;
     ro?.observe(nav);
 
-    const onResize = () => {
-      // nav might swap at breakpoints; re-find it
-      nav = findNav();
-      ro?.disconnect();
-      if (nav) new ResizeObserver(readNav).observe(nav);
-      readNav();
-    };
-    window.addEventListener("resize", onResize);
-    window.visualViewport?.addEventListener("resize", onResize);
+    const onVVResize = () => readNav();
+    window.addEventListener("resize", onVVResize);
+    window.visualViewport?.addEventListener("resize", onVVResize);
+
     return () => {
       ro?.disconnect();
-      window.removeEventListener("resize", onResize);
-      window.visualViewport?.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", onVVResize);
+      window.visualViewport?.removeEventListener("resize", onVVResize);
     };
   }, []);
 
-  // Measure floating button height (so we align TOP-to-TOP precisely)
+  // Measure floating wrapper height (keeps topFloating exact)
   useEffect(() => {
     const el = floatWrapRef.current;
     if (!el) return;
-    const measure = () => setFloatH(el.getBoundingClientRect().height || 0);
+    const measure = () => setFloatH(el.getBoundingClientRect().height);
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     window.addEventListener("resize", measure);
+    window.visualViewport?.addEventListener("resize", measure);
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", measure);
+      window.visualViewport?.removeEventListener("resize", measure);
     };
   }, []);
 
@@ -88,25 +87,41 @@ export default function SectionCta({
     const el = sectionRef?.current;
     if (!el) return;
 
+    const rootEl = scrollerRef.current || null;
+    const thresholds = [0, minVisibleRatio, 1];
     const io = new IntersectionObserver(
       (entries) => {
         const e = entries[0];
         setSectionOnScreen(e.isIntersecting && e.intersectionRatio >= minVisibleRatio);
       },
-      { root: null, rootMargin: "0px", threshold: [0, minVisibleRatio, 1] }
+      { root: rootEl, rootMargin: "0px", threshold: thresholds }
     );
     io.observe(el);
     return () => io.disconnect();
   }, [sectionRef, minVisibleRatio]);
 
-  // Initial “am I on screen now?” (before IO fires)
+  // Initial “am I on screen now?” (before IO fires) — use the same root
   useEffect(() => {
     const el = sectionRef?.current;
     if (!el) return;
-    const vh = window.visualViewport?.height ?? window.innerHeight; // correct with keyboards
+
+    const rootEl = scrollerRef.current;
     const r = el.getBoundingClientRect();
-    if (r.bottom > 0 && r.top < vh) setSectionOnScreen(true);
-  }, [sectionRef]);
+
+    if (rootEl) {
+      const cr = rootEl.getBoundingClientRect();
+      const visiblePx = Math.max(0, Math.min(r.bottom, cr.bottom) - Math.max(r.top, cr.top));
+      const ratio = r.height > 0 ? visiblePx / r.height : 0;
+      if (ratio >= minVisibleRatio) setSectionOnScreen(true);
+    } else {
+      const vh = window.visualViewport?.height ?? window.innerHeight;
+      const vt = window.visualViewport?.offsetTop ?? 0;
+      const vb = vt + vh;
+      const visiblePx = Math.max(0, Math.min(r.bottom, vb) - Math.max(r.top, vt));
+      const ratio = r.height > 0 ? visiblePx / r.height : 0;
+      if (ratio >= minVisibleRatio) setSectionOnScreen(true);
+    }
+  }, [sectionRef, minVisibleRatio]);
 
   // Compute & switch modes on exact crossing
   const compute = () => {
@@ -125,17 +140,19 @@ export default function SectionCta({
     const vvH = window.visualViewport?.height ?? window.innerHeight;
     const viewportBottom = vvTop + vvH;
 
-    // Top of the floating button
+    // Top of the floating button (fixed to the *window*), above the bottom nav
     const topFloating = viewportBottom - navOffset - BOTTOM_PAD - floatH;
 
-    // Exact top of the docked button
+    // Exact top of the docked button (in window coordinates)
     const anchorTop = anchorEl.getBoundingClientRect().top;
 
     // Negative => floating top is above anchor; Positive => passed anchor (crossed downward)
     const delta = topFloating - anchorTop;
 
-    // Scroll direction detection (use vvTop in case of IME/keyboard)
-    const currentY = (window.scrollY ?? window.pageYOffset ?? 0) + vvTop;
+    // Scroll direction detection (container-aware)
+    const scroller = scrollerRef.current;
+    const baseY = scroller ? scroller.scrollTop : (window.scrollY ?? window.pageYOffset ?? 0);
+    const currentY = baseY + (scroller ? 0 : vvTop);
     if (currentY > lastScrollYRef.current) dirRef.current = "down";
     else if (currentY < lastScrollYRef.current) dirRef.current = "up";
     lastScrollYRef.current = currentY;
@@ -153,7 +170,7 @@ export default function SectionCta({
       return;
     }
 
-    const prev = lastDeltaRef.current; // <-- FIX: define prev before using it
+    const prev = lastDeltaRef.current; // previous delta
 
     // Exact-crossing logic: change only on sign change, based on direction
     if (dirRef.current === "down" && prev <= 0 && delta > 0) {
@@ -170,7 +187,7 @@ export default function SectionCta({
     lastDeltaRef.current = delta;
   };
 
-  // rAF-throttled listeners for smoothness
+  // rAF-throttled listeners for smoothness (window + container)
   useEffect(() => {
     const onScrollOrResize = () => {
       if (scheduledRef.current) return;
@@ -188,11 +205,24 @@ export default function SectionCta({
     window.addEventListener("resize", onScrollOrResize);
     window.visualViewport?.addEventListener("scroll", onScrollOrResize);
     window.visualViewport?.addEventListener("resize", onScrollOrResize);
+
+    const scroller = scrollerRef.current;
+    let ro = null;
+    if (scroller) {
+      scroller.addEventListener("scroll", onScrollOrResize, { passive: true });
+      ro = new ResizeObserver(onScrollOrResize);
+      ro.observe(scroller);
+    }
+
     return () => {
       window.removeEventListener("scroll", onScrollOrResize);
       window.removeEventListener("resize", onScrollOrResize);
       window.visualViewport?.removeEventListener("scroll", onScrollOrResize);
       window.visualViewport?.removeEventListener("resize", onScrollOrResize);
+      if (scroller) {
+        scroller.removeEventListener("scroll", onScrollOrResize);
+        ro?.disconnect();
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionOnScreen, navOffset, floatH]);
@@ -201,11 +231,8 @@ export default function SectionCta({
   useEffect(() => {
     prevModeRef.current = mode;
   }, [mode]);
-
   const fadeClass =
-    mode === "hidden" || prevModeRef.current === "hidden"
-      ? "transition-opacity duration-200 motion-safe:duration-300"
-      : "transition-none";
+    mode === "hidden" || prevModeRef.current === "hidden" ? "transition-opacity duration-150" : "transition-none";
 
   // Ensure both copies share identical styling; we pass noOuterPadding
   const renderBtn = () => {
@@ -216,7 +243,7 @@ export default function SectionCta({
   return (
     <>
       {/* Anchor at the exact TOP of the docked button */}
-      <div className="py-4">
+      <div>
         <div ref={anchorRef} className="h-0 w-0 pointer-events-none" aria-hidden />
         <div
           aria-hidden={mode !== "docked"}
@@ -230,17 +257,18 @@ export default function SectionCta({
       </div>
 
       {/* Floating copy (fixed above bottom nav) */}
-      {createPortal(
-        <div
-          ref={floatWrapRef}
-          aria-hidden={mode !== "floating"}
-          className={["fixed inset-x-0 z-[60] flex justify-center", fadeClass, mode === "floating" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"].join(" ")}
-          style={{ bottom: `calc(${navOffset}px + 12px)` }}
-        >
-          {renderBtn()}
-        </div>,
-        document.body
-      )}
+      <div
+        ref={floatWrapRef}
+        aria-hidden={mode !== "floating"}
+        className={[
+          "fixed inset-x-0 z-[60] flex justify-center",
+          fadeClass,
+          mode === "floating" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
+        ].join(" ")}
+        style={{ bottom: `calc(${navOffset}px + ${BOTTOM_PAD}px)` }}
+      >
+        {renderBtn()}
+      </div>
     </>
   );
 }

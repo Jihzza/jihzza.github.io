@@ -47,7 +47,6 @@ export default function PrivacySettingsSection() {
         setIsLoading(true);
         setMessage('');
         setTimeout(() => {
-            console.log("Saving privacy settings:", privacySettings);
             setMessage(t('accountSettings.privacy.saveSuccess')); // 3. Use translated message
             setIsLoading(false);
         }, 1000);

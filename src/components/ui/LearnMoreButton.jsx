@@ -11,16 +11,15 @@ import React from 'react';
  * @param {string} [className=''] - Optional additional CSS classes to apply.
  * @param {object} props - Any other props to pass to the button element (e.g., onClick).
  */
-export default function Button({ children, className = '', ...props }) {
-  const { noOuterPadding = false, ...rest } = props;
-  const btn = (
-    <button
-      className={`w-auto text-base leading-[1.45] tracking-[0.01em] px-3 py-2 rounded-lg bg-[#BFA200] text-black font-bold ${className}`}
-      {...rest}
-    >
-      {children}
-    </button>
+export default function LearnMore({ children, className = '', ...props }) {
+  return (
+    <div>
+      <button
+        className={`w-auto text-xs leading-[1.45] tracking-[0.015em] py-2 rounded-lg text-[#F4C430] font-bold ${className}`}
+        {...props}
+      >
+        {children}
+      </button>
+    </div>
   );
-  return noOuterPadding ? btn : <div className="py-4">{btn}</div>;
-
 }

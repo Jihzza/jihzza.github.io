@@ -15,7 +15,7 @@ export default function Button({ children, className = '', ...props }) {
     <button
       // We combine a base set of styles with any additional classes passed via props.
       className={`
-        w-auto px-4 py-3 rounded-lg transition-colors duration-300
+        w-auto px-3 py-2 rounded-lg transition-colors duration-300
         bg-[#BFA200] hover:bg-yellow-600 
         text-black font-semibold md:text-lg    
         focus:outline-none focus:ring-2 focus:ring-offset-2 
