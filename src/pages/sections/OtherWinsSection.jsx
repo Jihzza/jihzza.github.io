@@ -19,7 +19,7 @@ export default function OtherWinsSection() {
 
             <InteractiveVideo
                 videoSrc={TransformationVideo}
-                className="w-45 self-center rounded-xl mt-6"
+                className="w-45 self-center rounded-xl mt-6 md:w-55"
             />
             
             {/* 4. Use translated text for the second text block */}

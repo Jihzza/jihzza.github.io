@@ -55,7 +55,7 @@ export default function Consultations({onBookConsultation}) {
   const sectionRef = useRef(null);
 
   return (
-    <section ref={sectionRef} className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4">
+    <section ref={sectionRef} className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4 md:px-6">
        <SectionText title="How I Can Help You">
       Whether you need guidance on mindset, social media growth, finance, marketing, business building, or relationships – I cover it all.
       </SectionText>

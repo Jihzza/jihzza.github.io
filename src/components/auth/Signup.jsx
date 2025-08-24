@@ -5,7 +5,7 @@
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form'; // form helper
 import Input from '../common/Forms/Input';
-import FormButton from '../common/Forms/FormButton';
+import FormButton from '../ui/Button';
 import GoogleButton from '../common/Forms/GoogleButton';
 import { useTranslation } from 'react-i18next';
 

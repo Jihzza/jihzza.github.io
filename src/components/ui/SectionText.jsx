@@ -11,8 +11,8 @@ import React from 'react';
 export default function SectionTextWhite({ title, children }) {
     return (
         <div className="w-full text-center py-4 space-y-6">
-            <h2 className="text-2xl font-bold text-white leading-tight ">{title}</h2>
-            <div className="text-white text-base mx-auto">{children}</div>
+            <h2 className="text-2xl font-bold text-white leading-tight md:text-3xl">{title}</h2>
+            <div className="text-white text-base mx-auto md:text-xl">{children}</div>
         </div>
     );
 }

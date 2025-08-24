@@ -1,7 +1,7 @@
 // src/pages/sections/ChatWithMeSection.jsx
 import React from 'react';
 import SectionTextBlack from '../../components/common/SectionTextBlack';
-import Button from '../../components/common/Button';
+import Button from '../../components/ui/Button';
 import InfoBlock from '../../components/common/InfoBlock';
 import ChatIcon from '../../assets/icons/Dagalow Preto.svg';
 import { useTranslation } from 'react-i18next';

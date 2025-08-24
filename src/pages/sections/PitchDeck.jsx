@@ -19,7 +19,7 @@ export default function Consultations({onBookPitchDeck }) {
         icon: [Perspetiv, GalowClub][index]
     }));
     return (
-        <section ref={sectionRef} className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4">
+        <section ref={sectionRef} className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4 md:px-6">
             <SectionText title={t('pitchDeck.title')} />
 
             <div className="flex flex-col md:flex-row gap-6 md:px-6">

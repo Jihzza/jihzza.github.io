@@ -6,7 +6,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import BaseCarousel from '../../components/carousel/BaseCarousel';
 import SectionTextWhite from '../../components/common/SectionTextWhite';
 import TestimonialCard from '../../components/testimonials/TestimonialCard';
-import Button from '../../components/common/Button';
+import Button from '../../components/ui/Button';
 import { getTestimonials } from '../../services/testimonialService';
 import { useTranslation } from 'react-i18next'; // 1. Import hook
 

@@ -16,7 +16,7 @@ function CardTabSimple({ label, image, imageAlt, index, isActive, isTabbable, on
       tabIndex={isTabbable ? 0 : -1}
       onClick={() => onSelect(index)}
       className={[
-        "flex flex-col gap-2 w-full h-30 items-center justify-center rounded-2xl",
+        "flex flex-col gap-2 w-full h-30 items-center justify-center rounded-2xl ",
         "bg-transparent border-2 border-[#BFA200]",
         "text-white px-3 text-center focus:outline-none focus:ring-2 focus:ring-[#BFA200]/40",
         isActive ? "ring-1 ring-[#BFA200]/40" : "hover:from-[#BFA200]/20 hover:to-[#BFA200]/10",
@@ -30,7 +30,7 @@ function CardTabSimple({ label, image, imageAlt, index, isActive, isTabbable, on
           {...(!imageAlt ? { 'aria-hidden': true } : {})}
         />
       )}
-      <p className="text-sm font-semibold leading-tight line-clamp-2">{label}</p>
+      <p className="text-sm font-semibold leading-tight line-clamp-2 md:text-base">{label}</p>
     </motion.button>
   );
 }
@@ -152,7 +152,7 @@ export default function BoxesGrid({
             <div
               role="tablist"
               aria-label="Options"
-              className="grid grid-cols-2 gap-2 py-4 justify-items-stretch"
+              className="grid grid-cols-2 gap-2 py-4 justify-items-stretch md:grid-cols-3"
             >
               {rows.map((row, rIdx) => (
                 <React.Fragment key={`row-${rIdx}`}>
@@ -165,7 +165,7 @@ export default function BoxesGrid({
                     const itemWrapperClass = [
                       "min-w-0",
                       index === widowIndex
-                        ? "col-span-2 justify-self-center w- max-w-md"
+                        ? "col-span-2 justify-self-center max-w-md"
                         : "w-full",
                     ].join(" ");
 
@@ -207,7 +207,7 @@ export default function BoxesGrid({
                         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                       >
                         <div className="px-2 py-4 text-center text-white">
-                          <p className="text-sm/6 text-white">
+                          <p className="text-sm/6 text-white md:text-xl">
                             {normalized[active].paragraph || ""}
                           </p>
                         </div>

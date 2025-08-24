@@ -4,7 +4,7 @@ import React from 'react';
 import { useNotifications } from '../contexts/NotificationsContext';
 import ProfileSectionLayout from '../components/profile/ProfileSectionLayout';
 import NotificationCard from '../components/notifications/NotificationCard';
-import Button from '../components/common/Button';
+import Button from '../components/ui/Button';
 import SectionTextWhite from '../components/common/SectionTextWhite';
 import { useTranslation } from 'react-i18next'; // 1. Import hook
 

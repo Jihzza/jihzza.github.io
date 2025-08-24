@@ -25,9 +25,9 @@ export default function TierCards({ tiers, selectedPlanId, onTierSelect }) {
             ${selectedPlanId === tier.id ? 'scale-105' : ''}
           `}
         >
-          <p className="font-bold text-white text-lg">{tier.price}€</p>
-          <p className="text-base font-medium text-white">{tier.planName}</p>
-          <p className="text-xs text-white">{tier.planDesc}</p>
+          <p className="font-bold text-white text-lg md:text-2xl">{tier.price}€</p>
+          <p className="text-base font-medium text-white md:text-xl">{tier.planName}</p>
+          <p className="text-xs text-white md:text-base">{tier.planDesc}</p>
         </div>
       ))}
     </div>

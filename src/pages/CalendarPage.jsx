@@ -11,7 +11,7 @@ import SectionTextWhite from '../components/common/SectionTextWhite';
 import ProfileSectionLayout from '../components/profile/ProfileSectionLayout';
 import AppointmentCalendar from '../components/calendar/AppointmentCalendar';
 import ConsultationList from '../components/calendar/ConsultationList';
-import Button from '../components/common/Button';
+import Button from '../components/ui/Button';
 
 export default function CalendarPage() {
     const { t } = useTranslation();

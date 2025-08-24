@@ -5,7 +5,7 @@ import ForgotPassword from '../components/auth/ForgotPassword';
 import { sendPasswordResetEmail } from '../services/authService';
 import { Link } from 'react-router-dom';
 import SectionTextWhite from '../components/common/SectionTextWhite';
-import Button from '../components/common/Button';
+import Button from '../components/ui/Button';
 
 export default function ForgotPasswordPage() {
     const [loading, setLoading] = useState(false);
