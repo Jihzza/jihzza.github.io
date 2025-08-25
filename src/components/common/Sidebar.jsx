@@ -109,8 +109,8 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                             </li>
                             <li className="mt-auto">
                                 <Link
-                                    to="/profile/account-settings"
-                                    onClick={() => handleLinkClick('/profile/account-settings')}
+                                    to="/settings"
+                                    onClick={() => handleLinkClick('/settings')}
                                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm md:text-lg lg:text-base leading-6 text-white hover:bg-white/10 items-center"
                                 >
                                     <Cog6ToothIcon className="h-6 w-6 md:h-8 md:w-8 lg:h-4 lg:w-4 hrink-0" />

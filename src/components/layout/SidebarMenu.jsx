@@ -108,8 +108,8 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                             </li>
                             <li className="mt-auto md:mt-6 md:space-y-6">
                                 <Link
-                                    to="/profile/account-settings"
-                                    onClick={() => handleLinkClick('/profile/account-settings')}
+                                    to="/settings"
+                                    onClick={() => handleLinkClick('/settings')}
                                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm md:text-2xl lg:text-base leading-6 text-white hover:bg-white/10 items-center"
                                 >
                                     {t('sidebar.settings')}

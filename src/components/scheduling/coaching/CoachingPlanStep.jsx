@@ -23,7 +23,7 @@ export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
     return (
         <div className="w-full">
             {/* 5. Use the translated title */}
-            <h2 className="text-xl font-bold text-center text-white mb-4">
+            <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">
                 {t('scheduling.coachingPlan.title')}
             </h2>
 
@@ -34,14 +34,14 @@ export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
                         key={plan.id}
                         onClick={() => onSelectPlan(plan.id)}
                         className={`
-                            w-full max-w-sm p-3 border rounded-lg cursor-pointer transition-all duration-200
+                            w-full max-w-sm p-3 border rounded-lg cursor-pointer transition-all duration-200 md:p-4
                             ${selectedPlan === plan.id
                                 ? 'border-2 border-[#BFA200] shadow-lg'
                                 : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:bg-gray-50'
                             }
                         `}
                     >
-                        <h3 className="text-lg text-center text-white">{plan.title}</h3>
+                        <h3 className="text-lg text-center text-white md:text-xl">{plan.title}</h3>
                     </div>
                 ))}
             </div>

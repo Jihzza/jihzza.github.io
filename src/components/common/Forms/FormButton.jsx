@@ -25,11 +25,7 @@ export default function FormButton({ children, fullWidth, isLoading, ...rest }) 
       disabled={isLoading || rest.disabled}
       className={`
         ${widthClass}
-        w-60 px-4 py-3 rounded-lg transition-colors duration-300
-        bg-[#BFA200] hover:bg-yellow-600 
-        text-black font-semibold       
-        focus:outline-none focus:ring-2 focus:ring-offset-2 
-        focus:ring-yellow-400 focus:ring-offset-gray-800
+        w-auto text-base leading-[1.45] tracking-[0.01em] px-3 py-2 rounded-lg bg-[#BFA200] text-black font-bold md:px-5 md:py-4 md:text-lg
       `}
     >
       {/* 4. We provide better UX by changing the button's content when it's loading. */}

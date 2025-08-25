@@ -24,8 +24,8 @@ export default function ProfileHeader({
         />
   
         <div className="flex-grow">
-          <h2 className="text-xl font-bold text-gray-900">{fullName || 'User'}</h2>
-          {phone && <p className="text-sm text-gray-500">{phone}</p>}
+          <h2 className="text-xl font-bold text-gray-900 md:text-2xl">{fullName || 'User'}</h2>
+          {phone && <p className="text-sm text-gray-500 md:text-base">{phone}</p>}
         </div>
   
         <button
@@ -33,7 +33,7 @@ export default function ProfileHeader({
           className="p-2 text-gray-600 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           aria-label="Edit profile"
         >
-          <PencilSquareIcon className="h-6 w-6" />
+          <PencilSquareIcon className="h-6 w-6 md:h-8 md:w-8" />
         </button>
       </div>
     );

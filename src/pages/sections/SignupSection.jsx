@@ -45,12 +45,6 @@ export default function SignupSection() {
             </SectionTextBlack>
 
             <div className="mt-8 flex justify-center">
-                {/*
-                  --- CHANGE IS HERE ---
-                  1. We've added a wrapper div with the unique class `homepage-signup-form`.
-                     This div isolates our styling rules.
-                  2. We removed the "bg-white" and other styling from the inner div, as our new CSS will control the appearance.
-                */}
                 <div className="homepage-signup-form w-full max-w-md">
                     <div>
                         <Signup onSubmit={handleSignup} isLoading={isLoading} />

@@ -6,7 +6,7 @@ import {
   HomeIcon,
   CalendarIcon,
   ChatBubbleLeftRightIcon,
-  InboxIcon,
+  Cog6ToothIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../contexts/AuthContext";      // ← get current user
@@ -22,7 +22,7 @@ export default function NavigationBar({ onNavigate }) {
     { icon: HomeIcon, label: "Home", path: "/" },
     { icon: CalendarIcon, label: "Calendar", path: "/calendar" },
     { icon: ChatBubbleLeftRightIcon, label: "Chat", path: "/chat" },
-    { icon: InboxIcon, label: "Messages", path: "" },
+    { icon: Cog6ToothIcon, label: "Settings", path: "/settings" },
     { icon: UserIcon, label: "Profile", path: "/profile" }, // we'll replace the icon at render time if we have an avatar
   ];
 

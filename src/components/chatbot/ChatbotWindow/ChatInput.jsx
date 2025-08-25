@@ -41,10 +41,7 @@ export default function ChatInput({
           onKeyDown={handleKeyDown}
           placeholder={placeholderText} // 4. Use translated placeholder
           className={`
-            w-full border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 
-            text-white placeholder:text-white/50 bg-transparent
-            focus:outline-none focus:border-[#bfa200]/80
-            transition-colors duration-200
+            w-full bg-transparent border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#BFA200] md:text-lg
             ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}
           `}
           disabled={loading || !isAuthenticated}
@@ -63,7 +60,7 @@ export default function ChatInput({
           `}
           title={buttonTitle} // 5. Use translated title
         >
-          <PaperAirplaneIcon className="h-5 w-5" />
+          <PaperAirplaneIcon className="h-5 w-5 md:h-7 md:w-7" />
         </button>
       </div>
       

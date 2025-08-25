@@ -21,9 +21,9 @@ export default function PitchDeckStep({ selectedDeck, onSelectDeck }) {
 
     // RENDER LOGIC
     return (
-        <div className="w-full max-w-2xl mx-auto">
+        <div className="w-full">
             {/* 5. Use the translated title. */}
-            <h2 className="text-xl font-bold text-center text-white mb-4">
+            <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">
                 {t('scheduling.pitchDeck.title')}
             </h2>
 
@@ -34,7 +34,7 @@ export default function PitchDeckStep({ selectedDeck, onSelectDeck }) {
                         key={deck.id}
                         onClick={() => onSelectDeck(deck.id)}
                         className={`
-                            p-3 border rounded-lg cursor-pointer transition-all duration-200
+                            p-3 border rounded-lg cursor-pointer transition-all duration-200 md:p-4
                             ${selectedDeck === deck.id
                                 ? 'border-2 border-[#BFA200] shadow-lg' // Active state
                                 : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:bg-gray-50'
@@ -42,7 +42,7 @@ export default function PitchDeckStep({ selectedDeck, onSelectDeck }) {
                         `}
                     >
                         {/* The icon has been removed as it wasn't being used in the original code */}
-                        <h3 className="text-lg text-center text-white">{deck.title}</h3>
+                        <h3 className="text-lg text-center text-white md:text-xl">{deck.title}</h3>
                     </div>
                 ))}
             </div>

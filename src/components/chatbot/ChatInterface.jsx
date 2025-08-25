@@ -83,12 +83,11 @@ export default function ChatInterface({
                 {messages.map((msg, index) => (
                     <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`}>
                         {/* Step 4: Update message bubble styling */}
-                        <div className={`w-full p-1 flex items-start gap-2 ${msg.sender === 'bot' ? 'rounded-xl rounded-tl-sm bg-[#333333]/70' : ''
+                        <div className={`w-full p-1 flex items-start gap-2 ${msg.sender === 'bot' ? 'rounded-xl rounded-tl-sm bg-[#333333]/70 md:text-lg' : ''
                             }`}>
-
                             {/* Step 5: Wrap user message to align it properly */}
-                            <span className={`max-w-xs lg:max-w-md px-4 py-2 text-white ${msg.sender === 'user'
-                                ? 'bg-[#BFA200] text-black ml-auto rounded-xl rounded-tr-sm'
+                            <span className={`w-auto px-4 py-2 text-white ${msg.sender === 'user'
+                                ? 'bg-[#BFA200] text-black ml-auto rounded-xl rounded-tr-sm md:text-lg'
                                 : 'rounded-xl rounded-tl-sm'
                                 }`}>
                                 {msg.text}
@@ -119,7 +118,7 @@ export default function ChatInterface({
                         placeholder={inputPlaceholder}
                         disabled={isLoading}
                         // Step 8: Update input field styling
-                        className="w-full bg-transparent border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#BFA200]"
+                        className="w-full bg-transparent border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#BFA200] md:text-lg"
                     />
                     {/* Step 9: Update send button styling */}
                     <button
@@ -128,7 +127,7 @@ export default function ChatInterface({
                         className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-2 text-white hover:bg-white/20 disabled:text-gray-500"
                         aria-label="Send message"
                     >
-                        <PaperAirplaneIcon className="w-6 h-6" />
+                        <PaperAirplaneIcon className="w-6 h-6 md:w-7 md:h-7" />
                     </button>
                 </form>
             </div>

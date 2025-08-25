@@ -69,8 +69,8 @@ export default function ProfilePage() {
                     onClick={handleLogout}
                     className="flex items-center justify-center p-3 w-full text-left text-red-600 hover:bg-red-50 transition-colors duration-200 rounded-lg"
                 >
-                    <ArrowLeftOnRectangleIcon className="h-6 w-6 mr-3" />
-                    <span className="text-lg font-medium">{t('profile.logout')}</span>
+                    <ArrowLeftOnRectangleIcon className="h-6 w-6 mr-3 md:h-8 md:w-8" />
+                    <span className="text-lg font-base md:text-xl">{t('profile.logout')}</span>
                 </button>
             </div>
         </div>

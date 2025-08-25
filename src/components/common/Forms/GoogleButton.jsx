@@ -1,11 +1,3 @@
-// src/components/common/Forms/GoogleButton.jsx
-
-// --- CHANGE: Simplified to be a "Dumb" Presentational Component ---
-// WHY: By removing its internal state and logic, this component becomes more reusable
-// and adheres to the Single Responsibility Principle. Its only job is to render a
-// button with the correct style. The parent component is now in full control of
-// what happens when it's clicked, which is essential for our state-saving logic.
-
 import React from 'react';
 
 export default function GoogleButton({ onClick, disabled, fullWidth = true }) {
@@ -14,7 +6,7 @@ export default function GoogleButton({ onClick, disabled, fullWidth = true }) {
             type="button" // Important: type="button" prevents it from submitting a form by default.
             onClick={onClick}
             disabled={disabled}
-            className={`flex items-center justify-center gap-3 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring_gray-400 ${fullWidth ? 'w-full py-2' : 'px-4 py-2'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex items-center justify-center gap-3 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring_gray-400 ${fullWidth ? 'w-auto py-2 px-4 md:px-5 md:py-4 md:text-lg font-bold' : 'px-4 py-2'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
            {/* SVG from Google assets */}
            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
@@ -24,7 +16,7 @@ export default function GoogleButton({ onClick, disabled, fullWidth = true }) {
                 <path fill="#34A853" d="M24 47.5c6.48 0 11.9-2.14 15.87-5.82l-7.1-5.52c-2.11 1.42-4.83 2.27-8.77 2.27-6.27 0-11.5-4.08-13.38-9.6l-7.87 6.5C6.48 43.1 14.7 47.5 24 47.5z" />
                 <path fill="none" d="M0 0h48v48H0z" />
            </svg>
-           'Continue with Google'
+           | Continue with Google
         </button>
     );
 }

@@ -55,7 +55,7 @@ function App() {
             element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>}
           />
           <Route
-            path="/profile/account-settings"
+            path="/settings"
             element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>}
           />
           <Route

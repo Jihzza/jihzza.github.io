@@ -83,9 +83,9 @@ export default function AvatarUploader({ currentAvatarUrl, onUploadSuccess }) {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:bg-gray-200 disabled:cursor-not-allowed"
+                className="w-auto flex justify-center items-center text-base leading-[1.45] tracking-[0.01em] px-3 py-2 rounded-lg bg-[#BFA200] text-black font-bold md:text-l"
             >
-                <ArrowUpOnSquareIcon className="h-5 w-5 mr-2" />
+                <ArrowUpOnSquareIcon className="h-5 w-5 mr-2 md:w-7 md:h-7" />
                 {uploading ? 'Uploading...' : 'Change Photo'}
             </button>
 

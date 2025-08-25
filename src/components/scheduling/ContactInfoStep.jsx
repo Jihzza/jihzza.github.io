@@ -23,7 +23,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
 
     return (
         <div className="w-full">
-            <h2 className="text-xl font-bold text-center text-white mb-4">
+            <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">
                 {/* 4. Use translated titles based on login state */}
                 {isLoggedIn 
                     ? t('scheduling.contactInfo.loggedInTitle') 
@@ -34,7 +34,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                 // LOGGED IN VIEW
                 <div className="space-y-4">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.fullNameLabel')}</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-white md:text-lg">{t('scheduling.contactInfo.fullNameLabel')}</label>
                         <Input
                             id="name"
                             name="name"
@@ -42,10 +42,11 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                             placeholder={t('scheduling.contactInfo.fullNamePlaceholder')}
                             value={contactInfoData.name}
                             onChange={onUpdateField}
+                            className="md:text-lg"
                         />
                     </div>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.emailLabel')}</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-white md:text-lg">{t('scheduling.contactInfo.emailLabel')}</label>
                         <Input 
                             id="email"
                             name="email"
@@ -53,10 +54,11 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                             placeholder={t('scheduling.contactInfo.emailPlaceholder')}
                             value={contactInfoData.email}
                             onChange={onUpdateField}
+                            className="md:text-lg"
                         />
                     </div>
                     <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-white">{t('scheduling.contactInfo.phoneLabel')}</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-white md:text-lg">{t('scheduling.contactInfo.phoneLabel')}</label>
                         <Input
                             id="phone"
                             name="phone"
@@ -64,6 +66,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                             placeholder={t('scheduling.contactInfo.phonePlaceholder')}
                             value={contactInfoData.phone}
                             onChange={onUpdateField}
+                            className="md:text-lg"
                         />
                     </div>
                 </div>

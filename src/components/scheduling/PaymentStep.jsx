@@ -43,9 +43,9 @@ export default function PaymentStep({ paymentStatus, formData, price, onInitiate
     return (
         <div className="w-full">
             {/* 5. Use translated text for summary view */}
-            <h2 className="text-2xl font-bold text-center text-white mb-4">{t('scheduling.paymentStep.summaryTitle')}</h2>
+            <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">{t('scheduling.paymentStep.summaryTitle')}</h2>
 
-            <div className="border-2 border-[#BFA200] p-6 rounded-lg space-y-4">
+            <div className="border-2 border-[#BFA200] p-6 rounded-lg space-y-4 md:flex md:flex-col md:justify-center md:items-center md:text-center">
                 {formData.serviceType === 'consultation' && (
                     <div className="space-y-2">
                         <h3 className="text-lg font-semibold text-white">{t('scheduling.paymentStep.consultationTitle')}</h3>
@@ -57,30 +57,30 @@ export default function PaymentStep({ paymentStatus, formData, price, onInitiate
 
                 {formData.serviceType === 'coaching' && (
                     <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-white">{t('scheduling.paymentStep.coachingPlanTitle')}</h3>
-                        <p className="text-white capitalize">{t('scheduling.paymentStep.planLabel')}: {formData.coaching.plan}</p>
+                        <h3 className="text-lg font-semibold text-white md:text-2xl">{t('scheduling.paymentStep.coachingPlanTitle')}</h3>
+                        <p className="text-white capitalize md:text-xl">{t('scheduling.paymentStep.planLabel')}: {formData.coaching.plan}</p>
                     </div>
                 )}
 
-                <div className="border-t border-[#333333] pt-4 flex justify-between items-center">
-                    <span className="text-lg font-semibold text-white">{t('scheduling.paymentStep.totalLabel')}</span>
-                    <span className="text-xl font-bold text-[#BFA200]">{formatPrice(price)}</span>
+                <div className="border-t md:border-t-2 md:w-50 border-[#333333] pt-4 flex justify-between items-center md:flex-col md:justify-center md:items-center md:space-y-2">
+                    <span className="text-lg font-semibold text-white md:text-xl">{t('scheduling.paymentStep.totalLabel')}</span>
+                    <span className="text-xl font-bold text-[#BFA200] md:text-2xl">{formatPrice(price)}</span>
                 </div>
             </div>
 
-            <div className="p-6 rounded-lg flex space-x-4 items-center justify-center">
-                <img src={StripeLogo} alt="Stripe Logo" className="w-15 justify-center" />
-                <img src={SSLLogo} alt="SSL Logo" className="w-10 justify-center " />
+            <div className="p-6 rounded-lg flex space-x-4 items-center justify-center md:space-x-8">
+                <img src={StripeLogo} alt="Stripe Logo" className="w-15 justify-center md:w-25" />
+                <img src={SSLLogo} alt="SSL Logo" className="w-10 justify-center md:w-13" />
             </div>
 
-            <div>
-                <FormButton onClick={onInitiateCheckout} disabled={isProcessing} fullWidth>
+            <div className='flex justify-center'>
+                <FormButton onClick={onInitiateCheckout} disabled={isProcessing}>
                     {isProcessing 
                         ? t('scheduling.paymentStep.redirectingButton') 
                         : t('scheduling.paymentStep.checkoutButton')}
                 </FormButton>
             </div>
-            <p className="text-center text-xs text-white mt-4">{t('scheduling.paymentStep.stripeRedirectMessage')}</p>
+            <p className="text-center text-xs text-white mt-4 md:text-sm">{t('scheduling.paymentStep.stripeRedirectMessage')}</p>
         </div>
     );
 }

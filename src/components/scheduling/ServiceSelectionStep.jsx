@@ -37,14 +37,14 @@ export default function ServiceSelectionStep({ selectedService, onSelectService 
             // Here we dynamically apply CSS classes. This is the key to showing the "selected" state.
             // If the service's ID matches the `selectedService` prop, we apply a blue border and background; otherwise, we use default gray styling.
             className={`
-              p-3 border rounded-lg cursor-pointer transition-all duration-200
+              p-3 border rounded-lg cursor-pointer transition-all duration-200 md:p-4
               ${selectedService === service.id
                 ? 'border-2 border-[#BFA200] shadow-lg' // Active state
                 : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:bg-gray-50' // Inactive state
               }
             `}
           >
-            <h3 className="text-lg text-center text-white">{service.title}</h3>
+            <h3 className="text-lg text-center text-white md:text-xl">{service.title}</h3>
           </div>
         ))}
       </div>
