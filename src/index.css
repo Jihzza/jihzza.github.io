@@ -192,8 +192,6 @@ body,
     color: #ddb911; /* Brighter gold on hover */
 }
 
-/* --- HIDE SCROLLBAR UTILITY --- */
-/* A reusable utility class to hide the scrollbar for a cleaner UI on scrollable elements. */
 .hide-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -202,11 +200,7 @@ body,
   display: none; /* Chrome, Safari, and Opera */
 }
 
-
-/* --- DAYPICKER CUSTOM STYLES --- */
-/* These styles override the default react-day-picker styles to match your design. */
 .rdp-day {
-  /* Ensures the day content (the number) is centered within the cell. */
   display: flex;
   justify-content: center;
   align-items: center;

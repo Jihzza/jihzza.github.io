@@ -6,6 +6,7 @@ import { getAppointmentsByUserId } from '../../services/appointmentService';
 import AppointmentCard from '../../components/appointments/AppointmentCard';
 import ProfileSectionLayout from '../../components/profile/ProfileSectionLayout';
 import { useTranslation } from 'react-i18next'; // 1. Import hook
+import SectionTextWhite from '../../components/common/SectionTextWhite';
 
 export default function AppointmentsPage() {
     const { t } = useTranslation(); // 2. Initialize hook
@@ -42,11 +43,14 @@ export default function AppointmentsPage() {
     };
 
     return (
-        // 5. Use translated title
-        <ProfileSectionLayout title={t('appointments.title')}>
-            <div className="space-y-4">
-                {renderContent()}
-            </div>
-        </ProfileSectionLayout>
+        <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
+            <ProfileSectionLayout>
+                <SectionTextWhite title="Consultations" />
+
+                <div className="space-y-4">
+                    {renderContent()}
+                </div>
+            </ProfileSectionLayout>
+        </div>
     );
 }

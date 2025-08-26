@@ -19,10 +19,10 @@ const BackButton = () => {
         <button
             onClick={handleBack}
             // The text color is now light gray, hovering to white for better visibility on dark themes.
-            className="flex items-center text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
+            className="flex items-center text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 md:text-lg"
             aria-label="Go back to the previous page"
         >
-            <ArrowLeftIcon className="h-5 w-5 mr-2" />
+            <ArrowLeftIcon className="h-5 w-5 mr-2 md:h-6 md:w-6" />
             Back
         </button>
     );

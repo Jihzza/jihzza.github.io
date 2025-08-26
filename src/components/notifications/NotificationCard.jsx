@@ -54,14 +54,14 @@ export default function NotificationCard({ notification, onMarkAsRead }) {
     return (
         <div
             onClick={handleClick}
-            className={`p-4 border-b border-gray-200 cursor-pointer transition-colors duration-300 ${notification.is_read ? 'bg-white hover:bg-gray-50' : 'bg-indigo-50 hover:bg-indigo-100'}`}
+            className={`p-4 border-b border-gray-200 cursor-pointer transition-colors duration-300 ${notification.is_read ? 'bg-white hover:bg-gray-50' : 'bg-white hover:bg-indigo-100'}`}
         >
             <div className="flex justify-between items-start">
                 <div className="flex-grow">
-                    <p className="text-sm text-gray-800">
+                    <p className="text-sm text-gray-800 md:text-lg">
                         <NotificationMessage notification={notification} />
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1 md:text-base">
                         {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                     </p>
                 </div>

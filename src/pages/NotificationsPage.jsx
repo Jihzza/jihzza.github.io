@@ -52,16 +52,13 @@ export default function NotificationsPage() {
     return (
         <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
             <ProfileSectionLayout>
-                {/* 5. Use translated text */}
                 <SectionTextWhite title={t('notifications.pageTitle')} />
-
                 <div className="flex justify-end mb-4">
                     {unreadCount > 0 && (
                         <Button
                             onClick={markAllAsRead}
                             className="text-sm py-2 px-4"
                         >
-                            {/* 6. Use translated text with interpolation */}
                             {t('notifications.markAllAsRead', { count: unreadCount })}
                         </Button>
                     )}

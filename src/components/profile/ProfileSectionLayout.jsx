@@ -12,7 +12,7 @@ const ProfileSectionLayout = ({ children }) => {
     return (
         // The container is now set for a dark theme, with white text as the default.
         // It remains within the same max-width for consistency.
-        <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 text-black">
+        <div className="max-w-4xl mx-auto p-6 lg:p-8 text-black">
             <div> {/* Increased bottom margin for better spacing */}
                 <BackButton />
             </div>

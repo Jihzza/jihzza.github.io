@@ -44,7 +44,7 @@ export default function NotificationsPanel({ isOpen, onClose }) {
         <div className="absolute right-0 mt-2 w-80 max-w-sm bg-white rounded-lg shadow-xl border border-gray-200 z-50">
             <div className="p-4 border-b flex justify-between items-center">
                 {/* 3. Use translated text */}
-                <h3 className="font-semibold text-gray-800">{t('notifications.panel.title')}</h3>
+                <h3 className="font-semibold text-red-800">{t('notifications.panel.title')}</h3>
                 {unreadCount > 0 && (
                      <button onClick={markAllAsRead} className="text-sm text-indigo-600 hover:underline">
                         {t('notifications.panel.markAllAsRead')}

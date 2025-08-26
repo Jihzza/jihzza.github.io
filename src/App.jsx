@@ -15,7 +15,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import AddTestimonialPage from './pages/AddTestimonialPage';
 import AppointmentsPage from './pages/profile/AppointmentsPage';
-import SubscriptionsPage from './pages/SubscriptionsPage';
+import SubscriptionsPage from './pages/profile/SubscriptionsPage';
 import PitchDeckRequestsPage from './pages/profile/PitchDeckRequestsPage';
 import ChatbotHistoryPage from './pages/profile/ChatbotHistoryPage';
 import AccountSettingsPage from './pages/profile/AccountSettingsPage';
