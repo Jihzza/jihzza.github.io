@@ -1,130 +1,183 @@
 // src/components/layout/SidebarMenu.jsx
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, Transition } from '@headlessui/react';
-import { Cog6ToothIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { signOut } from '../../services/authService';
-import { useTranslation } from 'react-i18next'; // 1. Import the hook
+import { useTranslation } from 'react-i18next';
 
-// 2. Define static data for links. Only the hrefs remain, as labels will be translated.
-const mainPagesHrefs = ['/', '/profile', '/messages', '/calendar'];
+// Static hrefs (labels come from i18n)
+const mainPagesHrefs = ['/', '/profile', '/messages', '/calendar', '/chatbot'];
 const exploreLinksHrefs = [
-    '/#consultations-section', '/#coaching-section', '/#invest-section',
-    '/#testimonials-section', '/#media-appearances-section', '/#other-wins-section',
-    '/#interactive-sections', '/#interactive-sections', '/#interactive-sections'
+  '/#consultations-section', '/#coaching-section', '/#invest-section',
+  '/#testimonials-section', '/#media-appearances-section', '/#other-wins-section',
+  '/#interactive-sections', '/#interactive-sections', '/#interactive-sections'
 ];
 
-
 export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, style }) {
-    const { t } = useTranslation(); // 3. Initialize the hook
-    const navigate = useNavigate();
-    const location = useLocation();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const closeButtonRef = useRef(null);
 
-    // 4. Dynamically create the link arrays by combining static hrefs with translated labels.
-    const mainPages = (t('sidebar.mainPages', { returnObjects: true }) || []).map((item, index) => ({
-        ...item,
-        href: mainPagesHrefs[index]
-    }));
+  // Build sections from i18n labels + static hrefs
+  const mainPages = (t('sidebar.mainPages', { returnObjects: true }) || []).map((item, index) => ({
+    ...item,
+    href: mainPagesHrefs[index]
+  }));
+  const exploreLinks = (t('sidebar.exploreLinks', { returnObjects: true }) || []).map((item, index) => ({
+    ...item,
+    href: exploreLinksHrefs[index]
+  }));
 
-    const exploreLinks = (t('sidebar.exploreLinks', { returnObjects: true }) || []).map((item, index) => ({
-        ...item,
-        href: exploreLinksHrefs[index]
-    }));
+  const isActive = (href) => {
+    if (!href) return false;
+    const [path] = href.split('#');
+    return location.pathname === (path || href);
+  };
 
+  const handleSignOut = async () => {
+    await signOut();
+    onClose?.();
+    navigate('/login');
+  };
 
-    const handleSignOut = async () => {
-        await signOut();
-        onClose();
-        navigate('/login');
-    };
+  const handleLinkClick = (href) => {
+    onClose?.();
+    if (href.includes('#')) {
+      const [path, id] = href.split('#');
+      if (path && location.pathname !== path) {
+        navigate(path);
+        setTimeout(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate(href);
+    }
+  };
 
-    const handleLinkClick = (href) => {
-        onClose();
-        if (href.includes('#')) {
-            const [path, id] = href.split('#');
-            if (path && location.pathname !== path) {
-                navigate(path);
-                setTimeout(() => {
-                    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-            } else {
-                document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-            }
-        } else {
-            navigate(href);
-        }
-    };
+  const itemBase =
+    'flex items-center gap-3 rounded-xl px-3 py-2 text-base md:text-lg lg:text-base transition-colors outline-none hover:bg-white/10 focus-visible:bg-white/10 focus-visible:ring-2 focus-visible:ring-yellow-400/70';
 
-    // 5. Render component using translated text
-    if (!isOpen) return null;
-    
-    return (
-        <div className="fixed inset-0 z-50">
-            {/* Backdrop */}
-            <div 
-                className="fixed inset-0 bg-black/60" 
-                onClick={onClose}
-            />
-            
-            {/* Sidebar */}
-            <div 
-                className="fixed left-0 top-0 h-full w-[70vw] md:w-[50vw] lg:[30vw] bg-black text-white"
-                style={style}
+  return (
+    <Transition show={!!isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-[100]" onClose={onClose} initialFocus={closeButtonRef}>
+        {/* Overlay */}
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-200" enterFrom="opacity-0" enterTo="opacity-100"
+          leave="ease-in duration-150" leaveFrom="opacity-100" leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black/60" />
+        </Transition.Child>
+
+        {/* Slide-over */}
+        <div className="fixed inset-0 flex">
+          <Transition.Child
+            as={Fragment}
+            enter="transform transition ease-out duration-300" enterFrom="-translate-x-full" enterTo="translate-x-0"
+            leave="transform transition ease-in duration-200" leaveFrom="translate-x-0" leaveTo="-translate-x-full"
+          >
+            <Dialog.Panel
+              style={style}
+              className="pointer-events-auto relative h-full w-[78vw] sm:w-[380px] lg:w-[420px] bg-black text-white shadow-2xl"
             >
-                <div className="flex flex-grow flex-col gap-y-5 overflow-y-auto px-6 py-2 md:py-6">
-                    <nav className="flex flex-1 flex-col">
-                        <ul role="list" className="flex flex-1 flex-col">
-                            <li>
-                                <ul role="list" className="-mx-2 space-y-1 md:space-y-6 lg:space-y-0">
-                                    {mainPages.map((item) => (
-                                        <li key={item.label}>
-                                            <Link
-                                                to={item.href}
-                                                onClick={() => handleLinkClick(item.href)}
-                                                className="block rounded-md px-2 py-2 text-base md:text-2xl lg:text-sm leading-4 text-white hover:bg-white/10 hover:text-yellow-400"
-                                            >
-                                                {item.label}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </li>
-                            <li>
-                                <div className="text-sm md:text-2xl lg:text-base font-semibold leading-6 md:mt-6 lg:mt-2 text-yellow-400">{t('sidebar.explore')}</div>
-                                <ul role="list" className="-mx-2 mt-2 md:mt-6 space-y-1 md:space-y-6 lg:space-y-0">
-                                    {exploreLinks.map((item) => (
-                                        <li key={item.label}>
-                                            <Link
-                                                to={item.href}
-                                                onClick={() => handleLinkClick(item.href)}
-                                                className="block rounded-md px-2 py-2 text-base md:text-2xl lg:text-sm leading-6 text-white hover:bg-white/10 hover:text-yellow-400"
-                                            >
-                                                {item.label}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </li>
-                            <li className="mt-auto md:mt-6 md:space-y-6">
-                                <Link
-                                    to="/settings"
-                                    onClick={() => handleLinkClick('/settings')}
-                                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm md:text-2xl lg:text-base leading-6 text-white hover:bg-white/10 items-center"
-                                >
-                                    {t('sidebar.settings')}
-                                </Link>
-                                <button 
-                                    onClick={handleSignOut} 
-                                    className="group -mx-2 flex w-full gap-x-3 rounded-md md:text-2xl lg:text-base p-2 text-sm font-semibold leading-6 text-white hover:bg-white/10 items-center"
-                                >
-                                    {t('sidebar.logout')}
-                                </button>
-                            </li>
-                        </ul>
-                    </nav>
+              {/* Header */}
+              <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b border-white/10">
+                <Dialog.Title className="text-sm md:text-lg font-semibold tracking-wide text-yellow-400">
+                  {t('sidebar.title', { defaultValue: 'Menu' })}
+                </Dialog.Title>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  onClick={onClose}
+                  className="inline-flex items-center rounded-lg p-2 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70"
+                  aria-label={t('common.close', { defaultValue: 'Close' })}
+                >
+                  <XMarkIcon className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="flex h-[calc(100%-64px)] flex-col overflow-y-auto px-3 py-3 md:px-5 md:py-5">
+                <nav aria-label={t('sidebar.navigation', { defaultValue: 'Primary' })} className="flex-1">
+                  {/* Main pages */}
+                  <ul role="list" className="space-y-1 md:space-y-2">
+                    {mainPages.map((item) => (
+                      <li key={item.label}>
+                        <Link
+                          to={item.href}
+                          aria-current={isActive(item.href) ? 'page' : undefined}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleLinkClick(item.href);
+                          }}
+                          className={`${itemBase} ${isActive(item.href) ? 'text-yellow-400 bg-white/5' : 'text-white/90 hover:text-yellow-400'}`}
+                        >
+                          <span className="truncate text-lg md:text-xl">{item.label}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Explore */}
+                  <div className="mt-6 md:mt-8">
+                    <h2 className="px-2 text-xs md:text-base font-semibold uppercase tracking-wider text-yellow-400/90">
+                      {t('sidebar.explore')}
+                    </h2>
+                    <ul role="list" className="mt-2 space-y-1 md:space-y-2">
+                      {exploreLinks.map((item) => (
+                        <li key={item.label}>
+                          <Link
+                            to={item.href}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleLinkClick(item.href);
+                            }}
+                            className={`${itemBase} text-white/90 hover:text-yellow-400`}
+                          >
+                            <span className="truncate text-lg md:text-xl">{item.label}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </nav>
+
+                {/* Footer actions */}
+                <div className="mt-6 border-t border-white/10 pt-4 space-y-2">
+                  <Link
+                    to="/settings"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/settings');
+                    }}
+                    className={`${itemBase} text-white/90 hover:text-yellow-400`}
+                  >
+                    <Cog6ToothIcon className="h-5 w-5 md:h-7 md:w-7" />
+                    <span className="text-lg md:text-xl">{t('sidebar.settings')}</span>
+                  </Link>
+
+                  {isAuthenticated && (
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className={`${itemBase} w-full text-left text-white/90 hover:text-yellow-400`}
+                    >
+                      <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                      <span>{t('sidebar.logout')}</span>
+                    </button>
+                  )}
                 </div>
-            </div>
+              </div>
+            </Dialog.Panel>
+          </Transition.Child>
         </div>
-    );
+      </Dialog>
+    </Transition>
+  );
 }

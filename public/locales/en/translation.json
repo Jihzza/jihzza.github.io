@@ -525,6 +525,9 @@
       },
       {
         "label": "Calendar"
+      },
+      {
+        "label": "Chatbot"
       }
     ],
     "explore": "Explore",
