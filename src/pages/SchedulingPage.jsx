@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { getProfile } from '../services/authService';
 import { signInWithGoogle } from '../services/authService';
-
+import { createPitchRequest } from '../services/pitchDeckServices';
 // COMPONENT IMPORTS
 // We import the first "step" component we created.
 import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
@@ -102,13 +102,29 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
      * Moves the user to the next step in the form
      * (Validation logic will be added here later)
      */
-    const handleNext = () => {
+    const handleNext = async () => {
         const { serviceType } = formData;
+        // Pitch Deck: confirm on Contact Info (step 3)
         if (serviceType === 'pitchdeck' && currentStep === 3) {
-            setCurrentStep(5);
-            return;
+            try {
+                setIsProcessing(true);
+                const { data, error } = await createPitchRequest({
+                    project: formData.pitchdeck.type,
+                    name: formData.contactInfo.name,
+                    email: formData.contactInfo.email,
+                    phone: formData.contactInfo.phone,
+                    user_id: user?.id || null,
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('Pitch request insert failed:', e);
+                alert('Sorry, we could not submit your request. Please try again.');
+                setIsProcessing(false);
+                return; // stay on step 3 if it fails
+            }
+            setIsProcessing(false);
         }
-        setCurrentStep(prevStep => prevStep + 1);
+        setCurrentStep(prev => prev + 1); // 3 -> 4 (Chatbot) for pitchdeck; normal for others
     };
 
     /**
@@ -152,7 +168,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
         try {
             const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout-session`;
 
-            
+
             // --- THIS IS THE FIX ---
             // "Why": Replaced supabase.auth.session() with the new async method 
             // supabase.auth.getSession() which is correct for Supabase v2.
@@ -224,7 +240,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
 
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
-        
+
         if (query.get('payment_status') === 'success') {
             setPaymentStatus('success');
             // Clean the URL to prevent re-triggering on refresh
@@ -308,90 +324,90 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
                 ) : (
                     // Otherwise, show the normal multi-step form
                     <>
-                {currentStep === 1 && (
-                    <ServiceSelectionStep
-                        // We pass the currently selected service from our state down as prop.
-                        selectedService={formData.serviceType}
-                        // We pass the handler function down so the child can notify the parent of a change
-                        onSelectService={handleServiceSelect}
-                    />
-                )}
-
-                {/* We will add more conditional blocks here for other steps */}
-                {/* {currentStep === 2 && formData.serviceType === 'consultation' && <ConsultationScheduleStep} */}
-                {currentStep === 2 && formData.serviceType === 'consultation' && (
-                    <ConsultationScheduleStep
-                        // Pass down only the revelant part of the formData
-                        consultationData={formData.consultation}
-                        // Pass a simplified update function
-                        onUpdateField={(fieldName, value) => handleUpdateField('consultation', fieldName, value)}
-                    />
-                )}
-
-                {/* This block handles the new coaching flow at step 2 */}
-                {currentStep === 2 && formData.serviceType === 'coaching' && (
-                    <CoachingPlanStep
-                        selectedPlan={formData.coaching.plan}
-                        onSelectPlan={handleCoachingPlanSelect}
-                    />
-                )}
-
-                {/* Add the new PitchDeckStep rendering condition for step 2 */}
-                {currentStep === 2 && formData.serviceType === 'pitchdeck' && (
-                    <PitchDeckStep
-                        selectedDeck={formData.pitchdeck.type}
-                        onSelectDeck={handlePitchDeckSelect}
-                    />
-                )}
-
-                {currentStep === 3 && (
-                    <ContactInfoStep
-                        isLoggedIn={!!user} // Pass true/false if user object exists
-                        contactInfoData={formData.contactInfo}
-                        // The event object from onChange is passed directly to our handler
-                        onUpdateField={(e) => handleUpdateField('contactInfo', e.target.name, e.target.value)}
-                        onGoogleSignIn={handleGoogleSignIn}
-                    />
-                )}
-
-                {currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && (
-                    <PaymentStep
-                        formData={formData}
-                        price={price} // Assuming price calculation is still valid
-                        onInitiateCheckout={handleInitiateCheckout}
-                        isProcessing={isProcessing}
-                    />
-                )}
-
-
-                {currentStep === 5 && (
-                    <ChatbotStep />
-                )}
-
-
-
-                {currentStep > 1 && (
-                    <div className="flex justify-between pt-4">
-                        {/* Back Button: Always shown after step 1 */}
-                        <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors">Back</button>
-
-                        {/* Next Button: Shown on intermediate steps */}
-                        {currentStep < totalSteps && (
-                            <button
-                                onClick={handleNext}
-                                disabled={
-                                    (currentStep === 2 && formData.serviceType === 'consultation' && (!formData.consultation.date || !formData.consultation.duration || !formData.consultation.time)) ||
-                                    (currentStep === 2 && formData.serviceType === 'coaching' && !formData.coaching.plan) ||
-                                    (currentStep === 2 && formData.serviceType === 'pitchdeck' && !formData.pitchdeck.type) ||
-                                    (currentStep === 3 && (!formData.contactInfo.name || !formData.contactInfo.email)) ||
-                                    (currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && paymentStatus !== 'success')
-                                }
-                                className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors disabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500"
-                            >Next</button>
+                        {currentStep === 1 && (
+                            <ServiceSelectionStep
+                                // We pass the currently selected service from our state down as prop.
+                                selectedService={formData.serviceType}
+                                // We pass the handler function down so the child can notify the parent of a change
+                                onSelectService={handleServiceSelect}
+                            />
                         )}
 
-                        {/* Finish Button: Shown only on the last step */}
-                        {currentStep === totalSteps && (
+                        {/* We will add more conditional blocks here for other steps */}
+                        {/* {currentStep === 2 && formData.serviceType === 'consultation' && <ConsultationScheduleStep} */}
+                        {currentStep === 2 && formData.serviceType === 'consultation' && (
+                            <ConsultationScheduleStep
+                                // Pass down only the revelant part of the formData
+                                consultationData={formData.consultation}
+                                // Pass a simplified update function
+                                onUpdateField={(fieldName, value) => handleUpdateField('consultation', fieldName, value)}
+                            />
+                        )}
+
+                        {/* This block handles the new coaching flow at step 2 */}
+                        {currentStep === 2 && formData.serviceType === 'coaching' && (
+                            <CoachingPlanStep
+                                selectedPlan={formData.coaching.plan}
+                                onSelectPlan={handleCoachingPlanSelect}
+                            />
+                        )}
+
+                        {/* Add the new PitchDeckStep rendering condition for step 2 */}
+                        {currentStep === 2 && formData.serviceType === 'pitchdeck' && (
+                            <PitchDeckStep
+                                selectedDeck={formData.pitchdeck.type}
+                                onSelectDeck={handlePitchDeckSelect}
+                            />
+                        )}
+
+                        {currentStep === 3 && (
+                            <ContactInfoStep
+                                isLoggedIn={!!user} // Pass true/false if user object exists
+                                contactInfoData={formData.contactInfo}
+                                // The event object from onChange is passed directly to our handler
+                                onUpdateField={(e) => handleUpdateField('contactInfo', e.target.name, e.target.value)}
+                                onGoogleSignIn={handleGoogleSignIn}
+                            />
+                        )}
+
+                        {currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && (
+                            <PaymentStep
+                                formData={formData}
+                                price={price} // Assuming price calculation is still valid
+                                onInitiateCheckout={handleInitiateCheckout}
+                                isProcessing={isProcessing}
+                            />
+                        )}
+
+
+                        {(formData.serviceType === 'pitchdeck' && currentStep === 4) && <ChatbotStep />}
+                        {(formData.serviceType !== 'pitchdeck' && currentStep === 5) && <ChatbotStep />}
+
+
+
+                        {currentStep > 1 && (
+                            <div className="flex justify-between pt-4">
+                                {/* Back Button: Always shown after step 1 */}
+                                <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors">Back</button>
+
+                                {/* Next Button: Shown on intermediate steps */}
+                                {currentStep < totalSteps && (
+                                    <button
+                                        onClick={handleNext}
+                                        disabled={
+                                            (currentStep === 2 && formData.serviceType === 'consultation' && (!formData.consultation.date || !formData.consultation.duration || !formData.consultation.time)) ||
+                                            (currentStep === 2 && formData.serviceType === 'coaching' && !formData.coaching.plan) ||
+                                            (currentStep === 2 && formData.serviceType === 'pitchdeck' && !formData.pitchdeck.type) ||
+                                            (currentStep === 3 && (!formData.contactInfo.name || !formData.contactInfo.email)) ||
+                                            (currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && paymentStatus !== 'success') ||
+                                            isProcessing
+                                        }
+                                        className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors disabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500"
+                                    >Next</button>
+                                )}
+
+                                {/* Finish Button: Shown only on the last step */}
+                                {currentStep === totalSteps && (
                                     <button onClick={() => alert("Flow Finished!")} className="...">
                                         Finish
                                     </button>

@@ -870,27 +870,27 @@
     }
   },
   "appointments": {
-    "title": "My Appointments",
+    "title": "Appointments",
     "loading": "Loading your appointments...",
     "error": "We couldn't load your appointments. Please try again later.",
     "empty": "You have no scheduled appointments."
   },
   "subscriptions": {
-    "title": "My Subscriptions",
+    "title": "Subscriptions",
     "loading": "Loading your subscriptions...",
     "error": "We couldn't load your subscriptions. Please try again.",
     "empty": "You do not have any active subscriptions yet.",
     "explore": "Explore Plans"
   },
   "pitchDeckRequests": {
-    "title": "My Pitch Deck Requests",
+    "title": "Pitch Deck Requests",
     "loading": "Loading your requests...",
     "error": "We couldn't load your requests. Please try again.",
     "empty": "You haven't submitted a pitch deck for review yet.",
     "submit": "Submit a Pitch Deck"
   },
   "chatbotHistory": {
-    "title": "My Chatbot History",
+    "title": "Chatbot History",
     "loading": "Loading your history...",
     "error": "We couldn't load your chat history. Please try again.",
     "empty": "You haven't had any conversations with the chatbot yet.",

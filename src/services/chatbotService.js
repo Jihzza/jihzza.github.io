@@ -1,19 +1,25 @@
 // src/services/chatbotService.js
-
 import { supabase } from '../lib/supabaseClient';
 
-/**
- * Fetches the conversation history (list of sessions) for a specific user.
- *
- * @param {string} userId - The UUID of the user.
- * @returns {Promise<{ data: any[] | null, error: any | null }>}
- */
-export const getConversationHistoryByUserId = async (userId) => {
-    const { data, error } = await supabase
-        .from('chatbot_conversations')
-        .select('id, created_at, summary') // Select only the fields needed for the list view
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+/** Sessions list (one row per session) for a user */
+export const getConversationSessionsByUserId = async (userId) => {
+  const { data, error } = await supabase
+    .from('chatbot_sessions')
+    .select('session_id, last_message_at, first_message, last_message')
+    .eq('user_id', userId)
+    .order('last_message_at', { ascending: false });
 
-    return { data, error };
+  return { data, error };
+};
+
+/** Full message list for a given session (chronological) */
+export const getMessagesBySession = async (userId, sessionId) => {
+  const { data, error } = await supabase
+    .from('chatbot_conversations')
+    .select('id, created_at, content, role')
+    .eq('user_id', userId)
+    .eq('session_id', sessionId)
+    .order('created_at', { ascending: true });
+
+  return { data, error };
 };

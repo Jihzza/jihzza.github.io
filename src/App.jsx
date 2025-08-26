@@ -90,6 +90,10 @@ function App() {
             path="/chat"
             element={<ChatbotPage />} 
           />
+          <Route 
+            path="/chat/:sessionId"
+            element={<ChatbotPage />} 
+          />
         </Route>
       </Routes>
     </BrowserRouter>

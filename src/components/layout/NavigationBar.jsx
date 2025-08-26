@@ -1,6 +1,5 @@
 // src/components/layout/NavigationBar.jsx
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
@@ -9,52 +8,81 @@ import {
   Cog6ToothIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import { useAuth } from "../../contexts/AuthContext";      // ← get current user
+import { useAuth } from "../../contexts/AuthContext";
 import OctagonAvatar from "../common/OctagonAvatar";
+
+/**
+ * Tailwind-like responsive value helper.
+ * Example: useBreakpointValue({ base: 28, md: 40, lg: 44 })
+ */
+function useBreakpointValue(values) {
+  const [val, setVal] = useState(values.base);
+
+  useEffect(() => {
+    const md = window.matchMedia("(min-width: 768px)");
+    const lg = window.matchMedia("(min-width: 1024px)");
+
+    const update = () => {
+      if (lg.matches) setVal(values.lg ?? values.md ?? values.base);
+      else if (md.matches) setVal(values.md ?? values.base);
+      else setVal(values.base);
+    };
+
+    update();
+    md.addEventListener("change", update);
+    lg.addEventListener("change", update);
+    return () => {
+      md.removeEventListener("change", update);
+      lg.removeEventListener("change", update);
+    };
+  }, [values]);
+
+  return val;
+}
 
 export default function NavigationBar({ onNavigate }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();                              // ← user may be null if logged out
-  const avatarSrc = user?.user_metadata?.avatar_url || ""; // ← keep empty if none
+  const { user } = useAuth();
+  const avatarSrc = user?.user_metadata?.avatar_url || "";
 
   const navItems = [
     { icon: HomeIcon, label: "Home", path: "/" },
     { icon: CalendarIcon, label: "Calendar", path: "/calendar" },
     { icon: ChatBubbleLeftRightIcon, label: "Chat", path: "/chat" },
     { icon: Cog6ToothIcon, label: "Settings", path: "/settings" },
-    { icon: UserIcon, label: "Profile", path: "/profile" }, // we'll replace the icon at render time if we have an avatar
+    { icon: UserIcon, label: "Profile", path: "/profile" },
   ];
 
-  // inside NavigationBar.jsx (or the component that renders the bottom nav element)
-useEffect(() => {
-  const nav = document.getElementById("bottom-nav");
-  if (!nav) {
-    console.warn("[Nav] #bottom-nav not found — SectionCta will treat nav height as 0.");
-    return;
-  }
-  const read = () => {
-    const vv = window.visualViewport;
-    const vb = (vv?.offsetTop ?? 0) + (vv?.height ?? window.innerHeight);
-    const r = nav.getBoundingClientRect();
-    const atBottom = Math.abs(vb - r.bottom) < 1;
-    const pos = getComputedStyle(nav).position;
-  };
-  const ro = new ResizeObserver(read);
-  ro.observe(nav);
-  window.addEventListener("resize", read);
-  window.visualViewport?.addEventListener("resize", read);
-  window.addEventListener("scroll", read, { passive: true });
-  window.visualViewport?.addEventListener("scroll", read);
-  read();
-  return () => {
-    ro.disconnect();
-    window.removeEventListener("resize", read);
-    window.visualViewport?.removeEventListener("resize", read);
-    window.removeEventListener("scroll", read);
-    window.visualViewport?.removeEventListener("scroll", read);
-  };
-}, []);
+  useEffect(() => {
+    const nav = document.getElementById("bottom-nav");
+    if (!nav) return;
+
+    const read = () => {
+      const vv = window.visualViewport;
+      const vb = (vv?.offsetTop ?? 0) + (vv?.height ?? window.innerHeight);
+      const r = nav.getBoundingClientRect();
+      const atBottom = Math.abs(vb - r.bottom) < 1;
+      const pos = getComputedStyle(nav).position;
+      void atBottom;
+      void pos;
+    };
+
+    const ro = new ResizeObserver(read);
+    ro.observe(nav);
+    window.addEventListener("resize", read);
+    window.visualViewport?.addEventListener("resize", read);
+    window.addEventListener("scroll", read, { passive: true });
+    window.visualViewport?.addEventListener("scroll", read);
+    read();
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", read);
+      window.visualViewport?.removeEventListener("resize", read);
+      window.removeEventListener("scroll", read);
+      window.visualViewport?.removeEventListener("scroll", read);
+    };
+  }, []);
 
   const isActive = (path) => {
     if (!path) return false;
@@ -65,13 +93,12 @@ useEffect(() => {
   const handleItemClick = (item) => {
     const targetPath = item.path;
     if (!targetPath) return;
-
-    if (typeof onNavigate === "function") {
-      onNavigate(targetPath);
-    } else {
-      navigate(targetPath);
-    }
+    if (typeof onNavigate === "function") onNavigate(targetPath);
+    else navigate(targetPath);
   };
+
+  // Match heroicon sizes responsively
+  const avatarSize = useBreakpointValue({ base: 24, md: 36, lg: 44 });
 
   return (
     <nav
@@ -79,7 +106,7 @@ useEffect(() => {
       className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-800 bg-black/90 backdrop-blur z-50"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="flex justify-around items-center w-full h-14 md:h-16 mx-auto">
+      <div className="flex justify-around items-center w-full h-14 md:h-19 mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
@@ -90,33 +117,44 @@ useEffect(() => {
             <button
               key={item.label}
               onClick={() => handleItemClick(item)}
-              className="flex flex-col items-center justify-center w-20 h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 rounded-lg"
+              className="flex flex-col items-center justify-center w-20 h-full gap-1 md:gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 rounded-lg"
               aria-label={item.label}
               aria-current={active ? "page" : undefined}
               type="button"
             >
               {showAvatar ? (
-                <OctagonAvatar
-                  src={avatarSrc}
-                  alt="Your profile"
-                  size={24}          // ~ h-7 / w-7
-                  ringWidth={1}
-                  gap={2}
-                  ringColor={active ? "#FACC15" : "#9CA3AF"} // yellow-400 when active, gray-400 when inactive
-                  className={active ? "scale-105 transition-transform duration-150" : "transition-transform duration-150"}
-                />
+                // Reserve space so the icon↔label gap stays consistent
+                <div
+                  className="grid place-items-center"
+                  style={{ width: avatarSize, height: avatarSize }}
+                >
+                  <OctagonAvatar
+                    src={avatarSrc}
+                    alt="Your profile"
+                    size={avatarSize}
+                    ringWidth={1}
+                    gap={2}
+                    ringColor={active ? "#FACC15" : "#9CA3AF"}
+                    className={[
+                      "transition-transform duration-150",
+                      active ? "scale-110" : ""
+                    ].join(" ")}
+                  />
+                </div>
               ) : (
-                <Icon
-                  className={[
-                    "h-7 w-7 md:h-8 md:w-8 transition-transform duration-150",
-                    active ? "text-yellow-400 scale-105" : "text-gray-400",
-                  ].join(" ")}
-                />
+                <div className="grid place-items-center h-7 w-7 md:h-9 md:w-9">
+                  <Icon
+                    className={[
+                      "transition-transform duration-150",
+                      active ? "text-yellow-400 scale-110" : "text-gray-400",
+                    ].join(" ")}
+                  />
+                </div>
               )}
 
               <span
                 className={[
-                  "text-[10px] mt-0.5 md:mt-1 font-medium transition-opacity",
+                  "text-xs md:text-sm font-medium transition-opacity",
                   active ? "text-yellow-400 opacity-100" : "text-gray-400 opacity-80",
                 ].join(" ")}
               >
