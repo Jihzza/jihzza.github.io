@@ -26,11 +26,11 @@ export default function SubscriptionCard({ subscription }) {
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div>
-          <div className="text-base font-semibold text-slate-900 md:text-xl">
+          <div className="text-base font-semibold text-slate-900 md:text-xl lg:text-lg">
             {plan_id || 'Subscription'}
           </div>
         </div>
-        <span className="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700 md:text-sm">
+        <span className="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700 md:text-sm lg:text-xs">
           {(status || 'unknown').replaceAll('_', ' ')}
         </span>
       </div>
@@ -38,14 +38,14 @@ export default function SubscriptionCard({ subscription }) {
       {/* Key info */}
       <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
         <div className="bg-white rounded-lg p-3 border border-[#002147]">
-          <div className="text-xs uppercase tracking-wide text-black font-semibold md:text-sm">Next billing</div>
-          <div className="mt-0.5 text-sm font-medium text-black/50 md:text-base">
+          <div className="text-xs uppercase tracking-wide text-black font-semibold md:text-sm lg:text-xs">Next billing</div>
+          <div className="mt-0.5 text-sm font-medium text-black/50 md:text-base lg:text-sm">
             {formatDate(current_period_end)}
           </div>
         </div>
         <div className="bg-white border border-[#002147] rounded-lg p-3">
-          <div className="text-xs uppercase tracking-wide text-black font-semibold md:text-sm">Started</div>
-          <div className="mt-0.5 text-sm font-medium text-black/50 md:text-base">
+          <div className="text-xs uppercase tracking-wide text-black font-semibold md:text-sm lg:text-xs">Started</div>
+          <div className="mt-0.5 text-sm font-medium text-black/50 md:text-base lg:text-sm">
             {formatDate(created_at)}
           </div>
         </div>

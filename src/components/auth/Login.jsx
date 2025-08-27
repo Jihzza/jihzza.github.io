@@ -1,111 +1,144 @@
 // src/components/auth/Login.jsx
 
-// --- Core React/Router Imports ---
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-// --- UI Component Imports ---
 import Input from '../common/Forms/Input';
 import FormButton from '../common/Forms/FormButton';
 import GoogleButton from '../common/Forms/GoogleButton';
 
 /**
- * A reusable, "dumb" login form component.
+ * A reusable, "dumb" login form component with improved a11y and UX.
  *
- * Core Responsibilities:
- * 1.  **Presentation**: Renders the input fields (email, password), buttons (Submit, Google), and links (Sign Up, Forgot Password).
- * 2.  **Form Management**: Uses `react-hook-form` for efficient, uncontrolled form state management and validation.
- * 3.  **Props-Driven**: It is entirely controlled by its parent. It receives an `onSubmit` handler to execute upon successful validation
- * and an `isLoading` prop to disable the form during submission.
- * 4.  **Styling Flexibility**: Accepts a `containerClassName` prop to allow parent components to customize the styling of the root `<form>` element,
- * making it adaptable to different layouts (e.g., in a dedicated login page vs. a section on the homepage).
+ * - Accessible errors via aria-* ties (WCAG / ARIA guidance).
+ * - Optional password-visibility toggle (button; no extra deps).
+ * - "Remember me" checkbox (hooked to form values for future use).
  *
- * @param {function} onSubmit - The function to call with form data when the form is successfully submitted.
- * @param {boolean} isLoading - A flag to show a loading state on the submit button.
- * @param {string} [containerClassName] - Optional CSS classes to apply to the root form element for custom styling. Defaults to 'space-y-6'.
+ * @param {function} onSubmit - called with { email, password, rememberMe }
+ * @param {boolean} isLoading - disables controls and shows loading on submit
+ * @param {string} [containerClassName]
  */
 export default function Login({ onSubmit, isLoading, containerClassName = 'space-y-6' }) {
-    // --- HOOKS ---
-    // Initialize react-hook-form. `register` links inputs, `handleSubmit` wraps our submit handler with validation.
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm();
 
-    // --- RENDER LOGIC ---
+    const [showPassword, setShowPassword] = useState(false);
+
     return (
-        // The root <form> element.
-        // - `handleSubmit(onSubmit)`: A react-hook-form function that validates the form first, then calls our `onSubmit` prop with the form data.
-        // - `className`: Applies the `containerClassName` prop, allowing for flexible styling from the parent.
-        <form onSubmit={handleSubmit(onSubmit)} className={containerClassName}>
-            {/* Email Input Field */}
+        <form onSubmit={handleSubmit(onSubmit)} className={containerClassName} noValidate>
+            {/* Email */}
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-900">
                     Email
                 </label>
                 <div className="mt-1">
                     <Input
                         id="email"
                         type="email"
-                        // `register` wires the input into react-hook-form and defines a validation rule.
-                        {...register('email', { required: 'Email is required' })}
+                        autoComplete="email"
+                        inputMode="email"
+                        aria-invalid={errors.email ? 'true' : 'false'}
+                        aria-describedby={errors.email ? 'email-error' : undefined}
+                        placeholder="you@example.com"
+                        {...register('email', {
+                            required: 'Email is required'
+                        })}
                     />
-                    {/* Display a validation error message if the "required" rule fails. */}
                     {errors.email && (
-                        <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>
+                        <p id="email-error" className="mt-2 text-sm text-red-600" aria-live="polite">
+                            {errors.email.message}
+                        </p>
                     )}
                 </div>
             </div>
 
-            {/* Password Input Field */}
+            {/* Password + Show/Hide */}
             <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                </label>
+                <div className="flex items-center justify-between">
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+                        Password
+                    </label>
+                    {/* Show/Hide toggle — accessible name + pressed state */}
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        aria-pressed={showPassword ? 'true' : 'false'}
+                        className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none"
+                    >
+                        {showPassword ? 'Hide password' : 'Show password'}
+                    </button>
+                </div>
+
                 <div className="mt-1">
                     <Input
                         id="password"
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         autoComplete="current-password"
-                        {...register('password', { required: 'Password is required' })}
+                        aria-invalid={errors.password ? 'true' : 'false'}
+                        aria-describedby={errors.password ? 'password-error' : undefined}
+                        {...register('password', {
+                            required: 'Password is required'
+                        })}
                     />
                     {errors.password && (
-                        <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
+                        <p id="password-error" className="mt-2 text-sm text-red-600" aria-live="polite">
+                            {errors.password.message}
+                        </p>
                     )}
                 </div>
             </div>
 
-            {/* Submit Button */}
+            {/* Remember + Forgot */}
+            <div className="flex items-center justify-between">
+                <label className="inline-flex select-none items-center gap-2">
+                    <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        {...register('rememberMe')}
+                    />
+                    <span className="text-sm text-gray-700">Remember me</span>
+                </label>
+
+                <Link
+                    to="/forgot-password"
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-500 underline underline-offset-2"
+                >
+                    Forgot password?
+                </Link>
+            </div>
+
+            {/* Submit */}
             <FormButton type="submit" isLoading={isLoading} fullWidth>
                 Log in
             </FormButton>
 
-            {/* "or" Separator and Google Button */}
+            {/* OR separator */}
             <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-400" />
+                    <div className="w-full border-t border-gray-300" />
                 </div>
-                <div className="relative flex justify-center text-sm">
-                    <span className="bg-white px-2 text-black">or</span>
+                <div className="relative flex justify-center">
+                    <span className="rounded-full bg-white px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-black/70 shadow">
+                        or
+                    </span>
                 </div>
             </div>
-            <GoogleButton />
 
-            {/* Navigation Links */}
-            <div className="text-sm text-center mt-6">
-                <p className="text-gray-400">
-                    Don't have an account?{' '}
-                    <Link
-                        to="/signup"
-                        className="font-medium text-indigo-400 hover:text-indigo-300 underline"
-                    >
+            {/* Google */}
+            <div className="justify-center flex">
+                <GoogleButton />
+            </div>
+
+            {/* Bottom link */}
+            <div className="mt-6 text-center text-sm">
+                <p className="text-gray-600">
+                    Don&apos;t have an account?{' '}
+                    <Link to="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500 underline">
                         Create one
-                    </Link>
-                </p>
-                <p className="mt-2 text-gray-400">
-                    Forgot your password?{' '}
-                    <Link
-                        to="/forgot-password"
-                        className="font-medium text-indigo-400 hover:text-indigo-300 underline"
-                    >
-                        Reset it
                     </Link>
                 </p>
             </div>

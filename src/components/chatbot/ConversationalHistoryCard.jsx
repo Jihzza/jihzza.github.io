@@ -19,11 +19,11 @@ const ConversationHistoryCard = ({ session }) => {
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center">
-          <ChatBubbleLeftRightIcon className="h-8 w-8 text-blue-500 mr-4 md:h-10 md:w-10" />
+          <ChatBubbleLeftRightIcon className="h-8 w-8 text-blue-500 mr-4 md:h-10 md:w-10 lg:h-8 lg:w-8" />
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 md:text-xl">{title}</h3>
-            <div className="flex items-center text-sm text-gray-500 mt-1 md:text-base">
-              <CalendarDaysIcon className="h-4 w-4 mr-1.5 md:h-6 md:w-6" />
+            <h3 className="text-lg font-semibold text-gray-900 md:text-xl lg:text-base">{title}</h3>
+            <div className="flex items-center text-sm text-gray-500 mt-1 md:text-base lg:text-sm">
+              <CalendarDaysIcon className="h-4 w-4 mr-1.5 md:h-6 md:w-6 lg:h-5 lg:w-5" />
               {formattedDate}
             </div>
           </div>

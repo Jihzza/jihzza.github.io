@@ -38,35 +38,15 @@ export default function PitchDeckRequestCard({ request }) {
     <div className="bg-white shadow-md rounded-lg p-6">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-xl font-bold text-gray-800 md:text-2xl">{company}</h3>
-          <div className="flex items-center text-sm text-gray-500 mt-1 md:text-base">
-            <ClockIcon className="h-4 w-4 mr-1.5 md:h-6 md:w-6" />
+          <h3 className="text-xl font-bold text-gray-800 md:text-2xl lg:text-xl">{company}</h3>
+          <div className="flex items-center text-sm text-gray-500 mt-1 md:text-base lg:text-sm">
+            <ClockIcon className="h-4 w-4 mr-1.5 md:h-6 md:w-6 lg:h-5 lg:w-5" />
             {t('pitchDeckRequest.submittedOn', 'Submitted on')} {formattedDate}
           </div>
         </div>
-        <span className={`px-3 py-1 text-sm font-medium rounded-full capitalize md:text-base ${statusCls}`}>
+        <span className={`px-3 py-1 text-sm font-medium rounded-full capitalize md:text-base lg:text-sm ${statusCls}`}>
           {statusLabel}
         </span>
-      </div>
-
-      <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
-        <a
-          href={canDownload ? fileUrl : undefined}
-          target={canDownload ? '_blank' : undefined}
-          rel={canDownload ? 'noopener noreferrer' : undefined}
-          className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white md:text-base ${
-            canDownload ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'
-          }`}
-          aria-disabled={!canDownload}
-          onClick={(e) => {
-            if (!canDownload) e.preventDefault();
-          }}
-        >
-          <DocumentArrowDownIcon className="h-5 w-5 mr-2 md:h-7 md:w-7" />
-          {canDownload
-            ? t('pitchDeckRequest.downloadButton', 'Download file')
-            : t('pitchDeckRequest.noFile', 'No file available')}
-        </a>
       </div>
     </div>
   );

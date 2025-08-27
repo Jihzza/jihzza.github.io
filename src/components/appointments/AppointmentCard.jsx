@@ -55,12 +55,12 @@ export default function AppointmentCard({ appointment }) {
         {/* LEFT: Title + Date */}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <TagIcon className="h-5 w-5 shrink-0 text-black md:h-7 md:w-7" />
-            <h3 className="truncate text-lg font-semibold text-gray-900 md:text-xl">{serviceType}</h3>
+            <TagIcon className="h-5 w-5 shrink-0 text-black md:h-7 md:w-7 lg:w-6 lg:h-6" />
+            <h3 className="truncate text-lg font-semibold text-gray-900 md:text-xl lg:text-lg">{serviceType}</h3>
           </div>
 
-          <div className="mt-2 flex items-center gap-2 text-sm text-gray-600 md:text-base">
-            <CalendarIcon className="h-4 w-4 md:h-5 md:w-5" />
+          <div className="mt-2 flex items-center gap-2 text-sm text-gray-600 md:text-base lg:text-sm">
+            <CalendarIcon className="h-4 w-4 md:h-5 md:w-5 lg:h-4 lg:w-4" />
             {startDateTime ? (
               <time dateTime={rawStart} title={formattedDate} className="truncate">
                 {formattedDate}
@@ -73,14 +73,14 @@ export default function AppointmentCard({ appointment }) {
 
         {/* RIGHT: Time Range + Duration */}
         <div className="text-right">
-          <div className="flex items-center justify-end gap-1.5 text-sm font-medium text-gray-800 md:text-base">
-            <ClockIcon className="h-4 w-4 md:h-6 md:w-6" />
+          <div className="flex items-center justify-end gap-1.5 text-sm font-medium text-gray-800 md:text-base lg:text-sm">
+            <ClockIcon className="h-4 w-4 md:h-6 md:w-6 lg:h-5 lg:w-5" />
             <span>
               {formattedStartTime} <span aria-hidden>–</span> {formattedEndTime}
             </span>
           </div>
           {durationLabel && (
-            <p className="mt-1 text-xs text-gray-500 md:text-sm">({durationLabel})</p>
+            <p className="mt-1 text-xs text-gray-500 md:text-sm lg:text-xs">({durationLabel})</p>
           )}
         </div>
       </div>

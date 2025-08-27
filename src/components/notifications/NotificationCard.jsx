@@ -58,10 +58,10 @@ export default function NotificationCard({ notification, onMarkAsRead }) {
         >
             <div className="flex justify-between items-start">
                 <div className="flex-grow">
-                    <p className="text-sm text-gray-800 md:text-lg">
+                    <p className="text-sm text-gray-800 md:text-lg lg:text-base">
                         <NotificationMessage notification={notification} />
                     </p>
-                    <p className="text-xs text-gray-500 mt-1 md:text-base">
+                    <p className="text-xs text-gray-500 mt-1 md:text-base lg:text-sm">
                         {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                     </p>
                 </div>

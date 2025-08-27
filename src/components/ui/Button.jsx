@@ -15,7 +15,7 @@ export default function Button({ children, className = '', ...props }) {
   const { noOuterPadding = false, ...rest } = props;
   const btn = (
     <button
-      className={`w-auto text-base leading-[1.45] tracking-[0.01em] px-3 py-2 rounded-lg bg-[#BFA200] text-black font-bold md:px-5 md:py-4 md:text-lg ${className}`}
+      className={`w-auto text-base leading-[1.45] tracking-[0.01em] px-3 py-2 rounded-lg bg-[#BFA200] text-black font-bold md:px-5 md:py-4 md:text-lg lg:py-2 lg:px-3 ${className}`}
       {...rest}
     >
       {children}

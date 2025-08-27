@@ -12,7 +12,7 @@ export default function SectionTextBlack({ title, children }) {
     return (
         <div className="w-full text-center py-4 space-y-8">
             <h2 className="text-2xl font-bold text-black leading-tight md:text-3xl">{title}</h2>
-            <div className="text-black text-base mx-auto md:text-xl">{children}</div>
+            <div className="text-black max-w-5xl  text-base mx-auto md:text-xl">{children}</div>
         </div>
     );
 }

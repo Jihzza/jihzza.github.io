@@ -87,8 +87,8 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
               className="pointer-events-auto relative h-full w-[78vw] sm:w-[380px] lg:w-[420px] bg-black text-white shadow-2xl"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b border-white/10">
-                <Dialog.Title className="text-sm md:text-lg font-semibold tracking-wide text-yellow-400">
+              <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b border-white/10 lg:py-1">
+                <Dialog.Title className="text-sm md:text-lg lg:text-base font-semibold tracking-wide text-yellow-400">
                   {t('sidebar.title', { defaultValue: 'Menu' })}
                 </Dialog.Title>
                 <button
@@ -103,10 +103,10 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
               </div>
 
               {/* Content */}
-              <div className="flex h-[calc(100%-64px)] flex-col overflow-y-auto px-3 py-3 md:px-5 md:py-5">
+              <div className="flex h-[calc(100%-64px)] flex-col overflow-y-auto px-3 py-3 md:px-5 md:py-5 lg:py-3">
                 <nav aria-label={t('sidebar.navigation', { defaultValue: 'Primary' })} className="flex-1">
                   {/* Main pages */}
-                  <ul role="list" className="space-y-1 md:space-y-2">
+                  <ul role="list" className="space-y-1 md:space-y-2 lg:space-y-1">
                     {mainPages.map((item) => (
                       <li key={item.label}>
                         <Link
@@ -118,18 +118,18 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                           }}
                           className={`${itemBase} ${isActive(item.href) ? 'text-yellow-400 bg-white/5' : 'text-white/90 hover:text-yellow-400'}`}
                         >
-                          <span className="truncate text-lg md:text-xl">{item.label}</span>
+                          <span className="truncate text-lg md:text-xl lg:text-lg">{item.label}</span>
                         </Link>
                       </li>
                     ))}
                   </ul>
 
                   {/* Explore */}
-                  <div className="mt-6 md:mt-8">
-                    <h2 className="px-2 text-xs md:text-base font-semibold uppercase tracking-wider text-yellow-400/90">
+                  <div className="mt-6 md:mt-8 lg:mt-4">
+                    <h2 className="px-2 text-xs md:text-base font-semibold uppercase tracking-wider text-yellow-400/90 lg:text-sm">
                       {t('sidebar.explore')}
                     </h2>
-                    <ul role="list" className="mt-2 space-y-1 md:space-y-2">
+                    <ul role="list" className="mt-2 space-y-1 md:space-y-2 lg:space-y-1">
                       {exploreLinks.map((item) => (
                         <li key={item.label}>
                           <Link
@@ -140,7 +140,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                             }}
                             className={`${itemBase} text-white/90 hover:text-yellow-400`}
                           >
-                            <span className="truncate text-lg md:text-xl">{item.label}</span>
+                            <span className="truncate text-lg md:text-xl lg:text-lg">{item.label}</span>
                           </Link>
                         </li>
                       ))}
@@ -149,7 +149,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                 </nav>
 
                 {/* Footer actions */}
-                <div className="mt-6 border-t border-white/10 pt-4 space-y-2">
+                <div className="mt-6 border-t border-white/10 pt-4 space-y-2 lg:mt-4">
                   <Link
                     to="/settings"
                     onClick={(e) => {
@@ -158,8 +158,8 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                     }}
                     className={`${itemBase} text-white/90 hover:text-yellow-400`}
                   >
-                    <Cog6ToothIcon className="h-5 w-5 md:h-7 md:w-7" />
-                    <span className="text-lg md:text-xl">{t('sidebar.settings')}</span>
+                    <Cog6ToothIcon className="h-5 w-5 md:h-7 md:w-7 lg:h-5 lg:w-5" />
+                    <span className="text-lg md:text-xl lg:text-lg">{t('sidebar.settings')}</span>
                   </Link>
 
                   {isAuthenticated && (

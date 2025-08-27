@@ -388,7 +388,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
                         {currentStep > 1 && (
                             <div className="flex justify-between pt-4">
                                 {/* Back Button: Always shown after step 1 */}
-                                <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors">Back</button>
+                                <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors md:text-base">Back</button>
 
                                 {/* Next Button: Shown on intermediate steps */}
                                 {currentStep < totalSteps && (
@@ -402,7 +402,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
                                             (currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && paymentStatus !== 'success') ||
                                             isProcessing
                                         }
-                                        className="px-6 py-2 text-sm font-semibold text-white bg-[#BFA200] rounded-md transition-colors disabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500"
+                                        className="px-6 py-2 text-sm font-semibold text-black bg-[#BFA200] rounded-md transition-colorsdisabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500 md:text-base"
                                     >Next</button>
                                 )}
 

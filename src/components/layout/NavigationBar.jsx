@@ -98,15 +98,15 @@ export default function NavigationBar({ onNavigate }) {
   };
 
   // Match heroicon sizes responsively
-  const avatarSize = useBreakpointValue({ base: 24, md: 36, lg: 44 });
+  const avatarSize = useBreakpointValue({ base: 24, md: 36, lg: 24 });
 
   return (
     <nav
       id="bottom-nav"
-      className="w-full sticky bottom-0 left-0 right-0 border-t border-gray-800 bg-black/90 backdrop-blur z-50"
+      className="w-full sticky bottom-0 left-0 right-0 bg-black z-50 "
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="flex justify-around items-center w-full h-14 md:h-19 mx-auto">
+      <div className="flex justify-around items-center w-full lg:w-[80%] h-14 md:h-19 mx-auto lg:h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
@@ -117,7 +117,7 @@ export default function NavigationBar({ onNavigate }) {
             <button
               key={item.label}
               onClick={() => handleItemClick(item)}
-              className="flex flex-col items-center justify-center w-20 h-full gap-1 md:gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 rounded-lg"
+              className="flex flex-col items-center justify-center w-20 h-full gap-1 md:gap-1.5 lg:gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 rounded-lg"
               aria-label={item.label}
               aria-current={active ? "page" : undefined}
               type="button"
@@ -142,7 +142,7 @@ export default function NavigationBar({ onNavigate }) {
                   />
                 </div>
               ) : (
-                <div className="grid place-items-center h-7 w-7 md:h-9 md:w-9">
+                <div className="grid place-items-center h-7 w-7 md:h-9 md:w-9 lg:h-7 lg:w-7">
                   <Icon
                     className={[
                       "transition-transform duration-150",
@@ -154,7 +154,7 @@ export default function NavigationBar({ onNavigate }) {
 
               <span
                 className={[
-                  "text-xs md:text-sm font-medium transition-opacity",
+                  "text-xs md:text-sm lg:text-xs font-medium transition-opacity",
                   active ? "text-yellow-400 opacity-100" : "text-gray-400 opacity-80",
                 ].join(" ")}
               >

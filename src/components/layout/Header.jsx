@@ -25,14 +25,14 @@ const Header = forwardRef(({ onMenuClick }, ref) => {
     };
 
     return (
-        <header ref={ref} className="sticky top-0 z-10 bg-black shadow-md h-14 flex items-center justify-between px-4 py-2 md:px-6 md:py-8 relative">
+        <header ref={ref} className="sticky top-0 z-10 bg-black shadow-md h-14 flex items-center justify-between px-4 py-2 md:px-6 md:py-8 relative md:h-19 lg:h-14">
             <div className="flex items-center">
                 <button
                     type="button"
                     className="p-2 text-gray-400 hover:text-white"
                     onClick={onMenuClick}
                 >
-                    <img src={HamburgerIcon} alt="Hamburger Icon" className="h-5 w-5 md:h-7 md:w-7" />
+                    <img src={HamburgerIcon} alt="Hamburger Icon" className="h-7 w-5 md:h-7 md:w-7" />
                 </button>
             </div>
 
@@ -42,7 +42,7 @@ const Header = forwardRef(({ onMenuClick }, ref) => {
                 </Link>
             </div>
 
-            <div className="flex items-center gap-x-4">
+            <div className="flex items-center gap-x-4 lg:gap-x-8">
                 <LanguageSelector />
                 {/* This component is now self-sufficient. The Header doesn't need to know how it works. */}
                 {isAuthenticated && <NotificationsBell />}

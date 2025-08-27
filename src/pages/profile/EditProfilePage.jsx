@@ -1,19 +1,19 @@
 // src/pages/profile/EditProfilePage.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { getProfile, updateProfile } from '../../services/authService';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import { useTranslation } from 'react-i18next';
 import Input from '../../components/common/Forms/Input';
 import FormButton from '../../components/common/Forms/FormButton';
 import AvatarUploader from '../../components/profile/AvatarUploader';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 
 export default function EditProfilePage() {
-    const { t } = useTranslation(); // 2. Initialize hook
+    const { t } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate();
+
     // strip any leading @ and spaces
     const normalizeUsername = (raw) => raw.replace(/^@+/, '').trim();
 
@@ -27,12 +27,20 @@ export default function EditProfilePage() {
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
 
+    // shared input style to keep a consistent look
+    const inputClass =
+        'w-full mt-2 px-3 py-2 border-2 border-[#BFA200] rounded-lg shadow-sm placeholder-white/40 ' +
+        'bg-transparent text-white focus:outline-none focus:ring-1 focus:ring-[#BFA200] focus:border-[#BFA200] ' +
+        'md:text-lg';
+
     useEffect(() => {
         const fetchProfileData = async () => {
             if (user) {
                 setLoading(true);
                 setEmail(user.email || '');
+
                 const { data: profileData, error: fetchError } = await getProfile(user.id);
+
                 if (fetchError) {
                     setError(t('editProfile.errors.load'));
                 } else if (profileData) {
@@ -58,12 +66,18 @@ export default function EditProfilePage() {
         setSaving(true);
         setError('');
         setMessage('');
-        const updates = { full_name: fullName, username: username, phone: phone };
+
+        const updates = {
+            full_name: fullName.trim(),
+            username: normalizeUsername(username),
+            phone: phone.trim(),
+        };
+
         const { error: updateError } = await updateProfile(user.id, updates);
 
         if (updateError) {
-            if (updateError.message.includes('duplicate key value violates unique constraint')) {
-                setError(t('editProfile.errors.usernameTaken', { username }));
+            if (updateError.message?.includes('duplicate key value violates unique constraint')) {
+                setError(t('editProfile.errors.usernameTaken', { username: updates.username }));
             } else {
                 setError(t('editProfile.errors.update'));
             }
@@ -74,69 +88,127 @@ export default function EditProfilePage() {
         setSaving(false);
     };
 
-    if (loading) return <div className="p-8 text-center">{t('editProfile.loading')}</div>;
+    if (loading) {
+        return (
+            <div className="p-8 text-center text-white">{t('editProfile.loading')}</div>
+        );
+    }
 
-    // 3. Render page with translated text
     return (
-        <div className="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
-            <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-white">{t('editProfile.title')}</h1>
+        <main className="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
 
-            </div>
-
-            <div className="mb-8">
-                <AvatarUploader currentAvatarUrl={avatarUrl} onUploadSuccess={handleAvatarSuccess} />
-            </div>
-
-            <hr className="mb-8 text-white" />
-
-            <form onSubmit={handleSubmit} className="space-y-6 text-white">
-                <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-white">{t('editProfile.form.email.label')}</label>
-                    <Input id="email" type="email" value={email} disabled={true} className="w-full px-3 py-2 mt-2 border-2 border-[#BFA200] rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#BFA200] focus:border-[#BFA200] md:text-lg" />
-                    <div className="flex items-center mt-2 text-xs text-white/50">
-                        <InformationCircleIcon className="h-4 w-4 mr-1.5" />
-                        {t('editProfile.form.email.info')}
-                    </div>
-                </div>
-                <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-white">
-                        {t('editProfile.form.username.label')}
-                    </label>
-
-                    <div className="relative mt-1">
-                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/60">@</span>
-                        <Input
-                            id="username"
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(normalizeUsername(e.target.value))}
-                            required
-                            className="pl-7"  // add left padding so text doesn't overlap the "@"
-                        />
+            {/* Card */}
+            <section className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl">
+                {/* Top: avatar */}
+                <div className="p-6 border-b border-white/10">
+                    <div className="flex items-center gap-4">
+                        <div className="shrink-0">
+                            {/* Keep your Octagon avatar component as-is */}
+                            <AvatarUploader currentAvatarUrl={avatarUrl} onUploadSuccess={handleAvatarSuccess} />
+                        </div>
+                        <div className="text-white/80">
+                            <h2 className="font-semibold">{t('editProfile.photo.title', 'Profile photo')}</h2>
+                            <p className="text-sm text-white/60">
+                                {t('editProfile.photo.help', 'Use a clear, recognizable image.')}
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label htmlFor="fullName" className="block text-sm font-medium text-white">{t('editProfile.form.fullName.label')}</label>
-                    <Input id="fullName" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-                </div>
-                <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-white">{t('editProfile.form.phone.label')}</label>
-                    <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                </div>
+                {/* Form */}
+                <form onSubmit={handleSubmit} noValidate className="p-6">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        {/* Email (read-only) */}
+                        <div className="lg:col-span-2">
+                            <label htmlFor="email" className="block text-sm font-medium text-white">
+                                {t('editProfile.form.email.label')}
+                            </label>
+                            <Input
+                                id="email"
+                                type="email"
+                                value={email}
+                                disabled
+                                aria-readonly="true"
+                                autoComplete="email"
+                                className={inputClass}
+                                aria-describedby="email-info"
+                            />
+                            <div id="email-info" className="flex items-center mt-2 text-xs text-white/60">
+                                <InformationCircleIcon className="h-4 w-4 mr-1.5" />
+                                {t('editProfile.form.email.info')}
+                            </div>
+                        </div>
 
-                <div className="pt-4">
-                    {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
-                    {message && <p className="text-green-600 text-sm mb-4 text-center">{message}</p>}
-                    <FormButton type="submit" disabled={saving}>
-                        {saving ? t('editProfile.form.buttons.saving') : t('editProfile.form.buttons.save')}
-                    </FormButton>
-                </div>
-                <button type="button" onClick={() => navigate('/profile')} className="mt-2 w-full text-center py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
-                    {t('editProfile.form.buttons.cancel')}
-                </button>
-            </form>
-        </div>
+                        {/* Username */}
+                        <div>
+                            <label htmlFor="username" className="block text-sm font-medium text-white">
+                                {t('editProfile.form.username.label')}
+                            </label>
+                            <div className="relative">
+                                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/60">
+                                    @
+                                </span>
+                                <Input
+                                    id="username"
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(normalizeUsername(e.target.value))}
+                                    required
+                                    autoComplete="username"
+                                    className={`pl-7 ${inputClass}`}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Full name */}
+                        <div>
+                            <label htmlFor="fullName" className="block text-sm font-medium text-white">
+                                {t('editProfile.form.fullName.label')}
+                            </label>
+                            <Input
+                                id="fullName"
+                                type="text"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                                required
+                                autoComplete="name"
+                                className={inputClass}
+                            />
+                        </div>
+
+                        {/* Phone */}
+                        <div className="lg:col-span-2">
+                            <label htmlFor="phone" className="block text-sm font-medium text-white">
+                                {t('editProfile.form.phone.label')}
+                            </label>
+                            <Input
+                                id="phone"
+                                type="tel"
+                                inputMode="tel"
+                                autoComplete="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                className={inputClass}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="mt-6 flex items-center justify-between">
+                        <button
+                            type="button"
+                            onClick={() => navigate('/profile')}
+                            className="w-auto text-base leading-[1.45] tracking-[0.01em] px-3 py-2 rounded-lg text-white/80 hover:text-white border border-white/20 font-bold md:px-5 md:py-4 md:text-lg lg:py-2 lg:px-3"
+                        >
+                            {t('editProfile.form.buttons.cancel')}
+                        </button>
+
+                        <FormButton type="submit" disabled={saving}>
+                            {saving ? t('editProfile.form.buttons.saving') : t('editProfile.form.buttons.save')}
+                        </FormButton>
+                    </div>
+                </form>
+            </section>
+        </main>
     );
 }

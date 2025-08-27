@@ -49,7 +49,7 @@ export default function ProfilePage() {
     if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="h-full bg-gray-50 ">
             <ProfileHeader
                 fullName={profile.full_name}
                 phone={profile.phone}
