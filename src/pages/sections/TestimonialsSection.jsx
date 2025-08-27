@@ -61,17 +61,19 @@ export default function TestimonialsSection() {
             </SectionTextWhite>
 
             <div className="full-bleed py-8">
-                {!loading && testimonials.length > 0 ? (
-                    <BaseCarousel
-                        items={testimonials}
-                        renderItem={renderTestimonialSlide}
-                        swiperConfig={swiperConfig}
-                        containerClassName="testimonial-swiper"
-                        slideClassName="swiper-slide-custom"
-                    />
-                ) : (
-                    <p className="text-gray-400 mt-8">{t('testimonials.noTestimonials')}</p>
-                )}
+                <div className="w-full lg:max-w-6xl mx-auto desktop-fade-container">
+                    {!loading && testimonials.length > 0 ? (
+                        <BaseCarousel
+                            items={testimonials}
+                            renderItem={renderTestimonialSlide}
+                            swiperConfig={swiperConfig}
+                            containerClassName="testimonial-swiper"
+                            slideClassName="swiper-slide-custom"
+                        />
+                    ) : (
+                        <p className="text-gray-400 mt-8">{t('testimonials.noTestimonials')}</p>
+                    )}
+                </div>
             </div>
 
             <div className="mt-10 md:mt-0">

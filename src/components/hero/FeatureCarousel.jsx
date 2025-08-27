@@ -13,7 +13,7 @@ export default function FeatureCarousel() {
         grabCursor: true,
         centeredSlides: true,
         slidesPerView: 'auto',
-        spaceBetween: 50,
+        spaceBetween: 70,
         coverflowEffect: {
             rotate: 0,
             stretch: 0,
@@ -23,7 +23,7 @@ export default function FeatureCarousel() {
     };
 
     const renderFeatureSlide = (feature, index) => (
-        <div className="bg-[#333333] px-4 py-2 md:px-6 md:py-4 space-y-2 justify-center items-center flex flex-col rounded-lg text-center h-full">
+        <div className="bg-[#333333] px-4 py-2 md:px-6 md:py-4 space-y-2 justify-center items-center flex flex-col rounded-lg text-center h-full shadow-lg lg:px-4 lg:py-2">
             <h3 className="font-bold text-white text-lg md:text-2xl">{feature.title}</h3>
             <p className="text-white md:text-lg">{feature.subtitle}</p>
         </div>
@@ -33,11 +33,6 @@ export default function FeatureCarousel() {
         // --- OUTER WRAPPER ---
         // Its only job is to be full-bleed on mobile/tablet.
         <div className="full-bleed py-8">
-            {/* --- INNER WRAPPER ---
-                - Centers itself (`mx-auto`).
-                - On desktop (`lg`), gets a max-width (`lg:max-w-6xl`).
-                - Applies our responsive gradient class.
-            */}
             <div className="w-full lg:max-w-6xl mx-auto desktop-fade-container">
                 <BaseCarousel
                     items={features}

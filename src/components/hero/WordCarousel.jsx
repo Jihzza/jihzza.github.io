@@ -12,7 +12,7 @@ export default function WordCarousel() {
 
     // 3. Get the translated array. The { returnObjects: true } option is key.
     const words = t('hero.wordCarousel', { returnObjects: true });
-    const duplicateWords = [...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words,];
+    const duplicateWords = [...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words,...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words,...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words, ...words,];
 
 
     // STATE & REFS (No changes needed here)
@@ -50,7 +50,7 @@ export default function WordCarousel() {
     return (
         <div className="w-full flex justify-center py-6 lg:py-4">
             <div
-                className="w-[60%] md:w-[50%] lg:w-[30%] overflow-x-auto cursor-grab active:cursor-grabbing word-carousel-container"
+                className="w-[60%] md:w-[50%] lg:w-[25%] overflow-x-auto cursor-grab active:cursor-grabbing word-carousel-container"
                 ref={carouselRef}
                 onMouseDown={handleDragStart}
                 onMouseMove={handleDragMove}

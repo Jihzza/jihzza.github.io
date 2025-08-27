@@ -20,14 +20,17 @@ body,
     scrollbar-width: thin;
     scrollbar-color: #BFA200 #002147;
   }
+
   .sidebar-scrollbar::-webkit-scrollbar {
     width: 0.5rem;
     height: 0.5rem;
   }
+
   .sidebar-scrollbar::-webkit-scrollbar-track {
     background: #002147;
     border-radius: 9999px;
   }
+
   .sidebar-scrollbar::-webkit-scrollbar-thumb {
     background: #BFA200;
     border-radius: 9999px;
@@ -58,6 +61,7 @@ body,
   0% {
     transform: translateX(0);
   }
+
   100% {
     /* We translate it by half its  total width, which corresponds to the length of the original (non-duplicated) word list. */
     transform: translateX(-1000%);
@@ -70,6 +74,7 @@ body,
   -webkit-mask-image: linear-gradient(to left, transparent, black 20px, black calc(100% - 100px), transparent);
   mask-image: linear-gradient(to left, transparent, black 20px, black calc(100% - 100px), transparent);
 }
+
 .word-carousel-container::-webkit-scrollbar {
   display: none;
 }
@@ -96,30 +101,51 @@ body,
 /* --- ADD THESE MEDIA QUERIES --- */
 
 /* For tablets (md screens, 768px and up) */
-@media (min-width: 768px) {
+@media (min-width: 668px) {
   .swiper-slide-custom {
-    width: 40%; /* Each slide now takes up 40% of the container */
+    width: 40%;
+    /* Each slide now takes up 40% of the container */
   }
+
   .feature-swiper .swiper-slide-custom {
     /* We can also give them a fixed height on desktop if we want */
-    height: 150px!important;
+    height: 150px !important;
   }
+
   .testimonial-swiper .swiper-slide-custom {
-  height: 350px!important;
-}
+    height: 350px !important;
+  }
+
+  .image-swiper .swiper-slide-custom {
+    /* pick your size: 22–28% is a good range */
+    width: 35% !important;
+    /* try 22% if you want even smaller */
+  }
 }
 
-/* For desktops (lg screens, 1024px and up) */
+/* Desktop-only edge fade for any horizontally scrollable content */
 @media (min-width: 1024px) {
-  .swiper-slide-custom {
-    width: 30%; /* On desktops, they are even smaller */
-  }
-  
-  .feature-swiper .swiper-slide-custom {
-    /* We can also give them a fixed height on desktop if we want */
-    height: 140px;
+  .desktop-fade-container {
+    -webkit-mask-image: linear-gradient(to right,
+        transparent 0,
+        #fff 5%,
+        #fff 95%,
+        transparent 100%);
+    mask-image: linear-gradient(to right,
+        transparent 0,
+        #fff 5%,
+        #fff 95%,
+        transparent 100%);
+    mask-mode: alpha;
+
+    .image-swiper .swiper-slide-custom {
+      /* pick your size: 22–28% is a good range */
+      width: 25% !important;
+      /* try 22% if you want even smaller */
+    }
   }
 }
+
 
 .feature-swiper .swiper-slide-custom {
   height: 120px;
@@ -130,6 +156,7 @@ body,
 }
 
 .desktop-fade-container {
+
   /* On mobile and tablet, this class does nothing. */
   /* The gradient mask is only applied on large screens (1024px and up). */
   @media (min-width: 1024px) {
@@ -139,65 +166,82 @@ body,
 }
 
 .image-swiper .swiper-slide-custom {
-  width: 40%;
+  width: 45%;
 }
 
 /* Style the form labels */
 .homepage-signup-form label {
-  color: #000; /* Lighter text color for better contrast on a dark background */
-  text-align: left; /* Align labels to the left */
+  color: #000;
+  /* Lighter text color for better contrast on a dark background */
+  text-align: left;
+  /* Align labels to the left */
 }
 
 /* Style the input fields to match the gold theme */
 .homepage-signup-form input {
-  background-color: transparent; /* Dark background for inputs */
-  border: 2px solid #BFA200;  /* Gold border */
-  color: #000;             /* White text for input */
-  padding: 0.75rem 1rem;       /* More padding for a better look */
+  background-color: transparent;
+  /* Dark background for inputs */
+  border: 2px solid #BFA200;
+  /* Gold border */
+  color: #000;
+  /* White text for input */
+  padding: 0.75rem 1rem;
+  /* More padding for a better look */
 }
 
 /* Style the input focus state */
 .homepage-signup-form input:focus {
-  --tw-ring-color: #BFA200; /* Tailwind variable for the focus ring */
+  --tw-ring-color: #BFA200;
+  /* Tailwind variable for the focus ring */
 }
 
 /* Style the placeholder text inside inputs */
 .homepage-signup-form input::placeholder {
-  color: #000; /* Gray placeholder text */
+  color: #000;
+  /* Gray placeholder text */
   opacity: 0.5;
 }
 
 /* Style the "or" separator line */
 .homepage-signup-form hr {
-    border-color: #000; /* Darker gray border */
+  border-color: #000;
+  /* Darker gray border */
 }
 
 /* The original has a white bg for the 'or' text, we use the section's dark bg */
 .homepage-signup-form span.bg-white {
-  background-color: transparent !important; /* Force override */
+  background-color: transparent !important;
+  /* Force override */
   color: #000;
 }
 
 /* Style the "Already have an account? Log in" text and link */
 .homepage-signup-form p {
-    color: #000; /* Gray text for the paragraph */
+  color: #000;
+  /* Gray text for the paragraph */
 }
 
 .homepage-signup-form p a {
-    color: #BFA200; /* Gold color for the link */
-    text-decoration: underline;
+  color: #BFA200;
+  /* Gold color for the link */
+  text-decoration: underline;
 }
 
 .homepage-signup-form p a:hover {
-    color: #ddb911; /* Brighter gold on hover */
+  color: #ddb911;
+  /* Brighter gold on hover */
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, and Opera */
+  display: none;
+  /* Chrome, Safari, and Opera */
 }
 
 .rdp-day {

@@ -19,7 +19,7 @@ export default function OtherWinsSection() {
 
             <InteractiveVideo
                 videoSrc={TransformationVideo}
-                className="w-45 self-center rounded-xl mt-6 md:w-55"
+                className="w-45 self-center rounded-xl mt-6 md:w-55 lg:w-45"
             />
 
             <div className="max-w-5xl self-center">
@@ -28,7 +28,9 @@ export default function OtherWinsSection() {
                 </SectionTextBlack>
             </div>
             <div className="full-bleed py-8">
-                <ImageCarousel />
+                <div className="w-full mx-auto lg:max-w-6xl desktop-fade-container">
+                    <ImageCarousel />
+                </div>
             </div>
 
         </section>

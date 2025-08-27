@@ -129,21 +129,19 @@ const posts = [
 
 export default function ImageCarousel() {
   const swiperConfig = {
-    effect: 'coverflow',
-    grabCursor: true,
-    centeredSlides: true,
-    slidesPerView: 'auto',
-    coverflowEffect: {
-      rotate: 50,
-      stretch: 0,
-      depth: 100,
-      modifier: 1,
-      slideShadows: true,
-    },
-    // Optional: guard against accidental click while dragging
-    preventClicks: true,
-    preventClicksPropagation: true,
-  };
+        // normal, non-3D carousel
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        spaceBetween: 40,
+        coverflowEffect: {
+            rotate: 0,
+            stretch: 0,
+            modifier: 2.5,
+            slideShadows: false,
+        },
+      };
 
   const renderPostSlide = (item, index) => (
     <a
@@ -154,17 +152,12 @@ export default function ImageCarousel() {
       onClick={(e) => e.stopPropagation()}
       aria-label={`Open social post ${index + 1}`}
     >
-      <img
-        src={item.imageSrc}
-        alt={`Other win ${index + 1}`}
-        className="rounded-lg object-cover w-full h-full"
-        loading="lazy"
-      />
+      <img src={item.imageSrc} alt={`Other win ${index + 1}`} className="rounded-xl object-cover w-full h-auto" loading="lazy" />
     </a>
   );
 
   return (
-    <div className="pt-8 relative">
+    <div className="relative">
       <BaseCarousel
         items={posts}
         renderItem={renderPostSlide}
