@@ -29,7 +29,7 @@ import ChatbotPage from './pages/ChatbotPage';
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
+      <Routes className="bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
         {/* All pages now render within the main Layout */}
         <Route element={<Layout />}>
           {/* Public & Authentication Pages */}

@@ -4,15 +4,15 @@ import React from 'react';
 
 /**
  * A reusable header for sections within settings cards.
- * @param {string} title - The title to display.
- * @param {string} [className] - Optional classes to override default styling.
+ * @param {string} title
+ * @param {string} [className]
  */
-const SettingsSectionHeader = ({ title, className }) => {
-    return (
-        <h3 className={`text-lg font-semibold text-gray-800 mb-4 ${className}`}>
-            {title}
-        </h3>
-    );
+const SettingsSectionHeader = ({ title, className = '' }) => {
+  return (
+    <h3 className={`text-xl font-semibold text-gray-800 tracking-tight ${className}`}>
+      {title}
+    </h3>
+  );
 };
 
 export default SettingsSectionHeader;

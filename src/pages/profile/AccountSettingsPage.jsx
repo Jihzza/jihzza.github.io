@@ -1,7 +1,7 @@
 // src/pages/profile/AccountSettingsPage.jsx
 
 import React from 'react';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import { useTranslation } from 'react-i18next';
 import ProfileSectionLayout from '../../components/profile/ProfileSectionLayout';
 import SectionTextWhite from '../../components/common/SectionTextWhite';
 import UpdateEmailForm from './AccountSettings/UpdateEmailForm';
@@ -11,23 +11,25 @@ import PrivacySettingsSection from './AccountSettings/PrivacySettingsSection';
 import LegalLinksSection from './AccountSettings/LegalLinksSection';
 
 const AccountSettingsPage = () => {
-    const { t } = useTranslation(); // 2. Initialize hook
+  const { t } = useTranslation();
 
-    return (
-        <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
-            <ProfileSectionLayout>
-                {/* 3. Use translated title */}
-                <SectionTextWhite title={t('accountSettings.pageTitle')} />
-                <div className="space-y-8">
-                    <UpdateEmailForm />
-                    <UpdatePasswordForm />
-                    <PrivacySettingsSection />
-                    <LegalLinksSection />
-                    <DeleteAccountSection />
-                </div>
-            </ProfileSectionLayout>
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
+      <ProfileSectionLayout>
+        <div className="pt-6 sm:pt-8">
+          <SectionTextWhite title={t('accountSettings.pageTitle')} />
         </div>
-    );
+
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pb-12 space-y-6">
+          <UpdateEmailForm />
+          <UpdatePasswordForm />
+          <PrivacySettingsSection />
+          <LegalLinksSection />
+          <DeleteAccountSection />
+        </div>
+      </ProfileSectionLayout>
+    </main>
+  );
 };
 
 export default AccountSettingsPage;

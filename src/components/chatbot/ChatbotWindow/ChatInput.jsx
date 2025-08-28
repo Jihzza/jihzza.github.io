@@ -41,7 +41,7 @@ export default function ChatInput({
           onKeyDown={handleKeyDown}
           placeholder={placeholderText} // 4. Use translated placeholder
           className={`
-            w-full bg-transparent border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#BFA200] md:text-lg
+            w-full bg-transparent border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#BFA200] md:text-lg lg:py-2 lg:text-base
             ${!isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''}
           `}
           disabled={loading || !isAuthenticated}

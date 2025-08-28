@@ -172,16 +172,16 @@ export default function ChatbotPage() {
     >
       {/* Header (with New Conversation icon) */}
       <div className="sticky top-0 z-10 bg-[#002147] border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3 lg:gap-1">
           <button
             onClick={() => navigate(-1)}
             className="p-2 rounded-xl hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
             aria-label={t("common.back") || "Back"}
           >
-            <ArrowLeftIcon className="h-6 w-6" />
+            <ArrowLeftIcon className="h-6 w-6 lg:h-4 lg:w-4" />
           </button>
 
-          <h1 className="text-lg md:text-xl font-semibold">
+          <h1 className="text-lg md:text-xl lg:text-lg">
             {"Back"}
           </h1>
 

@@ -2,98 +2,128 @@
 
 import React, { useState } from 'react';
 import FormButton from '../../../components/common/Forms/FormButton';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import SettingsSectionHeader from '../AccountSettings/SettingsSectionHeader';
+import { useTranslation } from 'react-i18next';
 
-// ToggleSwitch does not need translation logic internally
 const ToggleSwitch = ({ label, description, name, checked, onChange }) => (
-    <div className="flex items-center justify-between py-4 border-b border-gray-200">
-        <div className="flex-grow">
-            <label htmlFor={name} className="block text-sm font-medium text-gray-800">{label}</label>
-            <p className="text-xs text-gray-500">{description}</p>
-        </div>
-        {/* ... rest of component is unchanged ... */}
+  <div className="flex items-center justify-between py-4 border-b border-gray-200">
+    <div className="flex-grow pr-4">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-800 md:text-base">
+        {label}
+      </label>
+      <p className="text-xs text-gray-500 md:text-sm">{description}</p>
     </div>
+
+    {/* Accessible, modern toggle */}
+    <div className="relative">
+      <input
+        id={name}
+        name={name}
+        type="checkbox"
+        className="sr-only peer"
+        checked={checked}
+        onChange={onChange}
+      />
+      <div className="h-6 w-11 rounded-full bg-gray-200 transition-colors peer-checked:bg-[#002147]" />
+      <span className="pointer-events-none absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
+    </div>
+  </div>
 );
 
-// SelectInput does not need translation logic internally
 const SelectInput = ({ label, description, name, value, onChange, options }) => (
-     <div className="py-4 border-b border-gray-200">
-        <label htmlFor={name} className="block text-sm font-medium text-gray-800">{label}</label>
-        <p className="text-xs text-gray-500 mb-2">{description}</p>
-        <select
-            id={name} name={name} value={value} onChange={onChange}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm rounded-md"
-        >
-            {options.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-            ))}
-        </select>
-    </div>
+  <div className="py-4 border-b border-gray-200">
+    <label htmlFor={name} className="block text-sm font-medium text-gray-800 md:text-base">
+      {label}
+    </label>
+    <p className="text-xs text-gray-500 mb-2 md:text-sm">{description}</p>
+    <select
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="mt-1 block w-full rounded-xl border-0 ring-1 ring-gray-300 focus:ring-2 focus:ring-[#002147] text-sm py-2 pl-3 pr-10 bg-white"
+    >
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  </div>
 );
-
 
 export default function PrivacySettingsSection() {
-    const { t } = useTranslation(); // 2. Initialize hook
-    const [privacySettings, setPrivacySettings] = useState({ shareAnalytics: true, chatRetention: "6months" });
-    const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState('');
+  const { t } = useTranslation();
+  const [privacySettings, setPrivacySettings] = useState({
+    shareAnalytics: true,
+    chatRetention: '6months',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-    const handlePrivacyChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setPrivacySettings((prev) => ({...prev, [name]: type === "checkbox" ? checked : value}));
-    };
+  const handlePrivacyChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setPrivacySettings((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
 
-    const handleSave = () => {
-        setIsLoading(true);
-        setMessage('');
-        setTimeout(() => {
-            setMessage(t('accountSettings.privacy.saveSuccess')); // 3. Use translated message
-            setIsLoading(false);
-        }, 1000);
-    }
+  const handleSave = () => {
+    setIsLoading(true);
+    setMessage('');
+    setTimeout(() => {
+      setMessage(t('accountSettings.privacy.saveSuccess'));
+      setIsLoading(false);
+    }, 1000);
+  };
 
-    // 4. Create options array from translations
-    const retentionOptions = Object.entries(t('accountSettings.privacy.retention.options', { returnObjects: true }))
-        .map(([value, label]) => ({ value, label }));
+  const retentionOptions = Object.entries(
+    t('accountSettings.privacy.retention.options', { returnObjects: true })
+  ).map(([value, label]) => ({ value, label }));
 
-    return (
-        <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('accountSettings.privacy.title')}</h3>
-            
-            <ToggleSwitch
-                label={t('accountSettings.privacy.analytics.label')}
-                description={t('accountSettings.privacy.analytics.description')}
-                name="shareAnalytics"
-                checked={privacySettings.shareAnalytics}
-                onChange={handlePrivacyChange}
-            />
+  return (
+    <section className="rounded-2xl bg-white shadow-sm ring-1 ring-black/5 p-6 sm:p-8">
+      <SettingsSectionHeader title={t('accountSettings.privacy.title')} />
 
-            <SelectInput
-                label={t('accountSettings.privacy.retention.label')}
-                description={t('accountSettings.privacy.retention.description')}
-                name="chatRetention"
-                value={privacySettings.chatRetention}
-                onChange={handlePrivacyChange}
-                options={retentionOptions} // Use translated options
-            />
+      <ToggleSwitch
+        label={t('accountSettings.privacy.analytics.label')}
+        description={t('accountSettings.privacy.analytics.description')}
+        name="shareAnalytics"
+        checked={privacySettings.shareAnalytics}
+        onChange={handlePrivacyChange}
+      />
 
-            <div className="py-4 flex items-center justify-between">
-                 <div>
-                    <h4 className="text-sm font-medium text-gray-800">{t('accountSettings.privacy.download.title')}</h4>
-                    <p className="text-xs text-gray-500">{t('accountSettings.privacy.download.description')}</p>
-                </div>
-                <FormButton onClick={() => alert(t('accountSettings.privacy.download.alert'))} isLoading={false} className="w-auto text-sm">
-                    {t('accountSettings.privacy.download.button')}
-                </FormButton>
-            </div>
+      <SelectInput
+        label={t('accountSettings.privacy.retention.label')}
+        description={t('accountSettings.privacy.retention.description')}
+        name="chatRetention"
+        value={privacySettings.chatRetention}
+        onChange={handlePrivacyChange}
+        options={retentionOptions}
+      />
 
-
-            <div className="mt-6">
-                <FormButton onClick={handleSave} isLoading={isLoading} fullWidth>
-                    {t('accountSettings.privacy.saveButton')}
-                </FormButton>
-                {message && <p className="mt-4 text-sm text-center text-green-600">{message}</p>}
-            </div>
+      <div className="py-4 flex items-center justify-between">
+        <div>
+          <h4 className="text-sm font-medium text-gray-800 md:text-base">
+            {t('accountSettings.privacy.download.title')}
+          </h4>
+          <p className="text-xs text-gray-500 md:text-sm">
+            {t('accountSettings.privacy.download.description')}
+          </p>
         </div>
-    );
+        <FormButton
+          onClick={() => alert(t('accountSettings.privacy.download.alert'))}
+          isLoading={false}
+          className="w-auto text-sm focus:ring-[#002147]"
+        >
+          {t('accountSettings.privacy.download.button')}
+        </FormButton>
+      </div>
+
+      <div className="mt-6">
+        <FormButton onClick={handleSave} isLoading={isLoading} fullWidth className="focus:ring-[#002147]">
+          {t('accountSettings.privacy.saveButton')}
+        </FormButton>
+        {message && <p className="mt-4 text-sm text-center text-green-600">{message}</p>}
+      </div>
+    </section>
+  );
 }

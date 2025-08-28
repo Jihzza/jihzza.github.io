@@ -138,11 +138,12 @@ body,
         transparent 100%);
     mask-mode: alpha;
 
-    .image-swiper .swiper-slide-custom {
-      /* pick your size: 22–28% is a good range */
-      width: 25% !important;
-      /* try 22% if you want even smaller */
-    }
+  }
+
+  .image-swiper .swiper-slide-custom {
+    /* pick your size: 22–28% is a good range */
+    width: 23% !important;
+    /* try 22% if you want even smaller */
   }
 }
 

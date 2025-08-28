@@ -28,7 +28,7 @@ export default function OtherWinsSection() {
                 </SectionTextBlack>
             </div>
             <div className="full-bleed py-8">
-                <div className="w-full mx-auto lg:max-w-6xl desktop-fade-container">
+                <div className="w-full mx-auto lg:max-w-6xl desktop-fade-container lg:w-[70%]">
                     <ImageCarousel />
                 </div>
             </div>

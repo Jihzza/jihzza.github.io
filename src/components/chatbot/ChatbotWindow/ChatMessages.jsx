@@ -14,15 +14,15 @@ export default function ChatMessages({ messages, loading, scrollRef }) {
   }, [messages, scrollRef]);
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto lg:py-2">
       {messages.map((message, index) => (
-        <div key={index} className={`flex ${message.from === 'user' ? 'justify-end md:text-lg' : 'justify-start md:text-lg'} mb-4`}>
-          <div className={`w-full px-4 flex items-start gap-2 ${message.from === 'user' ? 'justify-end md:py-2' : 'py-4 bg-[#333333]/70 md:py-6'}`}>
+        <div key={index} className={`flex ${message.from === 'user' ? 'justify-end md:text-lg lg:text-base' : 'justify-start md:text-lg lg:text-base'} mb-4 lg:mb-2`}>
+          <div className={`w-full px-4 flex items-start gap-2 ${message.from === 'user' ? 'justify-end md:py-2' : 'py-4 bg-[#333333]/70 md:py-6 lg:rounded-xl lg:rounded-tl-sm lg:py-4'}`}>
             {message.from === 'bot' && (
               <img
                 src={BotIcon}
                 alt={t('chatbot.messages.avatarAlt')} // 3. Use translated alt text
-                className="w-6 h-6 flex-shrink-0 md:w-8 md:h-8"
+                className="w-6 h-6 flex-shrink-0 md:w-8 md:h-8 lg:w-6 lg:h-6"
               />
             )}
             <span className="text-white leading-relaxed">{message.text}</span>

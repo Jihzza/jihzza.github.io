@@ -6,7 +6,12 @@ import MediaItem from "./MediaItem";
 
 export default function MediaGrid({ items }) {
     return (
-        <ul className="grid grid-cols-3 gap-6 md:gap-0 items-center">
+        // MediaGrid.jsx
+        <ul className="
+            grid grid-cols-3 place-items-center
+            gap-4 lg:gap-2
+            justify-center lg:max-w-[640px] mx-auto"
+        >
             {items.map((it) => (
                 <MediaItem
                     key={it.id}

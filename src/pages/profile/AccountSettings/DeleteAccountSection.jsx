@@ -2,47 +2,58 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { deleteCurrentUser, signOut } from '../../../services/authService';
 import FormButton from '../../../components/common/Forms/FormButton';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import SettingsSectionHeader from '../AccountSettings/SettingsSectionHeader';
+import { useTranslation } from 'react-i18next';
 
 const DeleteAccountSection = () => {
-    const { t } = useTranslation(); // 2. Initialize hook
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-    const handleDelete = async () => {
-        // 3. Use translated confirmation message
-        if (window.confirm(t('accountSettings.deleteAccount.confirm'))) {
-            setLoading(true);
-            const { error } = await deleteCurrentUser();
-            if (error) {
-                // 4. Use translated alert messages
-                alert(t('accountSettings.deleteAccount.error', { message: error.message }));
-                setLoading(false);
-            } else {
-                alert(t('accountSettings.deleteAccount.success'));
-                await signOut();
-                navigate('/signup');
-            }
-        }
-    };
-    return (
-        <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-            {/* 5. Use translated texts */}
-            <h3 className="text-lg font-semibold text-red-800">{t('accountSettings.deleteAccount.title')}</h3>
-            <p className="py-3 text-sm text-red-700">
-                {t('accountSettings.deleteAccount.description')}
-            </p>
-            <FormButton 
-                onClick={handleDelete} 
-                isLoading={loading} 
-                fullWidth
-                className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-500"
-            >
-                {t('accountSettings.deleteAccount.button')}
-            </FormButton>
-        </div>
-    );
+  const handleDelete = async () => {
+    if (window.confirm(t('accountSettings.deleteAccount.confirm'))) {
+      setLoading(true);
+      const { error } = await deleteCurrentUser();
+      if (error) {
+        alert(t('accountSettings.deleteAccount.error', { message: error.message }));
+        setLoading(false);
+      } else {
+        alert(t('accountSettings.deleteAccount.success'));
+        await signOut();
+        navigate('/signup');
+      }
+    }
+  };
+
+  return (
+    <section className="rounded-2xl bg-red-50/80 ring-1 ring-red-200/60 p-6 sm:p-8">
+      <div className="mb-3 flex items-center gap-3">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-red-100">
+          <ExclamationTriangleIcon className="h-5 w-5 text-red-700" />
+        </span>
+        <SettingsSectionHeader
+          title={t('accountSettings.deleteAccount.title')}
+          className="mb-0 text-red-800"
+        />
+      </div>
+
+      <p className="py-3 text-sm text-red-700 md:text-base">
+        {t('accountSettings.deleteAccount.description')}
+      </p>
+
+      <FormButton
+        onClick={handleDelete}
+        isLoading={loading}
+        fullWidth
+        className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 inline-flex items-center justify-center gap-2"
+      >
+        {t('accountSettings.deleteAccount.button')}
+      </FormButton>
+    </section>
+  );
 };
+
 export default DeleteAccountSection;

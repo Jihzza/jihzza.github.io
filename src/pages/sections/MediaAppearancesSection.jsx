@@ -34,14 +34,14 @@ export default function MediaAppearancesSection() {
                 <img
                     src={MediaAppearances}
                     alt={t("media.mainImageAlt", { defaultValue: "Aparições na mídia" })}
-                    className="w-60 max-w-3xl mx-auto md:w-80"
+                    className="w-60 max-w-3xl mx-auto md:w-80 lg:w-60"
                     loading="lazy"
                     decoding="async"
                 />
             </div>
 
 
-            <div className="px-6 mt-8">
+            <div className="px-6 mt-8 self-center">
                 <MediaGrid items={localized} />
             </div>
         </section>

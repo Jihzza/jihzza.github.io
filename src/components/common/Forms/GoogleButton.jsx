@@ -6,7 +6,7 @@ export default function GoogleButton({ onClick, disabled, fullWidth = true }) {
             type="button" // Important: type="button" prevents it from submitting a form by default.
             onClick={onClick}
             disabled={disabled}
-            className={`flex items-center justify-center gap-3 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 shadow-md ${fullWidth ? 'w-auto py-2 px-4 md:px-5 md:py-4 md:text-lg font-bold' : 'px-4 py-2'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex items-center justify-center gap-3 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 shadow-md ${fullWidth ? 'w-auto py-2 px-4 md:px-5 md:py-4 md:text-lg font-bold lg:py-2 lg:px-4 lg:text-base' : 'px-4 py-2'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
            {/* SVG from Google assets */}
            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
