@@ -20,7 +20,7 @@ export default function FaqItem({ question, answer }) {
         <div className="border-b border-gray-200 bg-red-500">
             <button
                 onClick={toggleOpen}
-                className="w-full flex justify-between items-center text-left text-gray-800 focus:outline-none"
+                className="w-full lg:max-w-6xl flex justify-between items-center text-left text-gray-800 focus:outline-none"
                 aria-expanded={isOpen}
                 aria-controls={`faq-answer-${question.replace(/\s+/g, '-')}`}
             >

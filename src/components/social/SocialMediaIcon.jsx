@@ -27,7 +27,7 @@ export default function SocialMediaIcon({ href, iconSrc, altText }) {
         src={iconSrc}
         alt={altText}
         // We control the size of the icon here for consistency.
-        className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8"
+        className="w-8 h-8 md:w-10 md:h-10 lg:w-8 lg:h-8"
       />
     </a>
   );

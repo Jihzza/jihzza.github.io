@@ -1,120 +1,310 @@
 // src/components/scheduling/consultations/CustomCalendar.jsx
+// Modern, accessible, and extensible calendar component.
+// - Drop-in compatible with your previous API (selectedDate, onDateSelect, isDateSelectionRestricted)
+// - Adds keyboard navigation, ARIA semantics, focus management, optional min/max, weekStartsOn, locale, and onMonthChange
+// - Keeps your restriction logic (disable weekends + past/next 48h) when isDateSelectionRestricted=true
 
-import React, { useState } from 'react';
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, isSaturday, isSunday, isBefore, startOfToday, addHours } from 'date-fns';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  addHours,
+  endOfMonth,
+  endOfWeek,
+  format,
+  isAfter,
+  isBefore,
+  isEqual,
+  isSameDay,
+  isSameMonth,
+  isSaturday,
+  isSunday,
+  parseISO,
+  startOfMonth,
+  startOfToday,
+  startOfWeek,
+  subMonths,
+} from "date-fns";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 
 /**
- * A from-scratch, reusable calendar component for selecting a date.
- * It is a "controlled" component, receiving its state and handlers via props.
- * This gives the parent component full control over the calendar's behavior.
+ * CustomCalendar (modernized)
  *
- * @param {Date | null} selectedDate - The currently selected date from the parent component.
- * @param {function(Date): void} onDateSelect - The callback function to execute when a date is selected.
- * @param {boolean} [isDateSelectionRestricted=false] - If true, disables past dates and weekends for scheduling.
+ * Props (backward compatible):
+ * - selectedDate: Date | null
+ * - onDateSelect: (date: Date) => void
+ * - isDateSelectionRestricted?: boolean (keeps your original weekend + 48h cutoff behavior)
+ *
+ * New optional props:
+ * - weekStartsOn?: 0|1|2|3|4|5|6 (default 0)
+ * - locale?: Locale (date-fns locale)
+ * - leadTimeHours?: number (default 48) — only used when isDateSelectionRestricted is true
+ * - disableWeekendsWhenRestricted?: boolean (default true)
+ * - minDate?: Date
+ * - maxDate?: Date
+ * - className?: string
+ * - onMonthChange?: (displayedMonth: Date) => void
  */
-export default function CustomCalendar({ selectedDate, onDateSelect, isDateSelectionRestricted = false }) { // --- CHANGE #1: ADD NEW PROP ---
-    const [currentMonth, setCurrentMonth] = useState(new Date());
+export default function CustomCalendar({
+  selectedDate,
+  onDateSelect,
+  isDateSelectionRestricted = false,
+  weekStartsOn = 0,
+  locale,
+  leadTimeHours = 48,
+  disableWeekendsWhenRestricted = true,
+  minDate,
+  maxDate,
+  className = "",
+  onMonthChange,
+}) {
+  // Displayed month (first day of that month)
+  const [currentMonth, setCurrentMonth] = useState(() => startOfMonth(selectedDate ?? new Date()));
 
-    const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-    const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
+  // Focused date for keyboard nav; default to selected or today
+  const [focusedDate, setFocusedDate] = useState(() => selectedDate ?? startOfToday());
+  const gridRef = useRef(null);
 
-    const renderHeader = () => (
-        <div className="flex justify-between items-center py-2 px-1">
-            <button onClick={prevMonth} className="p-2 rounded-full hover:bg-gray-700 transition-colors">
-                <ChevronLeftIcon className="h-5 w-5 text-white" />
-            </button>
-            <h2 className="font-bold text-lg text-white">
-                {format(currentMonth, 'MMMM yyyy')}
-            </h2>
-            <button onClick={nextMonth} className="p-2 rounded-full hover:bg-gray-700 transition-colors">
-                <ChevronRightIcon className="h-5 w-5 text-white" />
-            </button>
+  // Keep displayed month in sync if selectedDate changes across months
+  useEffect(() => {
+    if (selectedDate && !isSameMonth(selectedDate, currentMonth)) {
+      const firstOfSelected = startOfMonth(selectedDate);
+      setCurrentMonth(firstOfSelected);
+      onMonthChange?.(firstOfSelected);
+    }
+  }, [selectedDate]);
+
+  const goToPrevMonth = useCallback(() => {
+    const next = startOfMonth(subMonths(currentMonth, 1));
+    setCurrentMonth(next);
+    onMonthChange?.(next);
+  }, [currentMonth, onMonthChange]);
+
+  const goToNextMonth = useCallback(() => {
+    const next = startOfMonth(addMonths(currentMonth, 1));
+    setCurrentMonth(next);
+    onMonthChange?.(next);
+  }, [currentMonth, onMonthChange]);
+
+  const monthStart = useMemo(() => startOfMonth(currentMonth), [currentMonth]);
+  const monthEnd = useMemo(() => endOfMonth(monthStart), [monthStart]);
+  const startDate = useMemo(() => startOfWeek(monthStart, { weekStartsOn }), [monthStart, weekStartsOn]);
+  const endDate = useMemo(() => endOfWeek(monthEnd, { weekStartsOn }), [monthEnd, weekStartsOn]);
+
+  const today = startOfToday();
+  const bookingCutoff = useMemo(() => addHours(new Date(), leadTimeHours), [leadTimeHours]);
+
+  const isOutOfRange = useCallback(
+    (date) => {
+      if (minDate && isBefore(date, startOfDay(minDate))) return true;
+      if (maxDate && isAfter(date, endOfDay(maxDate))) return true;
+      return false;
+    },
+    [minDate, maxDate]
+  );
+
+  const isDisabled = useCallback(
+    (date) => {
+      // Keep original behavior when isDateSelectionRestricted
+      if (isDateSelectionRestricted) {
+        const weekend = disableWeekendsWhenRestricted && (isSaturday(date) || isSunday(date));
+        const pastOrWithinLead = isBefore(date, startOfToday()) || isBefore(date, bookingCutoff);
+        if (weekend || pastOrWithinLead) return true;
+      }
+      if (isOutOfRange(date)) return true;
+      return false;
+    },
+    [isDateSelectionRestricted, disableWeekendsWhenRestricted, bookingCutoff, isOutOfRange]
+  );
+
+  // Build weeks matrix
+  const weeks = useMemo(() => {
+    const days = [];
+    let day = startDate;
+    while (!isAfter(day, endDate)) {
+      days.push(day);
+      day = addDays(day, 1);
+    }
+    // chunk into weeks of 7
+    const rows = [];
+    for (let i = 0; i < days.length; i += 7) rows.push(days.slice(i, i + 7));
+    return rows;
+  }, [startDate, endDate]);
+
+  // Keyboard navigation in the grid
+  const onKeyDown = useCallback(
+    (e) => {
+      const key = e.key;
+      let next = focusedDate ?? today;
+      if (key === "ArrowLeft") next = addDays(next, -1);
+      else if (key === "ArrowRight") next = addDays(next, 1);
+      else if (key === "ArrowUp") next = addWeeks(next, -1);
+      else if (key === "ArrowDown") next = addWeeks(next, 1);
+      else if (key === "Home") next = startOfWeek(next, { weekStartsOn });
+      else if (key === "End") next = endOfWeek(next, { weekStartsOn });
+      else if (key === "PageUp") next = addMonths(next, -1);
+      else if (key === "PageDown") next = addMonths(next, 1);
+      else if (key === "Enter" || key === " ") {
+        e.preventDefault();
+        if (!isDisabled(focusedDate)) onDateSelect?.(focusedDate);
+        return;
+      } else {
+        return; // ignore other keys
+      }
+      e.preventDefault();
+      setFocusedDate(next);
+      // If we moved across months, update currentMonth so the focused day is visible
+      if (!isSameMonth(next, currentMonth)) {
+        const cm = startOfMonth(next);
+        setCurrentMonth(cm);
+        onMonthChange?.(cm);
+      }
+      // Move DOM focus to matching cell after state commits (next tick)
+      requestAnimationFrame(() => {
+        const el = gridRef.current?.querySelector(
+          `[data-iso="${format(next, "yyyy-MM-dd")}"]`
+        );
+        el?.focus();
+      });
+    },
+    [focusedDate, weekStartsOn, currentMonth, isDisabled, onDateSelect]
+  );
+
+  return (
+    <div className={`w-full max-w-md mx-auto rounded-2xl bg-black/30 backdrop-blur-lg text-white shadow-xl ring-1 ring-white/10 ${className}`}>
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 sm:p-4">
+        <div className="flex items-center gap-2">
+          <CalendarIcon className="h-5 w-5 opacity-80" aria-hidden="true" />
+          <h2
+            id="calendar-month-label"
+            className="font-semibold text-base tracking-tight md:text-lg"
+            aria-live="polite"
+          >
+            {format(currentMonth, "MMMM yyyy", { locale })}
+          </h2>
         </div>
-    );
+        <div className="flex items-center gap-1 sm:gap-2">
+          <button
+            type="button"
+            onClick={goToPrevMonth}
+            className="p-2 rounded-full hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#BFA200]/70"
+            aria-label="Previous month"
+          >
+            <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const cm = startOfMonth(today);
+              setCurrentMonth(cm);
+              setFocusedDate(today);
+              onMonthChange?.(cm);
+            }}
+            className="px-3 py-1.5 text-sm rounded-full bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-[#BFA200]/70 hidden sm:inline-flex"
+          >
+            Today
+          </button>
+          <button
+            type="button"
+            onClick={goToNextMonth}
+            className="p-2 rounded-full hover:bg:white/10 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#BFA200]/70"
+            aria-label="Next month"
+          >
+            <ChevronRight className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
 
-    const renderDays = () => {
-        const days = [];
-        const date = startOfWeek(currentMonth);
-        for (let i = 0; i < 7; i++) {
-            days.push(
-                <div key={i} className="text-center text-sm font-medium text-gray-400">
-                    {format(addDays(date, i), 'E')}
-                </div>
-            );
-        }
-        return <div className="grid grid-cols-7 mt-4">{days}</div>;
-    };
+      {/* Weekday headings */}
+      <div className="grid grid-cols-7 text-center text-[11px] sm:text-xs text-gray-300 px-2 sm:px-3 select-none">
+        {Array.from({ length: 7 }).map((_, i) => {
+          const d = addDays(startOfWeek(currentMonth, { weekStartsOn }), i);
+          return (
+            <div key={i} className="py-1 font-medium">
+              {format(d, "EEE", { locale })}
+            </div>
+          );
+        })}
+      </div>
 
-    const renderCells = () => {
-        const monthStart = startOfMonth(currentMonth);
-        const monthEnd = endOfMonth(monthStart);
-        const startDate = startOfWeek(monthStart);
-        const endDate = endOfWeek(monthEnd);
+      {/* Grid */}
+      <div
+        ref={gridRef}
+        role="grid"
+        aria-labelledby="calendar-month-label"
+        className="px-2 sm:px-3 pb-3 sm:pb-4"
+        onKeyDown={onKeyDown}
+      >
+        {weeks.map((week, rowIdx) => (
+          <div key={rowIdx} role="row" className="grid grid-cols-7 gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            {week.map((date) => {
+              const inMonth = isSameMonth(date, monthStart);
+              const selected = selectedDate ? isSameDay(date, selectedDate) : false;
+              const todayFlag = isSameDay(date, today);
+              const disabled = isDisabled(date);
 
-        const rows = [];
-        let days = [];
-        let day = startDate;
+              const base =
+                "relative h-10 lg:h-8 w-full grid place-items-center rounded-lg border text-sm transition transform focus:outline-none focus-visible:ring-2 focus-visible:ring-[#BFA200]/70";
+              const classes = [base];
+              if (disabled) {
+                classes.push("text-gray-500 border-transparent line-through cursor-not-allowed opacity-60");
+              } else if (selected) {
+                classes.push("border-2 border-[#BFA200] font-semibold scale-105 bg-[#10253A]");
+              } else {
+                classes.push("border-white/10 hover:bg-white/10 cursor-pointer");
+              }
+              if (!inMonth) classes.push("text-gray-400");
 
-        while (day <= endDate) {
-            for (let i = 0; i < 7; i++) {
-                const cloneDay = day;
-                let isDisabled = false;
-
-                // --- CHANGE #2: CONDITIONAL RESTRICTION LOGIC ---
-                // "The Why": All the disabling logic is now wrapped inside this 'if' block.
-                // It will only run when the component is explicitly told to restrict dates,
-                // making it flexible for both viewing and scheduling contexts.
-                if (isDateSelectionRestricted) {
-                    const isWeekend = isSaturday(cloneDay) || isSunday(cloneDay);
-                    const bookingCutoff = addHours(new Date(), 48);
-                    const isPastCutoff = isBefore(cloneDay, startOfToday()) || isBefore(cloneDay, bookingCutoff);
-                    if (isWeekend || isPastCutoff) {
-                        isDisabled = true;
+              return (
+                <button
+                  key={format(date, "yyyy-MM-dd")}
+                  type="button"
+                  role="gridcell"
+                  data-iso={format(date, "yyyy-MM-dd")}
+                  aria-selected={selected}
+                  aria-disabled={disabled}
+                  aria-current={todayFlag ? "date" : undefined}
+                  tabIndex={isSameDay(date, focusedDate) ? 0 : -1}
+                  className={classes.join(" ")}
+                  onFocus={() => setFocusedDate(date)}
+                  onClick={() => {
+                    if (disabled) return;
+                    onDateSelect?.(date);
+                    // If clicking a trailing/leading day, jump month for continuity
+                    if (!inMonth) {
+                      const cm = startOfMonth(date);
+                      setCurrentMonth(cm);
+                      onMonthChange?.(cm);
                     }
-                }
+                    setFocusedDate(date);
+                  }}
+                >
+                  <span className="pointer-events-none select-none">
+                    {format(date, "d")}
+                  </span>
+                  {todayFlag && (
+                    <span className="sr-only"> Today</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-                const cellClasses = [
-                    'h-7', 'w-7', 'flex', 'items-center', 'justify-center',
-                    'rounded-lg', 'border', 'transition-colors', 'duration-200', 'text-sm'
-                ];
-                
-                if (isDisabled) {
-                    cellClasses.push('text-gray-600', 'border-transparent', 'cursor-not-allowed', 'line-through');
-                } else if (!isSameMonth(day, monthStart)) {
-                    cellClasses.push('text-gray-500', 'border-transparent');
-                } else if (isSameDay(day, selectedDate)) {
-                    cellClasses.push('bg-transparent', 'border-[#BFA200]', 'border-2', 'font-bold', 'text-white', 'scale-105');
-                } else {
-                    cellClasses.push('text-white', 'border-gray-600', 'hover:bg-gray-700', 'cursor-pointer');
-                }
-
-                days.push(
-                    <div
-                        key={day.toString()}
-                        className={cellClasses.join(' ')}
-                        onClick={() => !isDisabled && onDateSelect(cloneDay)} // --- CHANGE #3: SIMPLIFIED CLICK HANDLER ---
-                    >
-                        <span>{format(day, 'd')}</span>
-                    </div>
-                );
-                day = addDays(day, 1);
-            }
-            rows.push(
-                <div className="grid grid-cols-7 gap-2" key={day.toString()}>
-                    {days}
-                </div>
-            );
-            days = [];
-        }
-        return <div className="space-y-2 mt-2">{rows}</div>;
-    };
-
-    return (
-        <div className="w-full max-w-md mx-auto rounded-lg bg-[#002147]">
-            {renderHeader()}
-            {renderDays()}
-            {renderCells()}
-        </div>
-    );
+// Helpers for min/max range checks without importing the whole of date-fns-tz or extra utils
+function startOfDay(d) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+function endOfDay(d) {
+  const x = new Date(d);
+  x.setHours(23, 59, 59, 999);
+  return x;
 }

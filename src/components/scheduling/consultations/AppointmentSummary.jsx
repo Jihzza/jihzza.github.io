@@ -1,45 +1,61 @@
 // src/components/scheduling/consultations/AppointmentSummary.jsx
-import React from 'react';
-import { format, addMinutes } from 'date-fns';
-import { useTranslation } from 'react-i18next'; // 1. Import the hook
+import React, { useMemo } from 'react'
+import { format, addMinutes } from 'date-fns'
+import { useTranslation } from 'react-i18next'
+import { CalendarDays, Clock, ArrowRight } from 'lucide-react'
 
 /**
- * A component to display a summary of the selected appointment details.
- * It calculates the end time based on the start time and duration.
+ * AppointmentSummary (modernized)
  *
- * @param {Date} date - The selected date object.
- * @param {string} startTime - The selected start time in "HH:mm" format.
- * @param {string} duration - The selected duration in minutes.
+ * Props:
+ * - date: Date
+ * - startTime: string ("HH:mm")
+ * - duration: string | number (minutes)
  */
 export default function AppointmentSummary({ date, startTime, duration }) {
-  const { t } = useTranslation(); // 2. Initialize the translation function
+  const { t } = useTranslation()
 
-  const [startHours, startMinutes] = startTime.split(':').map(Number);
-  const startDateTime = new Date(date);
-  startDateTime.setHours(startHours, startMinutes, 0, 0); 
-
-  const endDateTime = addMinutes(startDateTime, Number(duration));
-
-  const formattedDate = format(date, 'E, d MMM yyyy');
-  const formattedEndTime = format(endDateTime, 'HH:mm');
+  const { startDateTime, endDateTime, formattedDate, formattedStartTime, formattedEndTime } = useMemo(() => {
+    const [h, m] = String(startTime).split(':').map(Number)
+    const start = new Date(date)
+    start.setHours(h || 0, m || 0, 0, 0)
+    const end = addMinutes(start, Number(duration) || 0)
+    return {
+      startDateTime: start,
+      endDateTime: end,
+      formattedDate: format(date, 'E, d MMM yyyy'),
+      formattedStartTime: format(start, 'HH:mm'),
+      formattedEndTime: format(end, 'HH:mm'),
+    }
+  }, [date, startTime, duration])
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-lg text-white animate-fade-in">
-      <div className="text-center font-semibold text-lg mb-3 border-b border-gray-600 pb-2">
-        {formattedDate}
-      </div>
-      <div className="flex justify-evenly items-center text-lg">
-        <div className="flex flex-col items-center">
-          {/* 3. Use the translated label */}
-          <span className="text-sm text-gray-400">{t('scheduling.appointmentSummary.from')}</span>
-          <span className="font-bold">{startTime}</span>
+    <div className="w-full max-w-md mx-auto rounded-2xl bg-black/30 backdrop-blur-lg text-white shadow-xl ring-1 ring-white/10">
+      <div className="p-4 sm:p-5">
+        <div className="flex items-center justify-center gap-2 text-center font-semibold text-base md:text-lg mb-4 border-b border-white/10 pb-3 lg:text-base">
+          <CalendarDays className="h-5 w-5 opacity-80" aria-hidden="true" />
+          <span>{formattedDate}</span>
         </div>
-        <div className="flex flex-col items-center">
-          {/* 4. Use the translated label */}
-          <span className="text-sm text-gray-400">{t('scheduling.appointmentSummary.to')}</span>
-          <span className="font-bold">{formattedEndTime}</span>
+        <div className="flex items-center justify-center gap-6 text-base md:text-xl lg:text-base">
+          <div className="flex flex-col items-center">
+            <span className="text-xs md:text-sm lg:text-xs text-gray-300">{t('scheduling.appointmentSummary.from')}</span>
+            <div className="flex items-center gap-1 font-bold" aria-label={t('scheduling.appointmentSummary.from')}>
+              <time dateTime={formattedStartTime}>{formattedStartTime}</time>
+            </div>
+          </div>
+          <ArrowRight className="h-5 w-5 opacity-80" aria-hidden="true" />
+          <div className="flex flex-col items-center">
+            <span className="text-xs md:text-sm lg:text-xs text-gray-300">{t('scheduling.appointmentSummary.to')}</span>
+            <div className="flex items-center gap-1 font-bold" aria-label={t('scheduling.appointmentSummary.to')}>
+              <time dateTime={formattedEndTime}>{formattedEndTime}</time>
+            </div>
+          </div>
+        </div>
+        <div className="mt-4 text-center text-sm md:text-base lg:text-sm text-gray-300">
+          <span className="opacity-80">{t('scheduling.appointmentSummary.duration', { defaultValue: 'Duration' })}: </span>
+          <strong>{Number(duration) || 0} {t('scheduling.appointmentSummary.minutesShort', { defaultValue: 'min' })}</strong>
         </div>
       </div>
     </div>
-  );
+  )
 }

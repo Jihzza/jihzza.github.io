@@ -20,7 +20,7 @@ export default function InteractiveSections() {
     const [activeSection, setActiveSection] = useState('social-media');
 
     return (
-        <section className="w-full max-w-4xl mx-auto py-8">
+        <section className="w-full max-w-6xl mx-auto py-8">
             <SectionNavigator
                 sections={sections}
                 activeSection={activeSection}

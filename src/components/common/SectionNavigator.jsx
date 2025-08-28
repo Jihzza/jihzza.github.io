@@ -13,14 +13,14 @@ import React from 'react';
  */
 export default function SectionNavigator({ sections, activeSectionId, onSelectSection }) {
     return (
-        <div className="flex justify-start items-center gap-2">
+        <div className="flex justify-start items-center gap-2 h-auto">
             {sections.map((section) => (
                 <button
                     key={section.id}
                     onClick={() => onSelectSection(section.id)}
                     className={`
                         px-3 py-1 rounded-lg text-sm 
-                        md:px-4 md:py-2 md:text-lg
+                        md:px-4 md:py-2 md:text-lg lg:px-3 lg:py-1
                         ${activeSectionId === section.id
                             ? 'bg-[#BFA200] text-black shadow-lg scale-105' // Active state
                             : 'bg-transparent text-black border-2 border-[#BFA200] hover:bg-[#BFA200] hover:text-black'    // Inactive state

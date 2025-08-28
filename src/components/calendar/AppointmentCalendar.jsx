@@ -18,7 +18,7 @@ export default function AppointmentCalendar({ appointments, selectedDate, onDate
     }, [appointments]);
 
     return (
-        <div className="bg-[#002147] p-4 rounded-lg shadow-md w-full max-w-md mx-auto">
+        <div className="rounded-lg shadow-md w-full max-w-md mx-auto">
             <CustomCalendar
                 selectedDate={selectedDate}
                 onDateSelect={onDateSelect}
