@@ -5,7 +5,6 @@ import SectionText from "../../components/ui/SectionText";
 import BoxesGrid from "../../components/ui/BoxesGrid";
 import StepsList from "../../components/ui/StepsList";
 import TierCards from "../../components/coaching/TierCards";
-import PhoneIcon from "../../assets/icons/Phone Branco.svg";
 import Button from "../../components/ui/Button";
 
 import SocialMediaIcon from '../../assets/icons/Phone Branco.svg';
@@ -36,7 +35,7 @@ const TIERS = [
 
 export default function Consultations({ onBookCoaching }) {
   const sectionRef = useRef(null);
-  const [selectedPlanId, setSelectedPlanId] = useState(TIERS[0].id);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
   // derive selected tier + dynamic button label
   const selectedTier = TIERS.find(t => t.id === selectedPlanId);
   const buttonText = selectedTier

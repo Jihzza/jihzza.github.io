@@ -1,24 +1,44 @@
-// BoxesGrid.jsx — 2-column grid (N items). Clicking a card shows a paragraph right under its row.
-import React, { useId, useMemo, useState } from "react";
+// BoxesGrid.jsx — mobile 2-col, desktop 3-col with a centered *last* row.
+// The trick: on desktop we use 6 template columns and make each card span 2.
+// Then we use targeted `grid-column-end` values to center the leftovers:
+// - If 1 leftover → end at line 5  (places it in columns 3–4, the middle).
+// - If 2 leftovers → first ends at 4, last ends at -2 (columns 2–3 and 4–5).
+// This technique is adapted from Michelle Barker’s “Controlling Leftover Grid Items”.
+// See: https://css-irl.info/controlling-leftover-grid-items/
+import React, { useEffect, useMemo, useRef, useState, useId } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
-function CardTabSimple({ label, image, imageAlt, index, isActive, isTabbable, onSelect, tabId, panelId, focusRef }) {
+// Simple presentational card/button used inside the grid.
+function CardTabSimple({
+  label,
+  image,
+  imageAlt,
+  index,
+  isActive,
+  isTabbable,
+  onSelect,
+  onKeyDown,
+  tabId,
+  panelId,
+  focusRef,
+}) {
   return (
     <motion.button
       layout
       whileTap={{ scale: 0.97 }}
-      transition={{ layout: { duration: 0.30, ease: [0.22, 1, 0.36, 1] } }}
+      transition={{ layout: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
       ref={focusRef}
       role="button"
       id={tabId}
       aria-selected={isActive}
       aria-controls={panelId}
       tabIndex={isTabbable ? 0 : -1}
+      onKeyDown={onKeyDown}
       onClick={() => onSelect(index)}
       className={[
-        "flex flex-col gap-2 w-full h-30 items-center justify-center rounded-2xl ",
+        "flex flex-col gap-2 w-full h-30 items-center justify-center rounded-2xl",
         "bg-transparent border-2 border-[#BFA200]",
-        "text-white px-3 text-center focus:outline-none focus:ring-2 focus:ring-[#BFA200]/40",
+        "text-white px-3 py-6 text-center focus:outline-none focus:ring-2 focus:ring-[#BFA200]/40",
         isActive ? "ring-1 ring-[#BFA200]/40" : "hover:from-[#BFA200]/20 hover:to-[#BFA200]/10",
       ].join(" ")}
     >
@@ -26,164 +46,170 @@ function CardTabSimple({ label, image, imageAlt, index, isActive, isTabbable, on
         <img
           src={image}
           alt={imageAlt ?? ""}
-          className="w-10 h-10 object-contain pointer-events-none select-none"
-          {...(!imageAlt ? { 'aria-hidden': true } : {})}
+          className="w-8 h-8 object-contain pointer-events-none select-none"
+          {...(!imageAlt ? { "aria-hidden": true } : {})}
         />
       )}
-      <p className="text-sm font-semibold leading-tight line-clamp-2 md:text-base">{label}</p>
+      <span className="text-base font-medium">{label}</span>
     </motion.button>
   );
 }
 
-/**
- * Simple 2-column grid. Each card shows a short text label.
- * When a card is selected, a single paragraph expands UNDER THE SAME ROW.
- *
- * Props:
- * - items: Array<{ id?: string, label?: string, name?: string, paragraph?: string, subtitle?: string } | string>
- *   - Strings are treated as { label: string }
- *   - `name` maps to card text, `subtitle` maps to the expanded paragraph.
- */
+// Hook: current column count (2 on mobile, 3 on md+).
+function useCols() {
+  const [cols, setCols] = useState(2);
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 768px)"); // Tailwind md breakpoint
+    const onChange = () => setCols(mql.matches ? 3 : 2);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+  return cols;
+}
+
 export default function BoxesGrid({
-  items = [
-    { label: "AI Strategy & Roadmap", paragraph: "A phased plan tailored to your goals—quick wins first, long-term bets after." },
-    { label: "Tool & Platform Guidance", paragraph: "Recommendations based on your stack, team skills, and budget." },
-    { label: "Data Readiness Assessment", paragraph: "Snapshot of data quality, access, and governance with practical steps." },
-    { label: "Use Case Discovery", paragraph: "Identify high-ROI use cases and risks with impact estimates." },
-    { label: "Security & Compliance Advisory", paragraph: "Ensure privacy, safety, and compliance in your AI initiatives." },
-    { label: "Model Evaluation & Analysis", paragraph: "Test, compare, and monitor model performance and drift." },
-    { label: "Change Management", paragraph: "Train teams and build processes to adopt AI successfully." },
-  ],
+  items = [],
 }) {
-  // Normalize input; support both {label, paragraph} and {name, subtitle}. No slicing: render all items.
+  // Normalize input to objects with a label / paragraph
   const normalized = useMemo(
     () =>
-      (items || []).map((i) => {
-        if (typeof i === "string") return { label: i, paragraph: "" };
-        const label = i.label ?? i.name ?? "";
-        const paragraph = i.paragraph ?? i.subtitle ?? "";
-        return { ...i, label, paragraph };
-      }),
+      (items || []).map((it) =>
+        typeof it === "string"
+          ? { label: it, paragraph: "" }
+          : {
+              id: it.id,
+              label: it.label ?? it.name ?? "",
+              paragraph: it.paragraph ?? it.subtitle ?? "",
+              image: it.image,
+              imageAlt: it.imageAlt,
+            }
+      ),
     [items]
   );
 
+  const cols = useCols();
   const [active, setActive] = useState(null);
   const listId = useId();
 
-  // Toggle selection on click
-  const handleSelect = (index) => {
-    setActive((prev) => (prev === index ? null : index));
-  };
+  // focus refs + ids
+  const tabRefs = useRef([]);
+  useEffect(() => { tabRefs.current = new Array(normalized.length); }, [normalized.length]);
 
-  // Refs + ids for a11y and focus management
-  const tabRefs = useMemo(() => ({ current: [] }), []);
-  const ids = useMemo(
-    () =>
-      normalized.map((_, i) => ({
-        tabId: `${listId}-tab-${i}`,
-        panelId: `${listId}-panel-${i}`,
-      })),
-    [normalized, listId]
-  );
+  // ids for a11y
+  const ids = useMemo(() => {
+    const uid = listId?.toString().replace(/:/g, "") || "boxes";
+    return normalized.map((_, i) => ({
+      tabId: `${uid}-tab-${i}`,
+      panelId: `${uid}-panel-${i}`,
+    }));
+  }, [normalized.length, listId]);
 
-  // Keyboard nav: Left/Right/Home/End + Up/Down for a 2-column grid
-  function onKeyDown(e, i) {
+  // keyboard navigation
+  const onKeyDown = (e, index) => {
     const last = normalized.length - 1;
-    const colCount = 2;
-    const col = i % colCount;
-    const row = Math.floor(i / colCount);
+    const colCount = cols; // 2 on mobile, 3 on desktop
+    const row = Math.floor(index / colCount);
+    let next = index;
 
-    let next = i;
     switch (e.key) {
       case "ArrowRight":
-        next = i === last ? 0 : i + 1;
+        next = Math.min(index + 1, last);
         break;
       case "ArrowLeft":
-        next = i === 0 ? last : i - 1;
+        next = Math.max(index - 1, 0);
         break;
-      case "ArrowDown": {
-        const candidate = (row + 1) * colCount + col;
-        next = candidate <= last ? candidate : last;
+      case "ArrowDown":
+        next = Math.min(index + colCount, last);
         break;
-      }
-      case "ArrowUp": {
-        const candidate = (row - 1) * colCount + col;
-        next = candidate >= 0 ? candidate : 0;
+      case "ArrowUp":
+        next = Math.max(index - colCount, 0);
         break;
-      }
       case "Home":
-        next = 0;
+        next = row * colCount; // first in this row
         break;
       case "End":
-        next = last;
+        next = Math.min(row * colCount + (colCount - 1), last); // last in this row (or the real last item)
         break;
+      case "Enter":
+      case " ":
+        e.preventDefault();
+        setActive((prev) => (prev === index ? null : index));
+        return;
       default:
         return;
     }
     e.preventDefault();
-    setActive(next);
-    const btn = tabRefs.current[next];
-    if (btn && typeof btn.focus === "function") btn.focus();
-  }
+    tabRefs.current[next]?.focus?.();
+  };
 
   if (normalized.length === 0) return null;
 
-  // Build rows of 2
+  // Build rows by current col count
   const rows = useMemo(() => {
     const r = [];
-    for (let i = 0; i < normalized.length; i += 2) {
-      r.push(normalized.slice(i, i + 2));
+    for (let i = 0; i < normalized.length; i += cols) {
+      r.push(normalized.slice(i, i + cols));
     }
     return r;
-  }, [normalized]);
+  }, [normalized, cols]);
 
-  // Widow detection: if total is odd, the last index is a single-item last row.
-  const isWidow = normalized.length % 2 === 1;
-  const widowIndex = isWidow ? normalized.length - 1 : -1;
-
-  const activeRow = active === null ? -1 : Math.floor(active / 2);
+  const rem = normalized.length % cols; // leftovers on the last row
+  const activeRow = active === null ? -1 : Math.floor(active / cols);
 
   return (
     <section className="w-full">
       <div className="mx-auto w-full">
         <LayoutGroup>
           <motion.div layout>
-            {/* 2-column card grid with a row-scoped panel */}
             <div
               role="tablist"
               aria-label="Options"
-              className="grid grid-cols-2 gap-2 py-4 justify-items-stretch md:grid-cols-3"
+              // 2 cols on mobile; 6 on md (each card spans 2 → visually 3 cols)
+              className="grid grid-cols-2 md:grid-cols-6 gap-3 py-4"
             >
               {rows.map((row, rIdx) => (
                 <React.Fragment key={`row-${rIdx}`}>
-                  {/* cards for this row */}
-                  {row.map((item, i) => {
-                    const index = rIdx * 2 + i;
+                  {row.map((item, iInRow) => {
+                    const index = rIdx * cols + iInRow;
                     const isActive = active === index;
                     const isTabbable = active === null ? index === 0 : isActive;
+                    const last = normalized.length - 1;
+                    const penultimate = normalized.length - 2;
 
-                    const itemWrapperClass = [
-                      "min-w-0",
-                      index === widowIndex
-                        ? "col-span-2 justify-self-center max-w-md"
-                        : "w-full",
-                    ].join(" ");
+                    // Base classes: mobile spans one col, desktop spans 2 (so 3 "visual" columns).
+                    const base = "min-w-0 w-full md:col-span-2";
+
+                    // Centering logic for the *last* row on desktop only.
+                    let desktopCentering = "";
+                    if (cols === 3) {
+                      if (rem === 1 && index === last) {
+                        // one leftover → center it
+                        desktopCentering = "md:col-end-5"; // columns 3–4
+                      } else if (rem === 2) {
+                        if (index === penultimate) {
+                          desktopCentering = "md:col-end-4"; // columns 2–3
+                        } else if (index === last) {
+                          desktopCentering = "md:col-end-[-2]"; // columns 4–5
+                        }
+                      }
+                    }
+
+                    // (Mobile single-widow usually looks fine without special rules.)
+
+                    const wrapperClass = [base, desktopCentering].join(" ").trim();
 
                     return (
-                      <motion.div
-                        key={item.id ?? item.label ?? item.name ?? index}
-                        onKeyDown={(e) => onKeyDown(e, index)}
-                        layout
-                        className={itemWrapperClass}
-                      >
+                      <motion.div key={ids[index].tabId} className={wrapperClass} layout>
                         <CardTabSimple
-                          label={item.label}
-                          image={item.image ?? item.icon}
-                          imageAlt={item.imageAlt ?? item.iconAlt ?? item.label}
                           index={index}
+                          label={item.label}
+                          image={item.image}
+                          imageAlt={item.imageAlt}
                           isActive={isActive}
                           isTabbable={isTabbable}
-                          onSelect={handleSelect}
+                          onSelect={(i) => setActive((prev) => (prev === i ? null : i))}
+                          onKeyDown={(e) => onKeyDown(e, index)}
                           tabId={ids[index].tabId}
                           panelId={ids[index].panelId}
                           focusRef={(el) => (tabRefs.current[index] = el)}
@@ -192,7 +218,7 @@ export default function BoxesGrid({
                     );
                   })}
 
-                  {/* row-scoped expander right under this row */}
+                  {/* Row-scoped expander right under this row */}
                   <AnimatePresence initial={false}>
                     {active !== null && activeRow === rIdx && normalized[active] && (
                       <motion.div
@@ -200,14 +226,14 @@ export default function BoxesGrid({
                         role="region"
                         id={ids[active].panelId}
                         aria-labelledby={ids[active].tabId}
-                        className="overflow-hidden col-span-2"
+                        className="overflow-hidden col-span-2 md:col-span-6"
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                       >
                         <div className="px-2 py-4 text-center text-white">
-                          <p className="text-sm/6 text-white md:text-xl">
+                          <p className="text-sm md:text-lg">
                             {normalized[active].paragraph || ""}
                           </p>
                         </div>

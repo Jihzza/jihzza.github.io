@@ -1,26 +1,20 @@
-// src/components/common/CtaButton.jsx
-
-import { div } from 'motion/react-client';
-import React from 'react';
-
-/**
- * A reusable Call-to-Action (CTA) button with a distinct style.
- * This is designed for primary actions, like booking or requesting information.
- *
- * @param {React.ReactNode} children - The text or elements to display inside the button.
- * @param {string} [className=''] - Optional additional CSS classes to apply.
- * @param {object} props - Any other props to pass to the button element (e.g., onClick).
- */
-export default function Button({ children, className = '', ...props }) {
-  const { noOuterPadding = false, ...rest } = props;
+// src/components/ui/Button.jsx (or your Button file)
+export default function Button({
+  children,
+  className = '',
+  isLoading = false,
+  noOuterPadding = false,
+  ...rest // <-- `isLoading` is removed from rest by destructuring above
+}) {
   const btn = (
     <button
-      className={`w-auto text-base leading-[1.45] tracking-[0.01em] px-3 py-2 rounded-lg bg-[#BFA200] text-black font-bold md:px-5 md:py-4 md:text-lg lg:py-2 lg:px-4 lg:text-base ${className}`}
+      className={`w-auto px-3 py-2 rounded-lg bg-[#BFA200] text-black font-semibold ${className}`}
+      disabled={rest.disabled || isLoading}
+      aria-busy={isLoading ? 'true' : undefined}
       {...rest}
     >
-      {children}
+      {isLoading ? 'Loading…' : children}
     </button>
   );
   return noOuterPadding ? btn : <div className="py-4">{btn}</div>;
-
 }

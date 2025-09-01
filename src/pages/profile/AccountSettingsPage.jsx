@@ -20,7 +20,7 @@ const AccountSettingsPage = () => {
           <SectionTextWhite title={t('accountSettings.pageTitle')} />
         </div>
 
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pb-12 space-y-6">
+        <div className="mx-auto max-w-3xl lg:px-8 pb-12 space-y-6">
           <UpdateEmailForm />
           <UpdatePasswordForm />
           <PrivacySettingsSection />

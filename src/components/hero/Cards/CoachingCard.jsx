@@ -33,7 +33,7 @@ export default function CoachingCard({ onScheduleClick }) {
 
   const handleTierClick = (e, planId) => {
     e.stopPropagation();
-    setSelectedPlanId(planId);
+    setSelectedPlanId(prev => (prev === planId ? null : planId));
   };
 
   return (
