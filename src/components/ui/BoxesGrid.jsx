@@ -25,8 +25,21 @@ function CardTabSimple({
   return (
     <motion.button
       layout
-      whileTap={{ scale: 0.97 }}
-      transition={{ layout: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
+      initial={false}
+      // Small press feedback without fighting the active scale
+      whileTap={{ scale: 0.985 }}
+      // Animate the "size increase" and the shadow smoothly
+      animate={{
+        scale: isActive ? 1.04 : 1,
+        boxShadow: isActive
+          ? "0 16px 36px rgba(0, 0, 0, 0.35)"
+          : "0 6px 14px rgba(0, 0, 0, 0.25)",
+      }}
+      transition={{
+        layout: { duration: 0.30, ease: [0.22, 1, 0.36, 1] },
+        scale: { duration: 0.20, ease: [0.22, 1, 0.36, 1] },
+        boxShadow: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+      }}
       ref={focusRef}
       role="button"
       id={tabId}
@@ -37,9 +50,15 @@ function CardTabSimple({
       onClick={() => onSelect(index)}
       className={[
         "flex flex-col gap-2 w-full h-30 items-center justify-center rounded-2xl",
-        "bg-transparent border-2 border-[#BFA200]",
-        "text-white px-3 py-6 text-center focus:outline-none focus:ring-2 focus:ring-[#BFA200]/40",
-        isActive ? "ring-1 ring-[#BFA200]/40" : "hover:from-[#BFA200]/20 hover:to-[#BFA200]/10",
+        "transform-gpu will-change-transform",
+        "bg-transparent border border-[#BFA200]",
+        "text-white px-3 py-6 text-center",
+        "focus focus-visible:ring-[#BFA200]/40",
+        "transition-all duration-200 ease-out",
+        // Active vs. idle: thicker border & ring when active
+        isActive
+          ? "border-3 ring-2 ring-[#BFA200]/40"
+          : "border-2 hover:shadow-md",
       ].join(" ")}
     >
       {image && (
