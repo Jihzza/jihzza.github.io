@@ -112,7 +112,7 @@ export default function Layout() {
         style={{ top: headerHeight }}
       />
 
-      <main ref={mainContentRef} className="flex-grow overflow-y-auto w-full overflow-x-hidden">
+      <main ref={mainContentRef} className="flex-grow overflow-y-auto w-full overflow-x-hidden sidebar-scrollbar">
         <ScrollRootContext.Provider value={mainContentRef}>
           <Outlet />
         </ScrollRootContext.Provider>

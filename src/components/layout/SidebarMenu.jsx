@@ -103,7 +103,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
               </div>
 
               {/* Content */}
-              <div className="flex h-[calc(100%-64px)] flex-col overflow-y-auto px-3 py-3 md:px-5 md:py-5 lg:py-3">
+              <div className="flex h-[calc(100%-64px)] flex-col overflow-y-auto px-3 py-3 md:px-5 md:py-5 lg:py-3 sidebar-scrollbar">
                 <nav aria-label={t('sidebar.navigation', { defaultValue: 'Primary' })} className="flex-1">
                   {/* Main pages */}
                   <ul role="list" className="space-y-1 md:space-y-2 lg:space-y-1">

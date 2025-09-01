@@ -11,29 +11,94 @@ body,
   background-color: #000;
 }
 
+/* Global scrollbar styling for the main page */
+html {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #BFA200 transparent;
+}
+
+/* Chrome/Edge/Safari global scrollbar */
+html::-webkit-scrollbar {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #BFA200;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #d8b400;
+}
+
+html::-webkit-scrollbar-thumb:active {
+  background: #a88300;
+}
+
 :root {
   font-family: 'Inter', sans-serif;
 }
 
 @layer utilities {
   .sidebar-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: #BFA200 #002147;
+    /* Firefox */
+    scrollbar-width: thin; /* 'auto' | 'thin' | 'none' */
+    /* thumb track */
+    scrollbar-color: var(--sb-thumb, #BFA200) var(--sb-track, transparent);
+    /* Prevent layout shift when the bar appears (Chrome/Safari) */
+    scrollbar-gutter: stable both-edges;
   }
 
+  /* Chrome/Edge/Safari */
   .sidebar-scrollbar::-webkit-scrollbar {
     width: 0.5rem;
     height: 0.5rem;
   }
-
   .sidebar-scrollbar::-webkit-scrollbar-track {
-    background: #002147;
+    background: transparent;
     border-radius: 9999px;
   }
-
   .sidebar-scrollbar::-webkit-scrollbar-thumb {
     background: #BFA200;
     border-radius: 9999px;
+    border: 2px solid transparent; /* creates a "gap" look */
+  }
+
+  /* Hover/active feedback (WebKit) */
+  .sidebar-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-hover, #d8b400);
+  }
+  .sidebar-scrollbar::-webkit-scrollbar-thumb:active {
+    background: var(--sb-thumb-active, #a88300);
+  }
+
+  /* Dark mode variants (optional; uses Tailwind's .dark) */
+  .dark .sidebar-scrollbar {
+    scrollbar-color: var(--sb-thumb-dark, #cbd5e1) var(--sb-track-dark, #0b1220);
+  }
+  .dark .sidebar-scrollbar::-webkit-scrollbar-track {
+    background: var(--sb-track-dark, #0b1220);
+  }
+  .dark .sidebar-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-dark, #cbd5e1);
+    border: 2px solid var(--sb-track-dark, #0b1220);
+  }
+
+  /* Utility to fully hide scrollbars but keep scrolling */
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE 10+ */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;             /* Chrome, Safari, Opera */
   }
 }
 
