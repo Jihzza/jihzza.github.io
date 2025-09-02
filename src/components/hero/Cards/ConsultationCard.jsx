@@ -1,7 +1,7 @@
 // src/components/hero/Cards/ConsultationCard.jsx
 
 import React from 'react';
-import CtaButton from '../../common/Button';
+import CtaButton from '../../ui/Button';
 import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 export default function ConsultationCard({ onScheduleClick }) {

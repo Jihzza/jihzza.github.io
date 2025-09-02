@@ -25,6 +25,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import SuccessPage from './pages/SuccessPage';
 import ChatbotPage from './pages/ChatbotPage';
+import SchedulingFormPage from './pages/SchedulingFormPage';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+          <Route path="/schedule" element={<SchedulingFormPage />} />
 
           {/* Protected Routes */}
           <Route

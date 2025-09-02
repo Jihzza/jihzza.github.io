@@ -1,4 +1,4 @@
-// src/pages/SchedulingPage.jsx
+// src/pages/SchedulingFormPage.jsx
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
@@ -6,37 +6,43 @@ import { supabase } from '../lib/supabaseClient';
 import { getProfile } from '../services/authService';
 import { signInWithGoogle } from '../services/authService';
 import { createPitchRequest } from '../services/pitchDeckServices';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+
 // COMPONENT IMPORTS
-// We import the first "step" component we created.
 import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
 import ConsultationScheduleStep from '../components/scheduling/consultations/ConsultationScheduleStep';
-import SectionTextBlack from '../components/common/SectionTextBlack';
+import SectionTextWhite from '../components/common/SectionTextWhite';
 import CoachingPlanStep from '../components/scheduling/coaching/CoachingPlanStep';
 import PitchDeckStep from '../components/scheduling/pitchdeck/PitchDeckStep';
 import ContactInfoStep from '../components/scheduling/ContactInfoStep';
 import PaymentStep from '../components/scheduling/PaymentStep';
 import ChatbotStep from '../components/scheduling/ChatbotStep';
 import ConfirmationStep from '../components/scheduling/ConfirmationStep';
-// We will add imports for our other steps here as we build them.
 
 // COMPONENT DEFINITION
-// This is our "smart" component or "wizard". It will manage the state and logic for the entire scheduling flow
-export default function SchedulingPage({ initialService, initialCoachingPlan, onFlowStart, initialStep }) {
-    // STATE MANAGEMENT
-
+// This is our dedicated scheduling form page that manages the entire scheduling flow
+export default function SchedulingFormPage() {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    
     // Get user and sign-in method from context
     const { user } = useAuth();
-    /// 'formData' will be our single source of truth. It's an object that will accumulate all the data from the user across all steps of the form.
+    
+    // Get initial service from URL parameters
+    const serviceFromUrl = searchParams.get('service');
+    const coachingPlanFromUrl = searchParams.get('plan');
+    
+    // 'formData' will be our single source of truth. It's an object that will accumulate all the data from the user across all steps of the form.
     // We initialize it with default values.
     const [formData, setFormData] = useState({
-        serviceType: null, // consultation, coaching, pitchdeck
+        serviceType: serviceFromUrl || null, // consultation, coaching, pitchdeck
         consultation: {
             date: null,
             duration: null, // in minutes
             time: null,
         },
         coaching: {
-            plan: null, // basic, standard, premium
+            plan: coachingPlanFromUrl || null, // basic, standard, premium
         },
         pitchdeck: {
             type: null,
@@ -48,23 +54,15 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
         }
     });
 
-    // ´currentStep´ will track which step of the process the user is on.
-    // We'll start at step 1: the service selection.
+    // 'currentStep' will track which step of the process the user is on.
+    // We'll start at step 2 since service selection is now on the home page
     const [profile, setProfile] = useState(null);
-    const [currentStep, setCurrentStep] = useState(initialStep || 1);
+    const [currentStep, setCurrentStep] = useState(2);
     const [paymentStatus, setPaymentStatus] = useState('awaiting');
     const [isProcessing, setIsProcessing] = useState(false);
 
     // HANDLER FUNCTIONS
     // These functions are the bridge between our parent state and our child components
-
-    /**
-     * Handles the selection of a service from the ServiceSelectionStep components
-     *@param {string} serviceId - The ID of the selected service.
-     *@param {string} formSection - The top-level key in formData (e.g. 'consultation')
-     *@param {string} fieldName - The specific field within the formSection that is being updated (e.g. 'date')
-     *@param {*} value - The new value for the field
-     */
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -75,18 +73,6 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
         };
         fetchProfile();
     }, [user]);
-
-
-
-    const handleServiceSelect = (serviceId) => {
-        // We update the 'formData' object with the selected service type
-        // We use the functional form of setState '(prevData => ...)' to ensure we are always working with the most up-to-date state.
-        setFormData(prevData => ({
-            ...prevData,
-            serviceType: serviceId,
-        }));
-        setCurrentStep(2);
-    };
 
     const handleUpdateField = (formSection, fieldName, value) => {
         setFormData(prevData => ({
@@ -131,10 +117,10 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
      * Moves the user to the previous step in the form
      */
     const handleBack = () => {
-        // If the user goes back to step 1, we should reset the serviceType
-        // so they can make a different choice.
+        // If the user goes back to step 2, redirect to home page
         if (currentStep === 2) {
-            setFormData(prev => ({ ...prev, serviceType: null }));
+            navigate('/');
+            return;
         }
         setCurrentStep(prevStep => prevStep - 1);
     };
@@ -167,7 +153,6 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
 
         try {
             const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout-session`;
-
 
             // --- THIS IS THE FIX ---
             // "Why": Replaced supabase.auth.session() with the new async method 
@@ -212,7 +197,6 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
         }
     };
 
-
     const handleGoogleSignIn = async () => {
         // 1. Capture the current state into a single object.
         const stateToPreserve = {
@@ -232,6 +216,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
         // 3. Initiate the Google sign-in flow.
         await signInWithGoogle();
     };
+
     const flowConfig = {
         consultation: { totalSteps: 5 },
         coaching: { totalSteps: 5 },
@@ -251,44 +236,6 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
         }
     }, []);
 
-    if (paymentStatus === 'success') {
-        return (
-            <div className="h-auto flex flex-col items-center justify-center py-12 px-4">
-                <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
-                    <ConfirmationStep />
-                </div>
-            </div>
-        );
-    }
-
-    useEffect(() => {
-        // This effect runs whenever the initial state props from HomePage are provided.
-        if (initialService) {
-            // 1. Update the form data based on the restored service and plan.
-            setFormData(prev => ({
-                ...prev,
-                serviceType: initialService,
-                coaching: {
-                    ...prev.coaching,
-                    // Use the full plan object if available, otherwise keep it as is.
-                    plan: initialCoachingPlan || prev.coaching.plan
-                }
-            }));
-
-            // 2. Set the current step. Trust the initialStep prop from the parent if it exists.
-            //    This is the key to resuming on Step 3.
-            //    If no specific step is provided, default to step 2.
-            setCurrentStep(initialStep || 2);
-
-            // 3. CRITICAL: Notify the parent component that we have consumed the initial props
-            //    so it can reset its own state and prevent this logic from running again.
-            if (onFlowStart) {
-                onFlowStart();
-            }
-        }
-    }, [initialService, initialCoachingPlan, initialStep, onFlowStart]);
-
-
     // This effects runs when the user object or current step changes.
     // It's responsible for pre-filling the form for logged-in users
     useEffect(() => {
@@ -307,15 +254,40 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
         }
     }, [user, profile, currentStep]); // Dependency array
 
-    {/* Get the total steps for the currently selected flow */ }
+    // Get the total steps for the currently selected flow
     const totalSteps = formData.serviceType ? flowConfig[formData.serviceType].totalSteps : 0;
+
+    // Handle initial service from URL parameters
+    useEffect(() => {
+        if (serviceFromUrl && serviceFromUrl !== formData.serviceType) {
+            setFormData(prev => ({
+                ...prev,
+                serviceType: serviceFromUrl,
+                coaching: {
+                    ...prev.coaching,
+                    plan: coachingPlanFromUrl || prev.coaching.plan
+                }
+            }));
+        }
+    }, [serviceFromUrl, coachingPlanFromUrl]);
+
+    // If no service is selected, show service selection step
+    if (!formData.serviceType) {
+        return (
+            <div className="h-auto flex flex-col items-center justify-center py-4">
+                <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
+                    <ServiceSelectionStep />
+                </div>
+            </div>
+        );
+    }
 
     // RENDER LOGIC
     return (
         // We use a container to center the form on the page and provide padding
-        <div className="h-auto flex flex-col items-center justify-center py-4">
-            <SectionTextBlack title="Schedule Your Consultation" />
-            <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
+        <div className="h-auto flex flex-col items-center justify-start p-4">
+            <SectionTextWhite title="Schedule Your Consultation" />
+            <div className="w-full max-w-2xl p-4 space-y-4 bg-[#002147] rounded-xl shadow-md">
 
                 {/* --- START OF THE MODIFIED LOGIC --- */}
                 {paymentStatus === 'success' ? (
@@ -324,17 +296,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
                 ) : (
                     // Otherwise, show the normal multi-step form
                     <>
-                        {currentStep === 1 && (
-                            <ServiceSelectionStep
-                                // We pass the currently selected service from our state down as prop.
-                                selectedService={formData.serviceType}
-                                // We pass the handler function down so the child can notify the parent of a change
-                                onSelectService={handleServiceSelect}
-                            />
-                        )}
-
-                        {/* We will add more conditional blocks here for other steps */}
-                        {/* {currentStep === 2 && formData.serviceType === 'consultation' && <ConsultationScheduleStep} */}
+                        {/* We start at step 2 since service selection is now on the home page */}
                         {currentStep === 2 && formData.serviceType === 'consultation' && (
                             <ConsultationScheduleStep
                                 // Pass down only the revelant part of the formData
@@ -379,15 +341,12 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
                             />
                         )}
 
-
                         {(formData.serviceType === 'pitchdeck' && currentStep === 4) && <ChatbotStep />}
                         {(formData.serviceType !== 'pitchdeck' && currentStep === 5) && <ChatbotStep />}
 
-
-
-                        {currentStep > 1 && (
+                        {currentStep >= 2 && (
                             <div className="flex justify-between pt-4">
-                                {/* Back Button: Always shown after step 1 */}
+                                {/* Back Button: Always shown from step 2 onwards */}
                                 <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors md:text-base">Back</button>
 
                                 {/* Next Button: Shown on intermediate steps */}
@@ -402,7 +361,7 @@ export default function SchedulingPage({ initialService, initialCoachingPlan, on
                                             (currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && paymentStatus !== 'success') ||
                                             isProcessing
                                         }
-                                        className="px-6 py-2 text-sm font-semibold text-black bg-[#BFA200] rounded-md transition-colorsdisabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500 md:text-base"
+                                        className="px-6 py-2 text-sm font-semibold text-black bg-[#BFA200] rounded-md transition-colors disabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500 md:text-base"
                                     >Next</button>
                                 )}
 

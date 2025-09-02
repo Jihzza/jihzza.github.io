@@ -11,38 +11,6 @@ body,
   background-color: #000;
 }
 
-/* Global scrollbar styling for the main page */
-html {
-  /* Firefox */
-  scrollbar-width: thin;
-  scrollbar-color: #BFA200 transparent;
-}
-
-/* Chrome/Edge/Safari global scrollbar */
-html::-webkit-scrollbar {
-  width: 0.7rem;
-  height: 0.7rem;
-}
-
-html::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 9999px;
-}
-
-html::-webkit-scrollbar-thumb {
-  background: #BFA200;
-  border-radius: 9999px;
-  border: 2px solid transparent;
-}
-
-html::-webkit-scrollbar-thumb:hover {
-  background: #d8b400;
-}
-
-html::-webkit-scrollbar-thumb:active {
-  background: #a88300;
-}
-
 :root {
   font-family: 'Inter', sans-serif;
 }

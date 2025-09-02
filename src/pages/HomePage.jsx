@@ -1,6 +1,7 @@
 // src/pages/HomePage.jsx
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HeroSection from './sections/HeroSection';
 import AboutMeSection from './sections/AboutMeSection';
 import ConsultationsSection from './sections/Consultations';
@@ -12,39 +13,28 @@ import TestimonialsSection from './sections/TestimonialsSection';
 import SignupSection from './sections/SignupSection';
 import ChatWithMeSection from './sections/ChatWithMeSection';
 import InteractiveSections from './sections/InteractiveSections';
-import SchedulingPage from './SchedulingPage';
+import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
+import SectionTextBlack from '../components/common/SectionTextBlack';
 
 export default function HomePage() {
+    const navigate = useNavigate();
     const schedulingRef = useRef(null);
-    const [initialService, setInitialService] = useState(null);
-    const [initialCoachingPlan, setInitialCoachingPlan] = useState(null);
-    const [initialStep, setInitialStep] = useState(null);
 
     const handleScheduleService = (serviceId, details = null) => {
-        setInitialService(serviceId);
-
-        // If Coaching, normalize details to a plan id string
+        // Build the URL with service parameter
+        let url = `/schedule?service=${serviceId}`;
+        
+        // If Coaching, add plan parameter
         if (serviceId === 'coaching' && details) {
             // accept either { tier } payload or a direct id
             const planId = details?.tier?.id ?? details?.id ?? details ?? null;
-            setInitialCoachingPlan(planId);
-        } else {
-            setInitialCoachingPlan(null);
+            if (planId) {
+                url += `&plan=${planId}`;
+            }
         }
 
-        // ensure SchedulingPage opens at step 2 (the service-specific step)
-        setInitialStep(2);
-
-        // scroll to the embedded scheduler
-        setTimeout(() => {
-            schedulingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 0);
-    };
-
-    const handleFlowStart = () => {
-        setInitialService(null);
-        setInitialCoachingPlan(null);
-        setInitialStep(null); // Also reset the initial step
+        // Navigate to the scheduling form page
+        navigate(url);
     };
 
     useEffect(() => {
@@ -56,14 +46,14 @@ export default function HomePage() {
                 try {
                     const savedState = JSON.parse(savedStateJSON);
 
-                    // Set all the state that SchedulingPage needs
-                    setInitialService(savedState.formData.serviceType);
-                    setInitialStep(savedState.currentStep); // Set the step to resume on
+                    // Build URL with service and plan parameters
+                    let url = `/schedule?service=${savedState.formData.serviceType}`;
                     if (savedState.formData.serviceType === 'coaching' && savedState.formData.coaching.plan) {
-                        setInitialCoachingPlan(savedState.formData.coaching.plan);
+                        url += `&plan=${savedState.formData.coaching.plan}`;
                     }
 
-                    schedulingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Navigate to the scheduling form page
+                    navigate(url);
 
                 } catch (error) {
                     console.error("Failed to restore state in HomePage:", error);
@@ -89,7 +79,7 @@ export default function HomePage() {
         return () => {
             window.removeEventListener('load', handlePageReady);
         };
-    }, []); // The dependency array ensures this runs only once.
+    }, [navigate]); // The dependency array ensures this runs only once.
 
     // =================================================================
     // THE ERROR WAS HERE: The useEffect hook was not closed.
@@ -132,12 +122,14 @@ export default function HomePage() {
                 <ChatWithMeSection />
             </div>
             <div id="scheduling-section" ref={schedulingRef} className="w-full">
-                <SchedulingPage
-                    initialService={initialService}
-                    initialCoachingPlan={initialCoachingPlan}
-                    initialStep={initialStep}
-                    onFlowStart={handleFlowStart}
-                />
+                <div className="h-auto flex flex-col items-center justify-center py-4">
+                    <SectionTextBlack title="Choose Your Service">
+
+                    </SectionTextBlack>
+                    <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
+                        <ServiceSelectionStep />
+                    </div>
+                </div>
             </div>
             <div id="interactive-sections" className="w-full">
                 <InteractiveSections />

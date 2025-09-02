@@ -3,7 +3,6 @@ import SectionCta from "../../components/ui/SectionCta";
 import SectionText from "../../components/ui/SectionText";
 import BoxesGrid from "../../components/ui/BoxesGrid";
 import StepsList from "../../components/ui/StepsList";
-import PhoneIcon from "../../assets/icons/Brain Branco.svg"
 import Button from "../../components/ui/Button"
 
 import MindsetIcon from '../../assets/icons/Brain Branco.svg';

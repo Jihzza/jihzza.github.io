@@ -98,7 +98,7 @@ export default function Layout() {
     // By setting its height to the `viewport.height`, we ensure that the entire
     // application resizes when the keyboard appears, preventing overlap.
     <div
-      className="h-full w-full flex flex-col bg-gradient-to-br from-[#001122] to-[#002147]"
+      className="h-full w-full flex flex-col bg-gradient-to-b from-[#002147] to-[#ECEBE5]"
       style={{ height: viewport.height }}
     >
       <Header ref={headerRef} onMenuClick={handleMenuClick} />
@@ -112,7 +112,7 @@ export default function Layout() {
         style={{ top: headerHeight }}
       />
 
-      <main ref={mainContentRef} className="flex-grow overflow-y-auto w-full overflow-x-hidden sidebar-scrollbar">
+      <main ref={mainContentRef} className="flex-grow overflow-y-auto w-full overflow-x-hidden">
         <ScrollRootContext.Provider value={mainContentRef}>
           <Outlet />
         </ScrollRootContext.Provider>

@@ -1,10 +1,11 @@
 // src/components/scheduling/ServiceSelectionStep.jsx
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // --- COMPONENT DEFINITION ---
 // This is a "dumb" component. It doesn't know what step it is, nor does it manage any state.
-// It simply renders the options it's told to and notifies a parent component when an option is selected.
+// It simply renders the options it's told to and redirects to the scheduling form page when an option is selected.
 
 // We define the service options as an array of objects outside the component.
 // This is efficient because this data is static and doesn't need to be recreated on every render.
@@ -19,6 +20,17 @@ const services = [
  * @param {function} onSelectService - A callback function to be executed when the user clicks on a service option. It receives the service ID as an argument.
  */
 export default function ServiceSelectionStep({ selectedService, onSelectService }) {
+  const navigate = useNavigate();
+
+  const handleServiceClick = (serviceId) => {
+    // Navigate to the scheduling form page with the selected service
+    navigate(`/schedule?service=${serviceId}`);
+    
+    // Also call the original callback if provided (for backward compatibility)
+    if (onSelectService) {
+      onSelectService(serviceId);
+    }
+  };
   // --- RENDER (JSX) ---
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -32,8 +44,8 @@ export default function ServiceSelectionStep({ selectedService, onSelectService 
           <div
             // The `key` prop is essential for React's rendering performance and identity tracking in lists.
             key={service.id}
-            // We call the `onSelectService` prop passed down from the parent when this div is clicked.
-            onClick={() => onSelectService(service.id)}
+            // We call the `handleServiceClick` function when this div is clicked.
+            onClick={() => handleServiceClick(service.id)}
             // Here we dynamically apply CSS classes. This is the key to showing the "selected" state.
             // If the service's ID matches the `selectedService` prop, we apply a blue border and background; otherwise, we use default gray styling.
             className={`

@@ -8,6 +8,7 @@ export default function Button({
 }) {
   const btn = (
     <button
+      type="button"
       className={`w-auto px-3 py-2 rounded-lg bg-[#BFA200] text-black font-semibold ${className}`}
       disabled={rest.disabled || isLoading}
       aria-busy={isLoading ? 'true' : undefined}
