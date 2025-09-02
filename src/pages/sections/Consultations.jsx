@@ -12,7 +12,7 @@ import MarketingIcon from '../../assets/icons/Target Branco.svg';
 import BusinessIcon from '../../assets/icons/Bag Branco.svg';
 import RelationshipsIcon from '../../assets/icons/Heart Branco.svg';
 import HealthIcon from '../../assets/icons/Fitness Branco.svg';
-import OnlyFansIcon from '../../assets/icons/OnlyFans Branco.svg';
+import OnlyFansIcon from '../../assets/icons/Onlyfans Branco.svg';
 import AITechIcon from '../../assets/icons/Robot Branco.svg';
 import LifeAdviceIcon from '../../assets/icons/More Branco.svg';
 import Face2FaceIcon from '../../assets/icons/Face2Face Preto.svg';

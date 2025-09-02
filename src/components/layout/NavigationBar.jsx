@@ -1,19 +1,19 @@
 // src/components/layout/NavigationBar.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  HomeIcon,
-  CalendarIcon,
-  ChatBubbleLeftRightIcon,
-  Cog6ToothIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
 import { useAuth } from "../../contexts/AuthContext";
 import OctagonAvatar from "../common/OctagonAvatar";
 
+// ── Icon assets ───────────────────────────────────────────────────────────────
+import logo from "../../assets/icons/CluckinsLogo.svg";
+import homeIcon from "../../assets/icons/House Branco.svg";
+import calendarIcon from "../../assets/icons/Calendar Branco.svg";
+import settingsIcon from "../../assets/icons/Settings Branco.svg";
+import profileIcon from "../../assets/icons/Profile Branco.svg";
+
 /**
- * Tailwind-like responsive value helper.
- * Example: useBreakpointValue({ base: 28, md: 40, lg: 44 })
+ * A tiny responsive value hook for numeric sizes.
+ * Example: useBreakpointValue({ base: 28, md: 32, lg: 36 })
  */
 function useBreakpointValue(values) {
   const [val, setVal] = useState(values.base);
@@ -40,126 +40,134 @@ function useBreakpointValue(values) {
   return val;
 }
 
+/** Renders a URL string import as <img>. */
+function ImgIcon({ src, className, alt }) {
+  // display:block removes inline-image baseline gap that can throw off alignment
+  return <img src={src} alt={alt ?? ""} className={`block ${className}`} />;
+}
+
+const ICON_BOX_CLASS = "h-7 w-7 md:h-8 md:w-8 lg:h-7 lg:w-7 shrink-0";
+
+
+// Common classes
+const LABEL_CLASS =
+  "text-[10px] md:text-xs leading-none font-medium transition-opacity";
+const BUTTON_CLASS = [
+  "flex flex-col items-center justify-center gap-1 md:gap-1.5",
+  "h-14 md:h-16 w-full focus:outline-none focus-visible:ring-2",
+  "focus-visible:ring-cyan-400/70 rounded-lg",
+].join(" ");
+const BAR_CLASS = "w-full sticky bottom-0 left-0 right-0 bg-black z-50";
+const INNER_CLASS = "mx-auto grid grid-cols-5 items-center w-full lg:w-[80%]";
+
 export default function NavigationBar({ onNavigate }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const avatarSrc = user?.user_metadata?.avatar_url || "";
 
-  const navItems = [
-    { icon: HomeIcon, label: "Home", path: "/" },
-    { icon: CalendarIcon, label: "Calendar", path: "/calendar" },
-    { icon: ChatBubbleLeftRightIcon, label: "Chat", path: "/chat" },
-    { icon: Cog6ToothIcon, label: "Settings", path: "/settings" },
-    { icon: UserIcon, label: "Profile", path: "/profile" },
-  ];
+  const avatarSrc =
+    user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
-  useEffect(() => {
-    const nav = document.getElementById("bottom-nav");
-    if (!nav) return;
+  // Build once; avoids re-creating on every render.
+  const navItems = useMemo(
+    () => [
+      { icon: homeIcon, label: "Home", path: "/" },
+      { icon: calendarIcon, label: "Calendar", path: "/calendar" },
+      // Center logo — flagged with isLogo so we can add a tiny padding, but it behaves like any other item.
+      { icon: logo, label: "Chat", path: "/chat", isLogo: true },
+      { icon: settingsIcon, label: "Settings", path: "/settings" },
+      { icon: profileIcon, label: "Profile", path: "/profile", isProfile: true },
+    ],
+    []
+  );
 
-    const read = () => {
-      const vv = window.visualViewport;
-      const vb = (vv?.offsetTop ?? 0) + (vv?.height ?? window.innerHeight);
-      const r = nav.getBoundingClientRect();
-      const atBottom = Math.abs(vb - r.bottom) < 1;
-      const pos = getComputedStyle(nav).position;
-      void atBottom;
-      void pos;
-    };
-
-    const ro = new ResizeObserver(read);
-    ro.observe(nav);
-    window.addEventListener("resize", read);
-    window.visualViewport?.addEventListener("resize", read);
-    window.addEventListener("scroll", read, { passive: true });
-    window.visualViewport?.addEventListener("scroll", read);
-    read();
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", read);
-      window.visualViewport?.removeEventListener("resize", read);
-      window.removeEventListener("scroll", read);
-      window.visualViewport?.removeEventListener("scroll", read);
-    };
-  }, []);
-
+  // ✅ No special-casing the logo anymore — if it has a path, it can be active.
   const isActive = (path) => {
     if (!path) return false;
     if (path === "/") return location.pathname === "/";
-    return location.pathname === path || location.pathname.startsWith(path + "/");
+    return (
+      location.pathname === path || location.pathname.startsWith(path + "/")
+    );
   };
 
   const handleItemClick = (item) => {
-    const targetPath = item.path;
-    if (!targetPath) return;
-    if (typeof onNavigate === "function") onNavigate(targetPath);
-    else navigate(targetPath);
+    if (!item.path) return;
+    if (typeof onNavigate === "function") onNavigate(item.path);
+    else navigate(item.path);
   };
 
-  // Match heroicon sizes responsively
-  const avatarSize = useBreakpointValue({ base: 24, md: 36, lg: 24 });
+  // Avatar pixel size (OctagonAvatar expects a number)
+  const avatarPx = useBreakpointValue({ base: 24, md: 32, lg: 28 });
 
   return (
     <nav
       id="bottom-nav"
-      className="w-full sticky bottom-0 left-0 right-0 bg-black z-50 "
+      className={BAR_CLASS}
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      role="navigation"
+      aria-label="Primary"
     >
-      <div className="flex justify-around items-center w-full lg:w-[80%] h-14 md:h-19 mx-auto lg:h-16">
-        {navItems.map((item) => {
-          const Icon = item.icon;
+      <div className={INNER_CLASS}>
+        {navItems.map((item, idx) => {
           const active = isActive(item.path);
-          const isProfile = item.label === "Profile";
+          const isProfile = !!item.isProfile;
           const showAvatar = isProfile && !!avatarSrc;
 
           return (
             <button
-              key={item.label}
+              key={`${item.label}-${idx}`}
               onClick={() => handleItemClick(item)}
-              className="flex flex-col items-center justify-center w-20 h-full gap-1 md:gap-1.5 lg:gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 rounded-lg"
+              className={BUTTON_CLASS}
               aria-label={item.label}
               aria-current={active ? "page" : undefined}
               type="button"
             >
+              {/* Icon / Avatar */}
               {showAvatar ? (
-                // Reserve space so the icon↔label gap stays consistent
                 <div
                   className="grid place-items-center"
-                  style={{ width: avatarSize, height: avatarSize }}
+                  style={{ width: avatarPx, height: avatarPx }}
                 >
                   <OctagonAvatar
                     src={avatarSrc}
                     alt="Your profile"
-                    size={avatarSize}
+                    size={avatarPx}
                     ringWidth={1}
                     gap={2}
-                    ringColor={active ? "#FACC15" : "#9CA3AF"}
+                    ringColor={active ? "#bfa200" : "#9CA3AF"}
                     className={[
                       "transition-transform duration-150",
-                      active ? "scale-110" : ""
+                      active ? "scale-105" : "",
                     ].join(" ")}
                   />
                 </div>
               ) : (
-                <div className="grid place-items-center h-7 w-7 md:h-9 md:w-9 lg:h-7 lg:w-7">
-                  <Icon
+                <div
+                  className={[
+                    "grid place-items-center",
+                    ICON_BOX_CLASS,
+                  ].join(" ")}
+                >
+                  <ImgIcon
+                    src={item.icon}
+                    alt={item.label}
                     className={[
+                      "w-full h-full object-contain",
+                      // Optional tiny padding helps normalize SVGs with tight viewBoxes
+                      "p-[1px]",
                       "transition-transform duration-150",
-                      active ? "text-yellow-400 scale-110" : "text-gray-400",
+                      active ? "scale-105" : "",
                     ].join(" ")}
                   />
                 </div>
               )}
 
-              <span
-                className={[
-                  "text-xs md:text-sm lg:text-xs font-medium transition-opacity",
-                  active ? "text-yellow-400 opacity-100" : "text-gray-400 opacity-80",
-                ].join(" ")}
-              >
-                {item.label}
-              </span>
+              {/* Label — visible only when active (applies to ALL items, including the logo) */}
+              {active && (
+                <span className={[LABEL_CLASS, "text-white opacity-100"].join(" ")}>
+                  {item.label}
+                </span>
+              )}
             </button>
           );
         })}
