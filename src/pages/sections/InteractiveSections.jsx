@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 import SocialMediaSection from './SocialMediaSection';
 import FaqSection from './FaqSection';
-import BugReportSection from './BugReportSection';
+import BugReportSection from './bugReportSection';
 import SectionNavigator from '../../components/common/SectionNavigator';
 
 const sections = [
