@@ -35,7 +35,7 @@ export default function FullscreenVideoModal({ isOpen, onClose, videoSrc }) {
         }
         const seconds = Math.floor(timeInSeconds % 60).toString().padStart(2, '0');
         const minutes = Math.floor(timeInSeconds / 60).toString().padStart(2, '0');
-        
+
         // --- FIX: Corrected a 'returns' typo to 'return' ---
         // The "Why": "returns" is not a valid JavaScript keyword. The correct keyword
         // to send a value back from a function is "return". This typo was causing
@@ -67,7 +67,7 @@ export default function FullscreenVideoModal({ isOpen, onClose, videoSrc }) {
         videoRef.current.currentTime = seekTime;
         setProgress(e.target.value);
     };
-    
+
     // --- SINGLE & DOUBLE CLICK LOGIC ---
     // This handler uses a timer to differentiate between single and double clicks.
     const clickTimeoutRef = useRef(null);
@@ -97,7 +97,7 @@ export default function FullscreenVideoModal({ isOpen, onClose, videoSrc }) {
             setProgress(progressPercent);
             setCurrentTime(formatTime(video.currentTime));
         };
-        
+
         const handleDurationChange = () => {
             setDuration(formatTime(video.duration));
         };
@@ -146,7 +146,7 @@ export default function FullscreenVideoModal({ isOpen, onClose, videoSrc }) {
                             <video
                                 ref={videoRef}
                                 src={videoSrc}
-                                className="h-full w-full object-cover"
+                                className="h-full w-full object-cover md:object-contain"
                                 onClick={handleScreenClick}
                                 autoPlay
                                 loop

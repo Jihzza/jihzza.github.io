@@ -32,7 +32,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
 
             {isLoggedIn ? (
                 // LOGGED IN VIEW
-                <div className="space-y-4">
+                <div className="space-y-4 text-white">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-white md:text-lg">{t('scheduling.contactInfo.fullNameLabel')}</label>
                         <Input

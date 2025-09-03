@@ -3,6 +3,8 @@
 import React from 'react';
 import BaseCarousel from '../carousel/BaseCarousel';
 import { useTranslation } from 'react-i18next';
+import BoxLaurelLeft from '../../assets/Box Laurel Wreath Left.svg'
+import BoxLaurelRight from '../../assets/Box Laurel Wreath Right.svg'
 
 export default function FeatureCarousel() {
     const { t } = useTranslation();
@@ -23,9 +25,13 @@ export default function FeatureCarousel() {
     };
 
     const renderFeatureSlide = (feature, index) => (
-        <div className="bg-[#333333] px-4 py-2 md:px-6 md:py-4 space-y-2 justify-center items-center flex flex-col rounded-lg text-center h-full shadow-lg lg:px-4 lg:py-2">
-            <h3 className="font-bold text-white text-lg md:text-2xl">{feature.title}</h3>
-            <p className="text-white md:text-lg">{feature.subtitle}</p>
+        <div className="space-y-2 space-x-2 justify-center items-center flex rounded-lg text-center h-full w-[250px] md:w-[340px] lg:w-[450px]">
+            <img src={BoxLaurelLeft} alt="BoxLaurelLeft" className='h-15 w-15 md:h-22 md:w-22 lg:h-25 md:w-25' />
+            <div className='justify-center items-center flex flex-col'>
+                <h3 className="font-bold text-white text-base md:text-2xl">{feature.title}</h3>
+                <p className="text-sm text-white md:text-lg">{feature.subtitle}</p>
+            </div>
+            <img src={BoxLaurelRight} alt="BoxLaurelRight" className='h-15 w-15 md:h-22 md:w-22 lg:h-25 md:w-25' />
         </div>
     );
 
