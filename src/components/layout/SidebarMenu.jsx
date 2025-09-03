@@ -63,6 +63,14 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
   const itemBase =
     'flex items-center gap-3 rounded-xl px-3 py-2 text-base md:text-lg lg:text-base transition-colors outline-none hover:bg-white/10 focus-visible:bg-white/10 focus-visible:ring-2 focus-visible:ring-yellow-400/70';
 
+  const authColorClasses = isAuthenticated
+    ? 'text-red-400 hover:text-red-300 focus-visible:ring-red-400/70'        // Log Out
+    : 'text-green-300 hover:text-emerald-300 focus-visible:ring-emerald-400/70'; // Log In (positive)
+
+  // A "danger" variant so the red hover doesn’t conflict with itemBase’s yellow hover
+  const dangerItem =
+    'flex items-center gap-3 rounded-xl px-3 py-2 text-base md:text-lg lg:text-base transition-colors outline-none hover:bg-white/10 focus-visible:bg-white/10 focus-visible:ring-2 focus-visible:ring-red-400/70 text-red-400 hover:text-red-300';
+
   return (
     <Transition show={!!isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-[100]" onClose={onClose} initialFocus={closeButtonRef}>
@@ -87,7 +95,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
               className="pointer-events-auto relative h-full w-[78vw] sm:w-[380px] lg:w-[420px] bg-black text-white shadow-2xl"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b border-white/10 lg:py-1">
+              <div className="flex items-center justify-between px-4 md:px-6 md:py-4 border-b border-white/10 lg:py-1">
                 <Dialog.Title className="text-sm md:text-lg lg:text-base font-semibold tracking-wide text-yellow-400">
                   {t('sidebar.title', { defaultValue: 'Menu' })}
                 </Dialog.Title>
@@ -103,7 +111,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
               </div>
 
               {/* Content */}
-              <div className="flex h-[calc(100%-64px)] flex-col overflow-y-auto px-3 py-3 md:px-5 md:py-5 lg:py-3 sidebar-scrollbar">
+              <div className="flex h-auto flex-col px-3 py-3 md:px-5 md:py-5 lg:py-3 sidebar-scrollbar">
                 <nav aria-label={t('sidebar.navigation', { defaultValue: 'Primary' })} className="flex-1">
                   {/* Main pages */}
                   <ul role="list" className="space-y-1 md:space-y-2 lg:space-y-1">
@@ -118,7 +126,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                           }}
                           className={`${itemBase} ${isActive(item.href) ? 'text-yellow-400 bg-white/5' : 'text-white/90 hover:text-yellow-400'}`}
                         >
-                          <span className="truncate text-lg md:text-xl lg:text-lg">{item.label}</span>
+                          <span className="truncate text-base md:text-xl lg:text-base">{item.label}</span>
                         </Link>
                       </li>
                     ))}
@@ -140,7 +148,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                             }}
                             className={`${itemBase} text-white/90 hover:text-yellow-400`}
                           >
-                            <span className="truncate text-lg md:text-xl lg:text-lg">{item.label}</span>
+                            <span className="truncate text-base md:text-xl lg:text-base">{item.label}</span>
                           </Link>
                         </li>
                       ))}
@@ -148,8 +156,25 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                   </div>
                 </nav>
 
-                {/* Footer actions */}
-                <div className="mt-6 border-t border-white/10 pt-4 space-y-2 lg:mt-4">
+                {/* Footer actions (auth first, then Settings) */}
+                <div className="border-t border-white/10 pt-2 mt-2 space-y-2 md:pt-4 md:mt-4 lg:mt-2 lg:pt-2 lg:space-y-0">
+                  <button
+                    type="button"
+                    onClick={isAuthenticated ? handleSignOut : () => handleLinkClick('/login')}
+                    className={`${itemBase} w-full text-left ${authColorClasses}`}
+                    aria-label={isAuthenticated
+                      ? t('sidebar.logout', { defaultValue: 'Log Out' })
+                      : t('sidebar.login', { defaultValue: 'Log In' })}
+                  >
+                    <ArrowRightOnRectangleIcon className="h-5 w-5 md:h-7 md:w-7 lg:h-5 lg:w-5" />
+                    <span className="text-base md:text-xl lg:text-base">
+                      {isAuthenticated
+                        ? t('sidebar.logout', { defaultValue: 'Log Out' })
+                        : t('sidebar.login', { defaultValue: 'Log In' })}
+                    </span>
+                  </button>
+
+
                   <Link
                     to="/settings"
                     onClick={(e) => {
@@ -159,20 +184,10 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                     className={`${itemBase} text-white/90 hover:text-yellow-400`}
                   >
                     <Cog6ToothIcon className="h-5 w-5 md:h-7 md:w-7 lg:h-5 lg:w-5" />
-                    <span className="text-lg md:text-xl lg:text-lg">{t('sidebar.settings')}</span>
+                    <span className="text-base md:text-xl lg:text-base">{t('sidebar.settings')}</span>
                   </Link>
-
-                  {isAuthenticated && (
-                    <button
-                      type="button"
-                      onClick={handleSignOut}
-                      className={`${itemBase} w-full text-left text-white/90 hover:text-yellow-400`}
-                    >
-                      <ArrowRightOnRectangleIcon className="h-5 w-5" />
-                      <span>{t('sidebar.logout')}</span>
-                    </button>
-                  )}
                 </div>
+
               </div>
             </Dialog.Panel>
           </Transition.Child>
