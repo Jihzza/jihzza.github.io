@@ -2,7 +2,7 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getConversationSessionsByUserId } from '../../services/chatbotService';
-import ConversationHistoryCard from '../../components/chatbot/ConversationalHistoryCard'; // ✅ fixed path/name
+import ConversationHistoryCard from '../../components/chatbot/ConversationalHistoryCard'; // path unchanged
 import ProfileSectionLayout from '../../components/profile/ProfileSectionLayout';
 import { useTranslation } from 'react-i18next';
 import SectionTextWhite from '../../components/common/SectionTextWhite';
@@ -42,7 +42,7 @@ export default function ChatbotHistoryPage() {
   return (
     <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
       <ProfileSectionLayout>
-        <SectionTextWhite title="Chatbot History" />
+        <SectionTextWhite title={t('chatbotHistory.title')} /> {/* ← was "Chatbot History" */}
         <div className="space-y-4">{renderContent()}</div>
       </ProfileSectionLayout>
     </div>

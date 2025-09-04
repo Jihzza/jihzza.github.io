@@ -2,8 +2,8 @@
     "hero": {
         "learnFrom": "Aprende com",
         "cta": {
-            "title": "Liberta a tua Melhor Versão — Domina a tua Mentalidade, Finanças e Relações Hoje",
-            "subtitle": "Da falência ao sucesso de seis dígitos, dominei os princípios que transformam contratempos numa rampa de lançamento para um crescimento extraordinário — e ajudo-te a fazer o mesmo."
+            "title": "Desbloqueia o teu melhor eu — domina a mentalidade, a riqueza e as relações hoje",
+            "subtitle": "Da bancarrota ao sucesso de seis dígitos, dominei os três pilares — saúde, poder e relações. Agora estou aqui para te ajudar a transformar reveses numa alavanca para um crescimento extraordinário."
         },
         "wordCarousel": [
             "Dinheiro",
@@ -15,12 +15,12 @@
         ],
         "featureCarousel": [
             {
-                "title": "$140K+ / year",
-                "subtitle": "de faturação na minha empresa"
+                "title": "$140K+ / ano",
+                "subtitle": "receita da minha empresa"
             },
             {
-                "title": "Top 1% Earner",
-                "subtitle": "no OnlyFans em todo o mundo"
+                "title": "Top 1% em ganhos",
+                "subtitle": "no OnlyFans a nível mundial"
             },
             {
                 "title": "200K+",
@@ -32,7 +32,7 @@
             },
             {
                 "title": "4 Países",
-                "subtitle": "vivi em vários países"
+                "subtitle": "vivi em 4 países"
             },
             {
                 "title": "Vício",
@@ -40,7 +40,7 @@
             },
             {
                 "title": "Depressão",
-                "subtitle": "superei-a sem medicação"
+                "subtitle": "superei-a sozinho, sem medicação"
             },
             {
                 "title": "6+ Línguas",
@@ -48,19 +48,19 @@
             },
             {
                 "title": "100K+",
-                "subtitle": "conteúdo que chega a centenas de milhares"
+                "subtitle": "conteúdo a alcançar centenas de milhares"
             },
             {
                 "title": "Miss Portugal",
                 "subtitle": "geri a campeã de 2019/2020"
             },
             {
-                "title": "$10K+ Mensais",
+                "title": "$10K+ mensais",
                 "subtitle": "ajudei clientes a alcançar liberdade financeira"
             },
             {
                 "title": "+10 anos",
-                "subtitle": "de experiência no mercado de ações"
+                "subtitle": "de experiência em bolsa"
             },
             {
                 "title": "Milhares de ações",
@@ -68,7 +68,7 @@
             },
             {
                 "title": "8 anos",
-                "subtitle": "numa relação longa e estável"
+                "subtitle": "numa relação estável e de longo prazo"
             },
             {
                 "title": "0 a 60K+",
@@ -79,8 +79,8 @@
                 "subtitle": "de horas a pesquisar temas fundamentais"
             },
             {
-                "title": "Idade 13",
-                "subtitle": "site alcançou mais de 60K utilizadores"
+                "title": "Aos 13 anos",
+                "subtitle": "o meu site chegou a 60K+ utilizadores"
             }
         ],
         "services": {
@@ -89,194 +89,194 @@
                 "price": "90€/hora",
                 "minDuration": "Mínimo 45 minutos",
                 "button": "Marca uma Consulta",
-                "learnMore": "Sabe Mais"
+                "learnMore": "Sabe mais"
             },
             "coaching": {
-                "title": "Coaching Directo",
+                "title": "Acompanhamento Direto",
                 "spots": "Vagas Limitadas",
-                "button": "Recebe o Meu Número",
-                "selectPlan": "Escolhe um Plano",
-                "learnMore": "Sabe Mais",
+                "button": "Obtém o meu número",
+                "selectPlan": "Obtém o meu número",
+                "learnMore": "Sabe mais",
                 "tiers": {
                     "basic": "Básico",
-                    "standard": "Standard",
+                    "standard": "Intermédio",
                     "premium": "Premium"
                 }
             },
             "investment": {
                 "title": "Investe Comigo",
-                "description": "Estou sempre a lançar novos projectos. Para explorares oportunidades actuais e futuras, pede abaixo o pitch deck.",
+                "description": "Estou sempre a lançar novos projetos. Para explorares oportunidades atuais e futuras, pede o pitch deck abaixo.",
                 "button": "Pede o Pitch Deck",
-                "learnMore": "Sabe Mais"
+                "learnMore": "Sabe mais"
             }
         }
     },
     "aboutMe": {
         "title": "Conhece o Daniel DaGalow",
-        "body": "Depois de bater no fundo várias vezes e construir um sucesso de seis dígitos, dominei a arte de transformar contratempos em trampolins. A minha missão? Ajudar-te a aproveitar a tua saúde, poder e relações para te tornares a melhor versão de ti próprio. Vamos reescrever juntos a tua história de sucesso."
+        "body": "Depois de bater no fundo várias vezes e de construir um sucesso de seis dígitos, dominei a arte de transformar reveses em degraus para avançar. A minha missão? Ajudar-te a potenciar a tua saúde, o teu poder e as tuas relações para te tornares a melhor versão de ti. Vamos reescrever juntos a tua história de sucesso."
     },
     "consultations": {
-        "title": "Como Posso Ajudar-te",
-        "subtitle": "Se precisas de orientação sobre mentalidade, crescimento nas redes sociais, finanças, marketing, criação de negócios ou relações — trato de tudo.",
+        "title": "Como te posso ajudar",
+        "subtitle": "Quer precises de orientação sobre mentalidade, crescimento nas redes sociais, finanças, marketing, desenvolvimento de negócio ou relações — eu trato de tudo.",
         "types": [
             {
                 "title": "Mentalidade & Psicologia",
-                "description": "Liberta o poder da tua mente. O nosso serviço de Mentalidade & Psicologia dá-te ferramentas e estratégias para ultrapassares crenças limitadoras, reforçar a resiliência mental e cultivar uma mentalidade de crescimento. Alcança clareza, foco e equilíbrio emocional para te destacares em todas as áreas da tua vida."
+                "description": "Desbloqueia o poder da tua mente. O nosso serviço de Mentalidade & Psicologia dá-te ferramentas e estratégias para superares crenças limitadoras, reforçares a resiliência mental e cultivares uma mentalidade de crescimento. Alcança clareza, foco e equilíbrio emocional para te destacares em todas as áreas da tua vida."
             },
             {
                 "title": "Crescimento nas Redes Sociais",
-                "description": "Amplia a tua presença online. Ajudamos-te a criar uma estratégia de redes sociais vencedora, produzir conteúdo envolvente e crescer a tua audiência de forma eficaz. Este texto é um pouco mais longo para testar como a animação lida com diferentes comprimentos e garantir fluidez."
+                "description": "Amplia a tua presença online. Vamos ajudar-te a definir uma estratégia vencedora para as redes sociais, criar conteúdo envolvente e aumentar a tua audiência de forma eficaz. Esta descrição é um pouco mais longa para testar como a animação lida com diferentes comprimentos de texto e para garantir fluidez."
             },
             {
                 "title": "Finanças & Riqueza",
-                "description": "Assume o controlo do teu futuro financeiro. Aprende princípios sólidos de investimento, técnicas de orçamento e estratégias de criação de riqueza adaptadas aos teus objectivos."
+                "description": "Toma o controlo do teu futuro financeiro. Aprende princípios sólidos de investimento, técnicas de orçamento e estratégias de criação de riqueza adaptadas aos teus objetivos."
             },
             {
                 "title": "Marketing & Vendas",
-                "description": "Impulsiona a tua marca e vendas. Oferecemos estratégias de marketing especialistas, desde campanhas digitais até métodos tradicionais, para chegares ao teu público-alvo."
+                "description": "Impulsiona a tua marca e as vendas. Oferecemos estratégias de marketing, desde campanhas digitais a abordagens tradicionais, para te ajudar a alcançar o teu público-alvo."
             },
             {
-                "title": "Construção de Negócios",
-                "description": "Transforma a tua visão em realidade. Recebe orientação sobre planeamento empresarial, eficiência operacional e escalabilidade do teu projecto para um sucesso sustentável. Mais um texto longo para verificar a fluidez da animação quando o conteúdo varia significativamente. Isto vai empurrar os itens abaixo mais para baixo, e a animação deve manter-se suave durante toda a expansão e contracção, sem solavancos, especialmente perto do fim da sequência."
+                "title": "Desenvolvimento de Negócio",
+                "description": "Transforma a tua visão em realidade. Recebe orientação sobre planeamento de negócios, eficiência operacional e como escalar o teu projeto para um sucesso sustentável. Outra descrição mais longa para verificar a fluidez da animação quando o conteúdo varia de forma significativa. Isto deve empurrar os itens abaixo mais para baixo, e a animação deve manter-se fluida em todo o processo de expansão e contração, sem solavancos ou quebras abruptas, especialmente perto do fim da sequência de animação."
             },
             {
                 "title": "Relações",
-                "description": "Cultiva ligações mais profundas. Melhora a comunicação, constrói laços mais fortes e supera desafios relacionais com aconselhamento especializado."
+                "description": "Cultiva ligações mais profundas. Melhora a comunicação, fortalece os laços e ultrapassa desafios relacionais com aconselhamento especializado."
             },
             {
-                "title": "Saúde & Fitness",
-                "description": "Atinge a tua melhor condição física. Planos de fitness personalizados, orientação nutricional e apoio motivacional para alcançares os teus objectivos de saúde."
+                "title": "Saúde & Condição Física",
+                "description": "Alcança a tua melhor forma física. Planos de treino personalizados, orientação nutricional e apoio motivacional para chegares aos teus objetivos de saúde."
             },
             {
                 "title": "OnlyFans",
-                "description": "Maximiza o teu sucesso no OnlyFans. Estratégias de criação de conteúdo, promoção e envolvimento de subscritores para aumentares os teus ganhos."
+                "description": "Maximiza o teu sucesso no OnlyFans. Estratégias para criação de conteúdo, promoção e envolvimento de subscritores para aumentares os teus ganhos."
             },
             {
                 "title": "IA & Tecnologia",
-                "description": "Tira partido da tecnologia de ponta. Explora como soluções de IA e outras tecnologias podem optimizar o teu negócio e produtividade pessoal."
+                "description": "Tira partido da tecnologia de ponta. Explora como a IA e outras soluções tecnológicas podem otimizar o teu negócio e a tua produtividade pessoal."
             },
             {
-                "title": "Aconselhamento de Vida",
-                "description": "Tens outras necessidades? Vamos conversar! Oferecemos uma vasta gama de serviços de consultoria e podemos adaptar soluções aos teus desafios únicos. Este é um caso de teste final com uma descrição de comprimento médio."
+                "title": "Conselhos de Vida",
+                "description": "Tens outras necessidades? Vamos falar! Oferecemos uma ampla gama de serviços de consultoria e podemos adaptar soluções aos teus desafios específicos. Este é um caso final de teste com uma descrição de comprimento médio."
             }
         ],
         "details": [
             {
                 "title": "Videochamada Cara a Cara",
-                "description": "As nossas consultas decorrem por videochamada, permitindo-nos ligar pessoalmente. Podes ver-me durante toda a sessão, criando uma experiência mais envolvente e pessoal."
+                "description": "As nossas consultas decorrem por videochamada, o que permite ligarmo-nos pessoalmente. Vais poder ver-me durante toda a sessão, o que torna a experiência mais envolvente e pessoal."
             },
             {
                 "title": "Sessões Mínimas de 45 Minutos",
-                "description": "Cada consulta dura no mínimo 45 minutos, garantindo tempo suficiente para explorarmos as tuas preocupações em profundidade e desenvolvermos insights e planos de acção significativos."
+                "description": "Cada consulta dura, no mínimo, 45 minutos, o que garante tempo suficiente para explorarmos as tuas questões em profundidade e para desenvolvermos insights e planos de ação com significado."
             },
             {
                 "title": "Gravações da Sessão",
-                "description": "Participa numa videochamada individual para discutir os teus desafios e oportunidades."
+                "description": "Entra numa videochamada individual para discutirmos os teus desafios e oportunidades."
             },
             {
                 "title": "E-mail de Acompanhamento",
-                "description": "Após a tua sessão, recebes um e-mail personalizado com os pontos-chave e próximos passos, garantindo que manténs o rumo."
+                "description": "Após a tua sessão, recebes um e-mail de acompanhamento personalizado com os pontos-chave e os próximos passos, para te manteres no rumo."
             },
             {
                 "title": "Consulta de Acompanhamento",
-                "description": "Marca uma consulta de acompanhamento para rever os teus progressos, enfrentar novos desafios e receber apoio contínuo na tua jornada."
+                "description": "Marca uma consulta de acompanhamento para revermos os teus progressos, resolvermos novos desafios e continuares a receber apoio ao longo do teu percurso."
             }
         ],
         "buttons": {
             "default": "Marca uma Consulta - 90€/h",
             "mindset": "Transforma a Tua Mentalidade - 90€/h",
-            "social": "Impulsiona as tuas Redes Sociais - 90€/h",
-            "finance": "Domina as tuas Finanças - 90€/h",
+            "social": "Impulsiona as Tuas Redes Sociais - 90€/h",
+            "finance": "Domina as Tuas Finanças - 90€/h",
             "marketing": "Eleva o Teu Marketing - 90€/h",
             "business": "Constrói o Teu Negócio - 90€/h",
-            "relationships": "Melhora as Relações - 90€/h",
-            "health": "Alcança Objectivos de Fitness - 90€/h",
+            "relationships": "Melhora as Tuas Relações - 90€/h",
+            "health": "Atinge os Teus Objetivos de Condição Física - 90€/h",
             "onlyfans": "Cresce no OnlyFans - 90€/h",
-            "ai": "Aproveita IA & Tecnologia - 90€/h",
-            "life": "Aconselhamento de Vida - 90€/h"
+            "ai": "Tira Partido da IA & Tecnologia - 90€/h",
+            "life": "Conselhos de Vida - 90€/h"
         }
     },
     "coaching": {
-        "title": "Coaching Directo",
-        "subtitle": "Coaching personalizado para te ajudar a sobressair em áreas específicas da tua vida. Obtém acesso directo a orientação especializada adaptada à tua situação e objectivos únicos.",
+        "title": "Acompanhamento Direto",
+        "subtitle": "Acompanhamento personalizado para te destacares em áreas específicas da tua vida. Obtém acesso direto à orientação especializada, ajustada à tua situação e aos teus objetivos.",
         "types": [
             {
                 "title": "Aprende a Investir",
-                "description": "Domina os mercados com confiança. Simplificamos princípios essenciais de investimento, alocação de activos e tácticas de gestão de risco para que construas um portefólio diversificado alinhado com os teus objectivos e perfil de risco."
+                "description": "Domina os mercados com confiança. Vamos decompor os princípios essenciais de investimento, a alocação de ativos e as táticas de gestão de risco, para construíres uma carteira diversificada que corresponda aos teus objetivos e ao teu perfil de risco."
             },
             {
                 "title": "Treinador Pessoal",
-                "description": "Recebe um roteiro de fitness à medida. De planos de treino periodizados a ajustes nutricionais e monitorização de hábitos, obténs orientação passo a passo para atingir metas de força, resistência e estética — de forma segura e sustentável."
+                "description": "Recebe um roteiro de fitness feito à medida. De planos de treino periodizados a ajustes de nutrição e acompanhamento de hábitos, vais receber orientação passo a passo para atingires objetivos de força, resistência e estética — com segurança e de forma sustentável."
             },
             {
-                "title": "Coach de Dating",
-                "description": "Melhora a tua vida amorosa. Aperfeiçoa fundamentos de competências sociais, cria um perfil online magnético e aprende abordagens no mundo real que aumentam a confiança e atraem parceiros de qualidade."
+                "title": "Coaching de Namoro",
+                "description": "Melhora a tua vida amorosa. Aperfeiçoa as bases das competências sociais, cria um perfil online magnético e aprende métodos de abordagem no mundo real que aumentam a confiança e atraem parceiros de alto valor."
             },
             {
-                "title": "Coaching de OnlyFans",
-                "description": "Transforma o OnlyFans num negócio lucrativo. Cobrimos posicionamento de nicho, calendários de conteúdo, psicologia de preços, design de funil de fãs e promoção multiplataforma para escalar subscritores e ganhos mensais."
+                "title": "Coaching para OnlyFans",
+                "description": "Transforma o OnlyFans num negócio próspero. Cobrimos posicionamento de nicho, calendários de conteúdo, psicologia de preços, desenho do funil de fãs e promoção entre plataformas para aumentares os subscritores e os ganhos mensais."
             },
             {
                 "title": "Consultor de Negócios",
-                "description": "Acelera o crescimento da tua empresa. Desde auditorias de planos de negócio enxutos a funis de marketing, sistemas operacionais e dashboards de KPI, recebes estratégias accionáveis para aumentar receita e rentabilidade."
+                "description": "Acelera o crescimento do teu projeto. Desde auditorias ao plano de negócios (lean) a funis de marketing, sistemas de operações e painéis de indicadores (KPIs), recebes estratégias práticas para aumentar a receita e a rentabilidade."
             },
             {
                 "title": "Hábitos & Crescimento Pessoal",
-                "description": "Desenha hábitos que perduram. Implementa rotinas sustentadas pela ciência para produtividade, saúde e mentalidade, enquanto eliminas comportamentos auto-sabotadores através de ciclos de responsabilidade e revisões de progresso."
+                "description": "Desenha hábitos que ficam. Implementa rotinas sustentadas pela ciência para produtividade, saúde e mentalidade, enquanto eliminas comportamentos de auto-sabotagem através de ciclos de responsabilização e revisões de progresso."
             },
             {
                 "title": "Gestor de Redes Sociais",
-                "description": "Faz crescer uma audiência envolvida. Recebe mapeamento de pilares de conteúdo, calendários de publicação à prova de algoritmo, análises profundas e tácticas de monetização para converter seguidores em clientes leais."
+                "description": "Faz crescer uma audiência envolvida. Recebe mapeamento de pilares de conteúdo, calendários de publicação resilientes ao algoritmo, análises aprofundadas e táticas de monetização para converter seguidores em clientes fiéis."
             },
             {
                 "title": "Investigador de Ações",
-                "description": "Realiza operações baseadas em dados. Aprende fluxos de trabalho de pesquisa fundamental e técnica, modelos de avaliação e criação de listas de observação para detetar oportunidades em ações de alta convicção antes da maioria."
+                "description": "Faz operações baseadas em dados. Aprende fluxos de pesquisa fundamental e técnica, modelos de avaliação e curadoria de listas de observação para identificares oportunidades de ações de elevada convicção antes da maioria."
             }
         ],
         "details": [
             {
-                "title": "Comunicação em Qualquer Momento",
-                "description": "Envia mensagens de texto ou áudio sempre que precisares com perguntas, actualizações ou desafios. Recebe apoio quando mais precisas sem esperar por marcações."
+                "title": "Comunicação a Qualquer Momento",
+                "description": "Envia mensagens de texto ou áudio a qualquer momento com perguntas, atualizações ou desafios. Recebe apoio quando mais precisas, sem esperares por marcações."
             },
             {
                 "title": "Formatos de Resposta Flexíveis",
-                "description": "Recebe orientação por texto, áudio ou vídeo conforme a tua preferência e a complexidade do tópico. Demonstrações visuais quando necessário, respostas rápidas por texto quando adequado."
+                "description": "Recebe orientação por texto, áudio ou vídeo conforme a tua preferência e a complexidade do tema. Demonstrações visuais quando necessário; respostas rápidas por texto quando fizer sentido."
             },
             {
                 "title": "Aulas Personalizadas",
-                "description": "Recebe sessões de formação feitas à medida para o teu nível, estilo de aprendizagem e objectivos. Cada aula baseia-se no teu progresso para um crescimento máximo."
+                "description": "Recebe sessões de treino feitas à medida, desenhadas especificamente para o teu nível, estilo de aprendizagem e objetivos. Cada aula assenta no teu progresso para maximizar o crescimento e o desenvolvimento."
             }
         ],
         "tiers": [
             {
-                "planName": "Basic",
+                "planName": "Básico",
                 "planDesc": "Respostas a todas as perguntas semanalmente"
             },
             {
-                "planName": "Standard",
+                "planName": "Intermédio",
                 "planDesc": "Respostas a todas as perguntas em 48h"
             },
             {
                 "planName": "Premium",
-                "planDesc": "Respostas a todas as perguntas o mais rápido possível"
+                "planDesc": "Resposta a todas as perguntas o mais depressa possível"
             }
         ],
         "buttons": {
-            "default": "Escolhe um Tipo de Coaching",
+            "default": "Obtém o Meu Número",
             "invest": "Começa a Investir com Inteligência",
-            "trainer": "Recebe o Teu Plano de Fitness",
+            "trainer": "Obtém o Teu Plano de Treino",
             "dating": "Melhora a Tua Vida Amorosa",
-            "onlyfans": "Potencia o teu OnlyFans",
-            "advisor": "Impulsiona o Teu Negócio",
-            "habits": "Cria Hábitos Melhores",
+            "onlyfans": "Impulsiona o Teu OnlyFans",
+            "advisor": "Recebe Aconselhamento para o Teu Negócio",
+            "habits": "Constrói Melhores Hábitos",
             "manager": "Destaca-te nas Redes Sociais",
-            "researcher": "Navega o Mercado de Ações"
+            "researcher": "Navega na Bolsa"
         }
     },
     "pitchDeck": {
-        "title": "Os Meus Projectos",
+        "title": "Os Meus Projetos",
         "investTitle": "Investe Comigo",
-        "investSubtitle": "Estou sempre a desenvolver novos projectos e iniciativas. Se tiveres interesse em saber mais sobre oportunidades actuais e futuras, pede abaixo o pitch deck.",
+        "investSubtitle": "Estou sempre a desenvolver novos projetos e iniciativas. Se tiveres interesse em saber mais sobre oportunidades atuais e futuras, pede o pitch deck abaixo.",
         "buttonText": "Pede o Pitch Deck",
         "decks": [
             {
@@ -285,13 +285,9 @@
             },
             {
                 "title": "Galow - Clube de Sucesso",
-                "description": "Um clube social com actividades presenciais e software digital para ligar pessoas bem-sucedidas e realizar os seus sonhos."
+                "description": "Um clube social com atividades no mundo real e software digital para ajudar pessoas bem-sucedidas a ligar-se e a concretizar os seus sonhos."
             }
         ]
-    },
-    "pitchDeckRequest": {
-        "submittedOn": "Enviado em",
-        "downloadButton": "Descarrega o Envio"
     },
     "testimonials": {
         "title": "Histórias de Sucesso",
@@ -349,6 +345,9 @@
             "orSeparator": "ou",
             "loginPrompt": "Já tens conta?",
             "loginLink": "Inicia sessão",
+            "showPassword": "Mostrar palavra-passe",
+            "hidePassword": "Esconder palavra-passe",
+            "googleButton": "| Continua com Google",
             "validation": {
                 "emailRequired": "O email é obrigatório",
                 "passwordRequired": "A palavra-passe é obrigatória",
@@ -365,12 +364,20 @@
         "buttonText": "Chatbot"
     },
     "scheduling": {
-        "title": "Agenda a Tua Consulta",
+        "serviceSelection": {
+            "title": "Escolhe o Teu Serviço",
+            "serviceLabels": {
+                "consultation": "Consultas",
+                "coaching": "Acompanhamento",
+                "pitchdeck": "Pitch Deck"
+            }
+        },
+        "title": "Marca a Tua Consulta",
         "backButton": "Voltar",
         "nextButton": "Seguinte",
         "finishButton": "Concluir",
-        "durationSelectorTitle": "Selecciona a Duração",
-        "timeSelectorTitle": "Selecciona a Hora Disponível",
+        "durationSelectorTitle": "Escolhe a Duração",
+        "timeSelectorTitle": "Escolhe uma Hora Disponível",
         "appointmentSummary": {
             "from": "de",
             "to": "até"
@@ -382,27 +389,27 @@
             },
             {
                 "value": "60",
-                "label": "1 h"
+                "label": "1h"
             },
             {
                 "value": "75",
-                "label": "1 h 15 min"
+                "label": "1h 15min"
             },
             {
                 "value": "90",
-                "label": "1 h 30 min"
+                "label": "1h 30min"
             },
             {
                 "value": "105",
-                "label": "1 h 45 min"
+                "label": "1h 45min"
             },
             {
                 "value": "120",
-                "label": "2 h"
+                "label": "2h"
             }
         ],
         "coachingPlan": {
-            "title": "Plano de Coaching",
+            "title": "Plano de Acompanhamento",
             "plans": [
                 {
                     "id": "basic",
@@ -410,7 +417,7 @@
                 },
                 {
                     "id": "standard",
-                    "title": "Standard"
+                    "title": "Intermédio"
                 },
                 {
                     "id": "premium",
@@ -435,39 +442,39 @@
             "loggedInTitle": "Dados de Contacto",
             "loggedOutTitle": "Fala-nos Sobre Ti",
             "fullNameLabel": "Nome Completo",
-            "fullNamePlaceholder": "Indica o teu nome completo",
-            "emailLabel": "Email",
-            "emailPlaceholder": "tu@exemplo.com",
-            "phoneLabel": "Telemóvel",
-            "phonePlaceholder": "+351 912 345 678",
-            "passwordLabel": "Cria Palavra-passe",
+            "fullNamePlaceholder": "Escreve o teu nome completo",
+            "emailLabel": "E-mail",
+            "emailPlaceholder": "you@example.com",
+            "phoneLabel": "Número de Telefone",
+            "phonePlaceholder": "+1 (123) 456-7890",
+            "passwordLabel": "Cria uma Palavra-passe",
             "passwordPlaceholder": "**********",
             "googleButtonText": "Regista-te com o Google",
             "loginPrompt": "Já tens conta?",
-            "loginLink": "Entra"
+            "loginLink": "Inicia sessão"
         },
         "paymentStep": {
             "cancelledTitle": "Pagamento Cancelado",
             "cancelledMessage": "O teu pagamento foi cancelado. Podes tentar novamente.",
             "payButton": "Pagar {{price}}",
-            "processingButton": "A processar…",
+            "processingButton": "A processar...",
             "summaryTitle": "Resumo da Encomenda",
             "consultationTitle": "Consulta",
             "dateLabel": "Data",
             "timeLabel": "Hora",
             "durationLabel": "Duração",
             "minutes": "minutos",
-            "coachingPlanTitle": "Plano de Coaching",
+            "coachingPlanTitle": "Plano de Acompanhamento",
             "planLabel": "Plano",
             "totalLabel": "Total",
-            "redirectingButton": "A redireccionar…",
-            "checkoutButton": "Finalizar Pagamento",
-            "stripeRedirectMessage": "Serás redireccionado para o Stripe para concluir o pagamento."
+            "redirectingButton": "A redirecionar...",
+            "checkoutButton": "Avançar para o Pagamento",
+            "stripeRedirectMessage": "Vais ser redirecionado para a Stripe para concluíres o pagamento."
         },
         "chatbotStep": {
             "title": "Passo Final",
-            "initialMessage": "Olá! Estou aqui para recolher algumas informações preliminares para a nossa consulta. Para começar, podes falar-me um pouco sobre ti?",
-            "inputPlaceholder": "Escreve a tua mensagem…"
+            "initialMessage": "Olá! Estou aqui para recolher alguma informação preliminar para a nossa próxima consulta. Para começar, podes falar-me um pouco mais sobre ti?",
+            "inputPlaceholder": "Escreve a tua mensagem..."
         }
     },
     "socialMedia": {
@@ -791,14 +798,14 @@
         ]
     },
     "calendar": {
-        "pageTitle": "As Minhas Consultas",
-        "pageSubtitle": "Vê e gere as tuas marcações agendadas.",
-        "loading": "A carregar…",
-        "error": "Não foi possível carregar as tuas marcações.",
-        "showAllButton": "Mostrar Todas as Consultas",
-        "listTitleAll": "Todas as Consultas",
-        "listTitleForDate": "Consultas para {{date}}",
-        "noAppointments": "Sem consultas agendadas."
+        "pageTitle": "Calendário",
+        "pageSubtitle": "Escolhe uma data para filtrar as tuas consultas.",
+        "loading": "A carregar as tuas marcações...",
+        "error": "Não foi possível carregar as marcações. Tenta novamente, por favor.",
+        "noAppointments": "Não há marcações para mostrar.",
+        "listTitleForDate": "Marcações para {{date}}",
+        "listTitleAll": "Todas as Marcações",
+        "showAllButton": "Mostrar Tudo"
     },
     "chatbot": {
         "header": {
@@ -869,64 +876,120 @@
         ]
     },
     "editProfile": {
-        "title": "Editar Perfil",
-        "subtitle": "Actualiza a tua foto e dados pessoais.",
-        "loading": "A carregar…",
+        "loading": "A carregar o teu perfil...",
+        "photo": {
+            "title": "Foto de perfil",
+            "help": "Usa uma imagem nítida e reconhecível."
+        },
         "form": {
             "email": {
-                "label": "Email",
-                "info": "O endereço de email não pode ser alterado."
+                "label": "E-mail",
+                "info": "Este é o e-mail associado à tua conta."
             },
             "username": {
-                "label": "Nome de Utilizador"
+                "label": "Nome de utilizador"
             },
             "fullName": {
-                "label": "Nome Completo"
+                "label": "Nome completo"
             },
             "phone": {
-                "label": "Telemóvel"
+                "label": "Telefone"
             },
             "buttons": {
-                "save": "Guardar Todas as Alterações",
-                "saving": "A guardar…",
-                "cancel": "Cancelar"
+                "cancel": "Cancelar",
+                "save": "Guardar alterações",
+                "saving": "A guardar..."
             }
         },
-        "messages": {
-            "avatarSuccess": "Avatar actualizado com sucesso!",
-            "profileSuccess": "Detalhes do perfil guardados com sucesso!"
-        },
         "errors": {
-            "load": "Falha ao carregar dados do perfil.",
-            "update": "Falha ao actualizar o perfil. Tenta novamente.",
-            "usernameTaken": "O nome de utilizador \"{{username}}\" já está em uso."
+            "load": "Não foi possível carregar o teu perfil.",
+            "usernameTaken": "O nome de utilizador \"{{username}}\" já está ocupado.",
+            "update": "Não foi possível atualizar o teu perfil. Tenta novamente, por favor."
+        },
+        "messages": {
+            "avatarSuccess": "Foto de perfil atualizada!",
+            "profileSuccess": "Perfil atualizado com sucesso!"
+        },
+        "uploader": {
+            "alt": "Avatar do utilizador",
+            "buttons": {
+                "changePhoto": "Alterar Foto",
+                "uploading": "A carregar..."
+            },
+            "errors": {
+                "notImage": "Seleciona um ficheiro de imagem, por favor.",
+                "tooLarge": "O ficheiro é demasiado grande (máx {{maxMB}}MB).",
+                "noUrl": "O envio não devolveu um URL.",
+                "uploadFailed": "Não foi possível carregar a imagem. Tenta novamente, por favor."
+            }
         }
     },
     "appointments": {
-        "title": "As Minhas Consultas",
-        "loading": "A carregar as tuas consultas…",
-        "error": "Não foi possível carregar as tuas consultas. Tenta novamente mais tarde.",
-        "empty": "Não tens consultas agendadas."
+        "title": "Consultas",
+        "loading": "A carregar as tuas marcações...",
+        "empty": "Ainda não tens nenhuma marcação.",
+        "error": "Não foi possível carregar as marcações. Tenta novamente, por favor.",
+        "card": {
+            "dateTbd": "Data por definir",
+            "appointmentFallback": "Marcação",
+            "ariaLabel": "{{serviceType}} em {{date}}",
+            "duration_one": "{{count}} minuto",
+            "duration_other": "{{count}} minutos"
+        }
     },
     "subscriptions": {
-        "title": "As Minhas Subscrições",
-        "loading": "A carregar as tuas subscrições…",
-        "error": "Não foi possível carregar as tuas subscrições. Tenta novamente.",
-        "empty": "Ainda não tens subscrições activas.",
-        "explore": "Explorar Planos"
+        "title": "Subscrições",
+        "loading": "A carregar as tuas subscrições...",
+        "empty": "Ainda não tens nenhuma subscrição.",
+        "error": "Não foi possível carregar as subscrições. Tenta novamente, por favor.",
+        "card": {
+            "nextBilling": "Próxima faturação",
+            "started": "Início",
+            "planFallback": "Subscrição",
+            "statusUnknown": "desconhecido"
+        }
     },
     "pitchDeckRequests": {
-        "title": "Os Meus Pedidos de Pitch Deck",
-        "loading": "A carregar os teus pedidos…",
-        "error": "Não foi possível carregar os teus pedidos. Tenta novamente.",
-        "empty": "Ainda não submeteste um pitch deck para análise.",
-        "submit": "Submeter um Pitch Deck"
+        "title": "Pedidos de Pitch Deck",
+        "loading": "A carregar os teus pedidos de pitch deck...",
+        "empty": "Ainda não submeteste nenhum pedido de pitch deck.",
+        "error": "Não foi possível carregar os teus pedidos de pitch deck.",
+        "unknownCompany": "—"
+    },
+    "pitchDeckRequest": {
+        "untitled": "Sem título",
+        "submittedOn": "Submetido em",
+        "download": "Descarregar",
+        "status": {
+            "submitted": "Submetido",
+            "in_review": "Em análise",
+            "feedback_sent": "Feedback enviado",
+            "archived": "Arquivado",
+            "unknown": "Desconhecido"
+        }
     },
     "chatbotHistory": {
-        "title": "O Meu Histórico do Chatbot",
-        "loading": "A carregar o teu histórico…",
-        "error": "Não foi possível carregar o teu histórico de chat. Tenta novamente.",
-        "empty": "Ainda não tiveste conversas com o chatbot.",
-        "start": "Iniciar uma Conversa"
+        "title": "Histórico do Chatbot",
+        "loading": "A carregar as tuas conversas...",
+        "empty": "Ainda não tens nenhuma conversa.",
+        "error": "Não foi possível carregar as conversas. Tenta novamente, por favor.",
+        "card": {
+            "conversationFrom": "Conversa de {{date}}"
+        }
+    },
+    "navigation": {
+        "home": "Casa",
+        "calendar": "Calendário",
+        "chat": "Chat",
+        "settings": "Definições",
+        "profile": "Perfil",
+        "profileAlt": "O teu perfil"
+    },
+    "interactive": {
+        "sections": {
+            "socialMedia": "Redes Sociais",
+            "faq": "Perguntas Frequentes",
+            "bugReport": "Reportar Erro"
+        }
     }
 }

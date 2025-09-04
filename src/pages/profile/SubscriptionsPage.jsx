@@ -11,54 +11,54 @@ import SectionTextWhite from '../../components/common/SectionTextWhite';
 
 
 export default function SubscriptionsPage() {
-    const { t } = useTranslation();
-    const { user } = useAuth();
-    const [subscriptions, setSubscriptions] = React.useState([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState(null);
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [subscriptions, setSubscriptions] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
 
 
-    React.useEffect(() => {
-        const loadSubscriptions = async () => {
-          if (!user) {                // <- if not logged in or not yet loaded
-            setLoading(false);
-            setSubscriptions([]);
-            return;
-          }
-          try {
-            setLoading(true);
-            const { data, error: fetchError } = await getSubscriptionsByUserId(user.id);
-            if (fetchError) throw fetchError;
-            setSubscriptions(data || []);
-          } catch (err) {
-            console.error('Failed to fetch subscriptions:', err);
-            setError(t('subscriptions.error'));
-          } finally {
-            setLoading(false);
-          }
-        };
-        loadSubscriptions();
-      }, [user, t]);
-      
-
-
-    const renderContent = () => {
-        if (loading) return <p className="text-center text-gray-500">{t('subscriptions.loading')}</p>;
-        if (error) return <p className="text-center text-red-500">{error}</p>;
-        if (subscriptions.length === 0)
-            return <p className="text-center text-gray-500">{t('subscriptions.empty')}</p>;
-
-
-        return subscriptions.map((sub) => <SubscriptionCard key={sub.id} subscription={sub} />);
+  React.useEffect(() => {
+    const loadSubscriptions = async () => {
+      if (!user) {                // <- if not logged in or not yet loaded
+        setLoading(false);
+        setSubscriptions([]);
+        return;
+      }
+      try {
+        setLoading(true);
+        const { data, error: fetchError } = await getSubscriptionsByUserId(user.id);
+        if (fetchError) throw fetchError;
+        setSubscriptions(data || []);
+      } catch (err) {
+        console.error('Failed to fetch subscriptions:', err);
+        setError(t('subscriptions.error'));
+      } finally {
+        setLoading(false);
+      }
     };
+    loadSubscriptions();
+  }, [user, t]);
 
 
-    return (
-        <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
-            <ProfileSectionLayout>
-                <SectionTextWhite title="Subscriptions" />
-                <div className="space-y-4">{renderContent()}</div>
-            </ProfileSectionLayout>
-        </div>
-    );
+
+  const renderContent = () => {
+    if (loading) return <p className="text-center text-gray-500">{t('subscriptions.loading')}</p>;
+    if (error) return <p className="text-center text-red-500">{error}</p>;
+    if (subscriptions.length === 0)
+      return <p className="text-center text-gray-500">{t('subscriptions.empty')}</p>;
+
+
+    return subscriptions.map((sub) => <SubscriptionCard key={sub.id} subscription={sub} />);
+  };
+
+
+  return (
+    <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
+      <ProfileSectionLayout>
+        <SectionTextWhite title={t('subscriptions.title')} />
+        <div className="space-y-4">{renderContent()}</div>
+      </ProfileSectionLayout>
+    </div>
+  );
 }

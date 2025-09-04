@@ -2,19 +2,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChatBubbleLeftRightIcon, CalendarDaysIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next'; // ← added
 
 const ConversationHistoryCard = ({ session }) => {
+  const { t } = useTranslation(); // ← added
   const date = new Date(session.last_message_at);
   const formattedDate = date.toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' });
 
   const title =
     session.last_message?.slice(0, 80) ||
     session.first_message?.slice(0, 80) ||
-    `Conversation from ${formattedDate}`;
+    t('chatbotHistory.card.conversationFrom', { date: formattedDate }); // ← was `Conversation from ${formattedDate}`
 
   return (
     <Link
-      to={`/chat/${session.session_id}`} // ✅ route with session id
+      to={`/chat/${session.session_id}`}
       className="block bg-white hover:bg-gray-50 transition-colors duration-200 shadow-md rounded-lg p-4"
     >
       <div className="flex justify-between items-center">

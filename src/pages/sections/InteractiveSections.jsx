@@ -1,37 +1,45 @@
 // src/pages/sections/InteractiveSections.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import SocialMediaSection from './SocialMediaSection';
 import FaqSection from './FaqSection';
 import BugReportSection from './bugReportSection';
 import SectionNavigator from '../../components/common/SectionNavigator';
+import { useTranslation } from 'react-i18next';
 
-const sections = [
-    { id: 'social-media', label: 'Social Media' },
-    { id: 'faq', label: 'FAQ' },
-    { id: 'bug-report', label: 'Bug Report' },
+// Use keys at module scope; resolve labels inside the component
+const SECTION_DEFS = [
+  { id: 'social-media', labelKey: 'interactive.sections.socialMedia' },
+  { id: 'faq',         labelKey: 'interactive.sections.faq' },
+  { id: 'bug-report',  labelKey: 'interactive.sections.bugReport' },
 ];
 
 export default function InteractiveSections() {
-    // --- CHANGE IS HERE ---
-    // We initialize the state with the correct ID 'social-media'
-    // to ensure the social media section is visible by default.
-    const [activeSection, setActiveSection] = useState('social-media');
+  const { t, i18n } = useTranslation();
 
-    return (
-        <section className="w-full max-w-6xl mx-auto py-8">
-            <SectionNavigator
-                sections={sections}
-                activeSection={activeSection}
-                onSelectSection={setActiveSection}
-                className="flex"
-            />
-            <div> {/* Added margin-top for spacing */}
-                {activeSection === 'social-media' && <SocialMediaSection />}
-                {activeSection === 'faq' && <FaqSection />}
-                {activeSection === 'bug-report' && <BugReportSection />}
-            </div>
-        </section>
-    );
+  // Default visible section remains 'social-media'
+  const [activeSection, setActiveSection] = useState('social-media');
+
+  // Resolve i18n labels whenever language changes
+  const sections = useMemo(
+    () => SECTION_DEFS.map(s => ({ id: s.id, label: t(s.labelKey) })),
+    [t, i18n.language]
+  );
+
+  return (
+    <section className="w-full max-w-6xl mx-auto py-8">
+      <SectionNavigator
+        sections={sections}
+        activeSection={activeSection}
+        onSelectSection={setActiveSection}
+        className="flex"
+      />
+      <div>
+        {activeSection === 'social-media' && <SocialMediaSection />}
+        {activeSection === 'faq' && <FaqSection />}
+        {activeSection === 'bug-report' && <BugReportSection />}
+      </div>
+    </section>
+  );
 }

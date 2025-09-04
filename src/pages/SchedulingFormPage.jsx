@@ -18,20 +18,22 @@ import ContactInfoStep from '../components/scheduling/ContactInfoStep';
 import PaymentStep from '../components/scheduling/PaymentStep';
 import ChatbotStep from '../components/scheduling/ChatbotStep';
 import ConfirmationStep from '../components/scheduling/ConfirmationStep';
+import { useTranslation } from 'react-i18next';
 
 // COMPONENT DEFINITION
 // This is our dedicated scheduling form page that manages the entire scheduling flow
 export default function SchedulingFormPage() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    
+    const { t } = useTranslation();
+
     // Get user and sign-in method from context
     const { user } = useAuth();
-    
+
     // Get initial service from URL parameters
     const serviceFromUrl = searchParams.get('service');
     const coachingPlanFromUrl = searchParams.get('plan');
-    
+
     // 'formData' will be our single source of truth. It's an object that will accumulate all the data from the user across all steps of the form.
     // We initialize it with default values.
     const [formData, setFormData] = useState({
@@ -286,7 +288,7 @@ export default function SchedulingFormPage() {
     return (
         // We use a container to center the form on the page and provide padding
         <div className="h-auto flex flex-col items-center justify-start p-4">
-            <SectionTextWhite title="Schedule Your Consultation" />
+            <SectionTextWhite title={t('scheduling.title')} />
             <div className="w-full max-w-2xl p-4 space-y-4 bg-[#002147] rounded-xl shadow-md">
 
                 {/* --- START OF THE MODIFIED LOGIC --- */}
@@ -347,7 +349,9 @@ export default function SchedulingFormPage() {
                         {currentStep >= 2 && (
                             <div className="flex justify-between pt-4">
                                 {/* Back Button: Always shown from step 2 onwards */}
-                                <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors md:text-base">Back</button>
+                                <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors md:text-base">
+                                    {t('scheduling.backButton')}
+                                </button>
 
                                 {/* Next Button: Shown on intermediate steps */}
                                 {currentStep < totalSteps && (
@@ -362,13 +366,15 @@ export default function SchedulingFormPage() {
                                             isProcessing
                                         }
                                         className="px-6 py-2 text-sm font-semibold text-black bg-[#BFA200] rounded-md transition-colors disabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500 md:text-base"
-                                    >Next</button>
+                                    >
+                                        {t('scheduling.nextButton')}
+                                    </button>
                                 )}
 
                                 {/* Finish Button: Shown only on the last step */}
                                 {currentStep === totalSteps && (
-                                    <button onClick={() => alert("Flow Finished!")} className="...">
-                                        Finish
+                                    <button onClick={() => alert(t('scheduling.flowFinished'))} className="...">
+                                        {t('scheduling.finishButton')}
                                     </button>
                                 )}
                             </div>

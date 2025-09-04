@@ -107,10 +107,8 @@ export default function EditProfilePage() {
                             <AvatarUploader currentAvatarUrl={avatarUrl} onUploadSuccess={handleAvatarSuccess} />
                         </div>
                         <div className="text-white/80">
-                            <h2 className="font-semibold">{t('editProfile.photo.title', 'Profile photo')}</h2>
-                            <p className="text-sm text-white/60">
-                                {t('editProfile.photo.help', 'Use a clear, recognizable image.')}
-                            </p>
+                            <h2 className="font-semibold">{t('editProfile.photo.title')}</h2>
+                            <p className="text-sm text-white/60">{t('editProfile.photo.help')}</p>
                         </div>
                     </div>
                 </div>

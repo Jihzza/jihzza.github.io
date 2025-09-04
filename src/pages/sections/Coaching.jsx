@@ -1,5 +1,6 @@
 // Coaching.jsx
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import SectionCta from "../../components/ui/SectionCta";
 import SectionText from "../../components/ui/SectionText";
 import BoxesGrid from "../../components/ui/BoxesGrid";
@@ -20,54 +21,86 @@ import AnytimeCommsIcon from '../../assets/icons/AnytimeComms Preto.svg';
 import ResponseIcon from '../../assets/icons/Response Preto.svg';
 import ClassesIcon from '../../assets/icons/Classes Preto.svg';
 
-const STEPS = [
-  { icon: AnytimeCommsIcon, title: "Anytime Communication", description: "Text or send audio messages anytime with questions, updates, or challenges. Get support when you need it most without waiting for scheduled appointments." },
-  { icon: ResponseIcon, title: "Flexible Response Formats", description: "Receive guidance through text, audio, or video responses based on your preference and the complexity of the topic. Visual demonstrations when needed, quick text answers when appropriate." },
-  { icon: ClassesIcon, title: "Personalized Classes", description: "Receive custom-tailored training sessions designed specifically for your skill level, learning style, and goals. Each class builds on your progress for maximum growth and development." },
-];
-
-// Define your pricing tiers here
+// Keep prices local; names/descriptions come from i18n
 const TIERS = [
-  { id: "single", price: 40, planName: "Basic", planDesc: "Answers to all questions weekly" },
-  { id: "pack5", price: 90, planName: "Standard", planDesc: "Answers to all questions in 48h" },
-  { id: "pack20", price: 230, planName: "Premium", planDesc: "Answer to all questions ASAP" },
+  { id: "single", price: 40 },
+  { id: "pack5",  price: 90 },
+  { id: "pack20", price: 230 },
 ];
 
-export default function Consultations({ onBookCoaching }) {
+export default function Coaching({ onBookCoaching }) {
   const sectionRef = useRef(null);
   const [selectedPlanId, setSelectedPlanId] = useState(null);
-  // derive selected tier + dynamic button label
-  const selectedTier = TIERS.find(t => t.id === selectedPlanId);
-  const buttonText = selectedTier
-    ? `Get My Number - ${selectedTier.price}€/m`
-    : 'Get My Number';
+  const { t } = useTranslation();
+
+  // ⚠️ JSON uses "types" (not "categories")
+  const types = t('coaching.types', { returnObjects: true }) || [];
+  const typeIcons = [
+    StocksIcon,            // Learn How to Invest
+    PersonalTrainerIcon,   // Personal Trainer
+    DatingIcon,            // Dating Coach
+    OnlyFansIcon,          // OnlyFans Coaching
+    BusinessIcon,          // Business Advisor
+    HabitsIcon,            // Habits & Personal Growth
+    SocialMediaIcon,       // Social Media Manager
+    StockResearcherIcon,   // Stock Researcher
+  ];
+  const gridItems = types.map((c, i) => ({
+    name: c.title,
+    image: typeIcons[i],
+    subtitle: c.description,
+  }));
+
+  // ⚠️ JSON uses "details" (not "steps")
+  const details = t('coaching.details', { returnObjects: true }) || [];
+  const stepIcons = [AnytimeCommsIcon, ResponseIcon, ClassesIcon];
+  const steps = details.map((s, i) => ({
+    icon: stepIcons[i],
+    title: s.title,
+    description: s.description,
+  }));
+
+  // ⚠️ JSON "tiers" is an ARRAY in the same order as your prices
+  const tiersFromI18n = t('coaching.tiers', { returnObjects: true }) || [];
+  const enrichedTiers = TIERS.map((tier, idx) => ({
+    ...tier,
+    planName: tiersFromI18n[idx]?.planName || '',
+    planDesc: tiersFromI18n[idx]?.planDesc || '',
+  }));
+
+  // Button text — your JSON only has "buttons.default" for now
+  const buttonText = t('coaching.buttons.default');
+
+  const onClick = () => onBookCoaching?.(selectedPlanId);
 
   return (
-    <section ref={sectionRef} className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4 md:px-6">
-      <SectionText title="Direct Coaching">
-        Personalized coaching to help you excel in specific areas of your life. Get direct access to expert guidance tailored to your unique situation and goals.
+    <section
+      ref={sectionRef}
+      className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4 md:px-6"
+    >
+      <SectionText title={t('coaching.title')}>
+        {t('coaching.subtitle')}
       </SectionText>
 
-      <BoxesGrid items={[
-        { name: "Learn How to Invest", image: StocksIcon, subtitle: "Master the markets with confidence. We break down core investment principles, asset allocation, and risk-management tactics so you can build a diversified portfolio that matches your goals and risk appetite." },
-        { name: "Personal Trainer", image: PersonalTrainerIcon, subtitle: "Get a tailor-made fitness roadmap. From periodised workout plans to nutrition tweaks and habit tracking, you'll receive step-by-step guidance to hit strength, endurance, and aesthetic targets—safely and sustainably." },
-        { name: "Dating Coach", image: DatingIcon, subtitle: "Upgrade your dating life. Hone social-skill fundamentals, craft a magnetic online profile, and learn real-world approach frameworks that boost confidence and attract high-quality partners." },
-        { name: "OnlyFans Coaching", image: OnlyFansIcon, subtitle: "Turn OnlyFans into a thriving business. We cover niche positioning, content calendars, pricing psychology, fan-funnel design, and cross-platform promotion to scale subscribers and monthly earnings." },
-        { name: "Business Advisor", image: BusinessIcon, subtitle: "Accelerate your venture's growth. From lean business-plan audits to marketing funnels, ops systems, and KPI dashboards, you'll get actionable strategies to increase revenue and profitability." },
-        { name: "Habits & Personal Growth", image: HabitsIcon, subtitle: "Design habits that stick. Implement science-backed routines for productivity, health, and mindset, while removing self-sabotaging behaviours through accountability loops and progress reviews." },
-        { name: "Social Media Manager", image: SocialMediaIcon, subtitle: "Grow an engaged audience. Receive content-pillar mapping, algorithm-proof posting schedules, analytic deep-dives, and monetisation tactics to turn followers into loyal customers." },
-        { name: "Stock Researcher", image: StockResearcherIcon, subtitle: "Make data-driven trades. Learn fundamental and technical research workflows, valuation models, and watch-list curation so you can spot high-conviction stock opportunities before the crowd." },
-      ]} />
+      <BoxesGrid items={gridItems} />
 
-      {STEPS.map((step) => (
-        <StepsList key={step.title} icon={step.icon} title={step.title} description={step.description} />
+      {steps.map((step) => (
+        <StepsList
+          key={step.title}
+          icon={step.icon}
+          title={step.title}
+          description={step.description}
+        />
       ))}
 
-      {/* ✅ Wire up tiers + selection */}
-      <TierCards tiers={TIERS} selectedPlanId={selectedPlanId} onTierSelect={setSelectedPlanId} />
+      <TierCards
+        tiers={enrichedTiers}
+        selectedPlanId={selectedPlanId}
+        onTierSelect={setSelectedPlanId}
+      />
 
       <SectionCta sectionRef={sectionRef}>
-        <Button onClick={() => onBookCoaching?.(selectedPlanId)}>
+        <Button onClick={onClick}>
           {buttonText}
         </Button>
       </SectionCta>

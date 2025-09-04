@@ -60,7 +60,7 @@ export default function Signup({ onSubmit, isLoading, containerClassName = 'spac
                         aria-pressed={showPassword ? 'true' : 'false'}
                         className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none"
                     >
-                        {showPassword ? t('common.hidePassword', 'Hide password') : t('common.showPassword', 'Show password')}
+                        {showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                     </button>
                 </div>
 
@@ -97,7 +97,7 @@ export default function Signup({ onSubmit, isLoading, containerClassName = 'spac
                         aria-pressed={showConfirm ? 'true' : 'false'}
                         className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none"
                     >
-                        {showConfirm ? t('common.hidePassword', 'Hide password') : t('common.showPassword', 'Show password')}
+                        {showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                     </button>
                 </div>
 

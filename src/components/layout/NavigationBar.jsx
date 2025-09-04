@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import OctagonAvatar from "../common/OctagonAvatar";
+import { useTranslation } from "react-i18next";
 
 // ── Icon assets ───────────────────────────────────────────────────────────────
 import logo from "../../assets/icons/CluckinsLogo.svg";
@@ -48,7 +49,6 @@ function ImgIcon({ src, className, alt }) {
 
 const ICON_BOX_CLASS = "h-7 w-7 md:h-8 md:w-8 lg:h-7 lg:w-7 shrink-0";
 
-
 // Common classes
 const LABEL_CLASS =
   "text-[10px] md:text-xs leading-none font-medium transition-opacity";
@@ -64,21 +64,22 @@ export default function NavigationBar({ onNavigate }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
 
   const avatarSrc =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
-  // Build once; avoids re-creating on every render.
+  // Build once per language change so labels update correctly.
   const navItems = useMemo(
     () => [
-      { icon: homeIcon, label: "Home", path: "/" },
-      { icon: calendarIcon, label: "Calendar", path: "/calendar" },
+      { icon: homeIcon,     label: t("navigation.home"),     path: "/" },
+      { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar" },
       // Center logo — flagged with isLogo so we can add a tiny padding, but it behaves like any other item.
-      { icon: logo, label: "Chat", path: "/chat", isLogo: true },
-      { icon: settingsIcon, label: "Settings", path: "/settings" },
-      { icon: profileIcon, label: "Profile", path: "/profile", isProfile: true },
+      { icon: logo,         label: t("navigation.chat"),     path: "/chat", isLogo: true },
+      { icon: settingsIcon, label: t("navigation.settings"), path: "/settings" },
+      { icon: profileIcon,  label: t("navigation.profile"),  path: "/profile", isProfile: true },
     ],
-    []
+    [t, i18n.language]
   );
 
   // ✅ No special-casing the logo anymore — if it has a path, it can be active.
@@ -130,7 +131,7 @@ export default function NavigationBar({ onNavigate }) {
                 >
                   <OctagonAvatar
                     src={avatarSrc}
-                    alt="Your profile"
+                    alt={t("navigation.profileAlt")}
                     size={avatarPx}
                     ringWidth={1}
                     gap={2}

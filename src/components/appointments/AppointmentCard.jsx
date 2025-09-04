@@ -4,14 +4,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { format, parseISO, addMinutes, isValid } from 'date-fns'
 import { ClockIcon, TagIcon, CalendarIcon } from '@heroicons/react/24/outline'
+import { useTranslation } from 'react-i18next' // ← added
 
-/**
- * A polished, accessible appointment summary card.
- * - Keeps all original info (service type, date, start–end time, duration)
- * - More resilient to bad/missing data
- * - Cleaner visual hierarchy & subtle accents
- */
 export default function AppointmentCard({ appointment }) {
+  const { t } = useTranslation() // ← added
   if (!appointment) return null
 
   // --- DATA SAFETY & FORMATTING ---
@@ -24,22 +20,23 @@ export default function AppointmentCard({ appointment }) {
   const startDateTime = parsedStart && isValid(parsedStart) ? parsedStart : null
   const endDateTime = startDateTime && duration != null ? addMinutes(startDateTime, duration) : null
 
-  const formattedDate = startDateTime ? format(startDateTime, 'eeee, MMMM d, yyyy') : 'Date TBD'
+  const formattedDate = startDateTime ? format(startDateTime, 'eeee, MMMM d, yyyy') : t('appointments.card.dateTbd') // ← changed
   const formattedStartTime = startDateTime ? format(startDateTime, 'p') : '—'
   const formattedEndTime = endDateTime ? format(endDateTime, 'p') : '—'
 
   const serviceType = appointment?.service_type
     ? appointment.service_type.charAt(0).toUpperCase() + appointment.service_type.slice(1)
-    : 'Appointment'
+    : t('appointments.card.appointmentFallback') // ← changed
 
+  // pluralized with i18n
   const durationLabel = duration != null
-    ? `${duration} ${duration === 1 ? 'minute' : 'minutes'}`
+    ? t('appointments.card.duration', { count: duration }) // ← changed
     : null
 
   return (
     <article
       className="relative overflow-hidden rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm transition hover:shadow-md focus-within:ring-2 focus-within:ring-indigo-500"
-      aria-label={`${serviceType} on ${formattedDate}`}
+      aria-label={t('appointments.card.ariaLabel', { serviceType, date: formattedDate })} // ← changed
     >
       {/* Subtle accent background & gradient spine */}
       <span

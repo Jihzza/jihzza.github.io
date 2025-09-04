@@ -289,10 +289,6 @@
       }
     ]
   },
-  "pitchDeckRequest": {
-    "submittedOn": "Submitted on",
-    "downloadButton": "Download Submission"
-  },
   "testimonials": {
     "title": "Success Stories",
     "subtitle": "Here are some reviews — and if I've helped you, please leave one so we can inspire even more people.",
@@ -349,6 +345,8 @@
       "orSeparator": "or",
       "loginPrompt": "Already have an account?",
       "loginLink": "Log in",
+      "showPassword": "Show password",
+      "googleButton": "| Continue with Google",
       "validation": {
         "emailRequired": "Email is required",
         "passwordRequired": "Password is required",
@@ -365,6 +363,14 @@
     "buttonText": "Chatbot"
   },
   "scheduling": {
+    "serviceSelection": {
+      "title": "Choose Your Service",
+      "serviceLabels": {
+        "consultation": "Consultations",
+        "coaching": "Coaching",
+        "pitchdeck": "Pitch Deck"
+      }
+    },
     "title": "Schedule Your Consultation",
     "backButton": "Back",
     "nextButton": "Next",
@@ -376,26 +382,59 @@
       "to": "to"
     },
     "durationOptions": [
-      { "value": "45", "label": "45 min" },
-      { "value": "60", "label": "1h" },
-      { "value": "75", "label": "1h 15min" },
-      { "value": "90", "label": "1h 30min" },
-      { "value": "105", "label": "1h 45min" },
-      { "value": "120", "label": "2h" }
+      {
+        "value": "45",
+        "label": "45 min"
+      },
+      {
+        "value": "60",
+        "label": "1h"
+      },
+      {
+        "value": "75",
+        "label": "1h 15min"
+      },
+      {
+        "value": "90",
+        "label": "1h 30min"
+      },
+      {
+        "value": "105",
+        "label": "1h 45min"
+      },
+      {
+        "value": "120",
+        "label": "2h"
+      }
     ],
     "coachingPlan": {
       "title": "Coaching Plan",
       "plans": [
-        { "id": "basic", "title": "Basic Plan" },
-        { "id": "standard", "title": "Standard" },
-        { "id": "premium", "title": "Premium" }
+        {
+          "id": "basic",
+          "title": "Basic Plan"
+        },
+        {
+          "id": "standard",
+          "title": "Standard"
+        },
+        {
+          "id": "premium",
+          "title": "Premium"
+        }
       ]
     },
     "pitchDeck": {
       "title": "Request Pitch Deck",
       "decks": [
-        { "id": "Perspectiv", "title": "Perspectiv" },
-        { "id": "GalowClub", "title": "Galow Club" }
+        {
+          "id": "Perspectiv",
+          "title": "Perspectiv"
+        },
+        {
+          "id": "GalowClub",
+          "title": "Galow Club"
+        }
       ]
     },
     "contactInfo": {
@@ -761,14 +800,14 @@
     ]
   },
   "calendar": {
-    "pageTitle": "My Consultations",
-    "pageSubtitle": "View and manage your scheduled appointments.",
-    "loading": "Loading...",
-    "error": "We couldn't load your appointments.",
-    "showAllButton": "Show All Appointments",
-    "listTitleAll": "All Appointments",
+    "pageTitle": "Calendar",
+    "pageSubtitle": "Pick a date to filter your consultations.",
+    "loading": "Loading your appointments...",
+    "error": "Failed to load appointments. Please try again.",
+    "noAppointments": "No appointments to show.",
     "listTitleForDate": "Appointments for {{date}}",
-    "noAppointments": "No appointments scheduled."
+    "listTitleAll": "All Appointments",
+    "showAllButton": "Show All"
   },
   "chatbot": {
     "header": {
@@ -839,64 +878,120 @@
     ]
   },
   "editProfile": {
-    "title": "Edit Profile",
-    "subtitle": "Update your photo and personal details.",
-    "loading": "Loading...",
+    "loading": "Loading your profile...",
+    "photo": {
+      "title": "Profile photo",
+      "help": "Use a clear, recognizable image."
+    },
     "form": {
       "email": {
         "label": "Email",
-        "info": "Email address cannot be changed."
+        "info": "This is the email associated with your account."
       },
       "username": {
         "label": "Username"
       },
       "fullName": {
-        "label": "Full Name"
+        "label": "Full name"
       },
       "phone": {
-        "label": "Phone Number"
+        "label": "Phone"
       },
       "buttons": {
-        "save": "Save All Changes",
-        "saving": "Saving...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "save": "Save changes",
+        "saving": "Saving..."
       }
     },
-    "messages": {
-      "avatarSuccess": "Avatar updated successfully!",
-      "profileSuccess": "Profile details saved successfully!"
-    },
     "errors": {
-      "load": "Failed to load profile data.",
-      "update": "Failed to update profile. Please try again.",
-      "usernameTaken": "Username \"{{username}}\" is already taken."
+      "load": "Failed to load profile.",
+      "usernameTaken": "The username \"{{username}}\" is already taken.",
+      "update": "Could not update your profile. Please try again."
+    },
+    "messages": {
+      "avatarSuccess": "Profile photo updated!",
+      "profileSuccess": "Profile updated successfully!"
+    },
+    "uploader": {
+      "alt": "User avatar",
+      "buttons": {
+        "changePhoto": "Change Photo",
+        "uploading": "Uploading..."
+      },
+      "errors": {
+        "notImage": "Please select an image file.",
+        "tooLarge": "File is too large (max {{maxMB}}MB).",
+        "noUrl": "Upload failed to return a URL.",
+        "uploadFailed": "Failed to upload image. Please try again."
+      }
     }
   },
   "appointments": {
-    "title": "Appointments",
+    "title": "Consultations",
     "loading": "Loading your appointments...",
-    "error": "We couldn't load your appointments. Please try again later.",
-    "empty": "You have no scheduled appointments."
+    "empty": "You don’t have any appointments yet.",
+    "error": "Failed to load appointments. Please try again.",
+    "card": {
+      "dateTbd": "Date TBD",
+      "appointmentFallback": "Appointment",
+      "ariaLabel": "{{serviceType}} on {{date}}",
+      "duration_one": "{{count}} minute",
+      "duration_other": "{{count}} minutes"
+    }
   },
   "subscriptions": {
     "title": "Subscriptions",
     "loading": "Loading your subscriptions...",
-    "error": "We couldn't load your subscriptions. Please try again.",
-    "empty": "You do not have any active subscriptions yet.",
-    "explore": "Explore Plans"
+    "empty": "You don’t have any subscriptions yet.",
+    "error": "Failed to load subscriptions. Please try again.",
+    "card": {
+      "nextBilling": "Next billing",
+      "started": "Started",
+      "planFallback": "Subscription",
+      "statusUnknown": "unknown"
+    }
   },
   "pitchDeckRequests": {
     "title": "Pitch Deck Requests",
-    "loading": "Loading your requests...",
-    "error": "We couldn't load your requests. Please try again.",
-    "empty": "You haven't submitted a pitch deck for review yet.",
-    "submit": "Submit a Pitch Deck"
+    "loading": "Loading your pitch deck requests...",
+    "empty": "You haven't submitted any pitch deck requests yet.",
+    "error": "Failed to load your pitch deck requests.",
+    "unknownCompany": "—"
+  },
+  "pitchDeckRequest": {
+    "untitled": "Untitled",
+    "submittedOn": "Submitted on",
+    "download": "Download",
+    "status": {
+      "submitted": "Submitted",
+      "in_review": "In Review",
+      "feedback_sent": "Feedback Sent",
+      "archived": "Archived",
+      "unknown": "Unknown"
+    }
   },
   "chatbotHistory": {
     "title": "Chatbot History",
-    "loading": "Loading your history...",
-    "error": "We couldn't load your chat history. Please try again.",
-    "empty": "You haven't had any conversations with the chatbot yet.",
-    "start": "Start a Conversation"
+    "loading": "Loading your conversations...",
+    "empty": "You don’t have any conversations yet.",
+    "error": "Failed to load conversations. Please try again.",
+    "card": {
+      "conversationFrom": "Conversation from {{date}}"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "calendar": "Calendar",
+    "chat": "Chat",
+    "settings": "Settings",
+    "profile": "Profile",
+    "profileAlt": "Your profile"
+  },
+  "interactive": {
+    "sections": {
+      "socialMedia": "Social Media",
+      "faq": "FAQ",
+      "bugReport": "Bug Report"
+    }
   }
 }

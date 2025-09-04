@@ -16,9 +16,12 @@ import InteractiveSections from './sections/InteractiveSections';
 import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
 import SectionTextBlack from '../components/common/SectionTextBlack';
 
+import { useTranslation } from 'react-i18next';
+
 export default function HomePage() {
     const navigate = useNavigate();
     const schedulingRef = useRef(null);
+    const { t } = useTranslation();
 
     const handleScheduleService = (serviceId, details = null) => {
         // Build the URL with service parameter
@@ -123,7 +126,7 @@ export default function HomePage() {
             </div>
             <div id="scheduling-section" ref={schedulingRef} className="w-full">
                 <div className="h-auto flex flex-col items-center justify-center py-4">
-                    <SectionTextBlack title="Choose Your Service">
+                    <SectionTextBlack title={t('scheduling.serviceSelection.title')}>
 
                     </SectionTextBlack>
                     <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
