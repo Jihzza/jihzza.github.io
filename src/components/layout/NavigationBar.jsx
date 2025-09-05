@@ -59,11 +59,11 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
   // Mark which items require auth
   const navItems = useMemo(
     () => [
-      { icon: homeIcon, label: t("navigation.home"), path: "/", requiresAuth: false },
-      { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar", requiresAuth: true },
-      { icon: logo, label: t("navigation.chat"), path: "/chat", requiresAuth: false, isLogo: true },
-      { icon: settingsIcon, label: t("navigation.settings"), path: "/settings", requiresAuth: true },
-      { icon: profileIcon, label: t("navigation.profile"), path: "/profile", requiresAuth: true, isProfile: true },
+      { icon: homeIcon,     label: t("navigation.home"),     path: "/",          requiresAuth: false },
+      { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar",  requiresAuth: true  },
+      { icon: logo,         label: t("navigation.chat"),     path: "/chat",      requiresAuth: false, isLogo: true },
+      { icon: settingsIcon, label: t("navigation.settings"), path: "/settings",  requiresAuth: true  },
+      { icon: profileIcon,  label: t("navigation.profile"),  path: "/profile",   requiresAuth: true,  isProfile: true },
     ],
     [t, i18n.language]
   );
@@ -77,7 +77,6 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
 
   // Remember the "intended" selection for logged-out users
   const [ghostActivePath, setGhostActivePath] = useState(() => {
-    // hydrate from session storage if logged out
     if (!user) return sessionStorage.getItem("ghostActivePath");
     return null;
   });
@@ -125,6 +124,12 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
 
   const avatarPx = useBreakpointValue({ base: 24, md: 32, lg: 28 });
 
+  // NEW: If any real tab matches the current path, ignore ghost so only one label shows
+  const hasRealActive = useMemo(
+    () => navItems.some((n) => isActivePath(n.path, location.pathname)),
+    [navItems, location.pathname]
+  );
+
   return (
     <nav
       id="bottom-nav"
@@ -138,7 +143,9 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
           const reallyActive = isActivePath(item.path, location.pathname);
           const ghostActive =
             !user && ghostActivePath && isActivePath(item.path, ghostActivePath);
-          const active = reallyActive || ghostActive;
+
+          // Only allow ghost when no real tab is active
+          const active = hasRealActive ? reallyActive : (reallyActive || ghostActive);
 
           const isProfile = !!item.isProfile;
           const showAvatar = isProfile && !!avatarSrc;
@@ -154,8 +161,8 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
               className={BUTTON_CLASS}
               aria-label={item.label}
               aria-current={reallyActive ? "page" : undefined}
-              // helps SRs understand we toggled selection while not on that route
-              aria-pressed={!reallyActive && ghostActive ? true : undefined}
+              // Only expose pressed state for ghost when no real active exists
+              aria-pressed={!hasRealActive && !reallyActive && ghostActive ? true : undefined}
               type="button"
             >
               {/* Icon / Avatar */}
@@ -185,13 +192,11 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.12 }}
                 >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <ImgIcon
-                      src={item.icon}
-                      alt={item.label}
-                      className="w-full h-full object-contain object-center pointer-events-none select-none"
-                    />
-                  </div>
+                  <ImgIcon
+                    src={item.icon}
+                    alt={item.label}
+                    className="w-full h-full object-contain p-[1px] pointer-events-none select-none"
+                  />
                 </motion.div>
               )}
 
