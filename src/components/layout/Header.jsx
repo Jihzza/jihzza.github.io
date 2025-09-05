@@ -41,7 +41,7 @@ const Header = forwardRef(({ onMenuClick }, ref) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: prefersReduced ? 0 : 0.22, ease: 'easeOut' }}
             // ⬇️ keep your original classes here (unchanged)
-            className="sticky top-0 z-10 bg-black/90 backdrop-blur-sm flex items-center px-4 py-2 md:px-6 md:py-8 relative md:h-19 lg:h-14"
+            className="sticky top-0 z-10 bg-black backdrop-blur-sm flex items-center px-4 py-2 md:px-6 md:py-8 relative md:h-19 lg:h-14"
         >
             {/* Left: Hamburger */}
             <div className="flex items-center w-1/3">

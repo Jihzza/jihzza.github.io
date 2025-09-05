@@ -1,6 +1,6 @@
 // src/components/layout/SidebarMenu.jsx
 
-import React, { Fragment, useRef } from 'react';
+import React, { Fragment, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dialog } from '@headlessui/react';
 import { XMarkIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
@@ -18,12 +18,54 @@ const exploreLinksHrefs = [
 
 const MotionLink = motion(Link);
 
-export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, style }) {
+export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, style, topOffset, bottomOffset, topOffsetSelector, bottomOffsetSelector }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const closeButtonRef = useRef(null);
   const prefersReduced = useReducedMotion();
+
+  // Optional selectors for measuring header/nav heights if numeric offsets aren't provided
+  const headerSelector = topOffsetSelector ?? '[data-app-header], header[role="banner"], header';
+  const bottomNavSelector = bottomOffsetSelector ?? '[data-bottom-nav], nav[role="navigation"].bottom-nav, nav.bottom-nav, footer[role="contentinfo"]';
+
+  // Compute dynamic visible height and subtract app header + bottom nav so the panel fits exactly
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const getElHeight = (sel) => {
+      if (!sel) return 0;
+      const el = document.querySelector(sel);
+      return el ? Math.ceil(el.getBoundingClientRect().height) : 0;
+    };
+
+    const setMetrics = () => {
+      const dvh = window.innerHeight; // true visible height
+      // Use numeric prop override if present, otherwise measure via selectors
+      const top = typeof topOffset === 'number' ? topOffset : getElHeight(headerSelector);
+      const bottom = typeof bottomOffset === 'number' ? bottomOffset : getElHeight(bottomNavSelector);
+
+      document.documentElement.style.setProperty('--app-dvh', `${dvh}px`);
+      document.documentElement.style.setProperty('--sidebar-top-offset', `${top}px`);
+      document.documentElement.style.setProperty('--sidebar-bottom-offset', `${bottom}px`);
+    };
+
+    setMetrics();
+
+    const ro = new ResizeObserver(() => setMetrics());
+    const headerEl = document.querySelector(headerSelector) || undefined;
+    const bottomEl = document.querySelector(bottomNavSelector) || undefined;
+    headerEl && ro.observe(headerEl);
+    bottomEl && ro.observe(bottomEl);
+
+    window.addEventListener('resize', setMetrics);
+    window.addEventListener('orientationchange', setMetrics);
+    return () => {
+      window.removeEventListener('resize', setMetrics);
+      window.removeEventListener('orientationchange', setMetrics);
+      ro.disconnect();
+    };
+  }, [topOffset, bottomOffset, headerSelector, bottomNavSelector]);
 
   const mainPages = (t('sidebar.mainPages', { returnObjects: true }) || []).map((item, index) => ({
     ...item,
@@ -125,29 +167,40 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
             {/* Overlay */}
             <motion.div
               key="backdrop"
-              className="fixed inset-0 bg-black/60 cursor-pointer"
+              className="fixed inset-x-0 z-[60] bg-black/60 cursor-pointer"
               variants={backdropVariants}
               initial="hidden"
               animate="show"
               exit="hidden"
               onClick={onClose}
+              style={{
+                top: 'var(--sidebar-top-offset, 0px)',
+                height: 'calc(var(--app-dvh) - var(--sidebar-top-offset, 0px))'
+              }}
             />
 
             {/* Slide-over */}
-            <div className="fixed inset-0 flex">
+            <div className="fixed inset-x-0 z-[60] flex"
+              style={{
+                top: 'var(--sidebar-top-offset, 0px)',
+                height: 'calc(var(--app-dvh) - var(--sidebar-top-offset, 0px))'
+              }}>
               <Dialog.Panel
                 as={motion.div}
                 key="panel"
-                style={style}
-                className="pointer-events-auto relative h-full w-[78vw] sm:w-[380px] lg:w-[420px] bg-black text-white shadow-2xl"
+                style={{
+                  WebkitOverflowScrolling: "touch",
+                  height: "100%",
+                  touchAction: "pan-y",
+                  overscrollBehavior: "contain"
+                }}
+                className="pointer-events-auto relative w-[78vw] sm:w-[380px] lg:w-[420px] bg-black text-white shadow-2xl overflow-y-auto box-border z-60"
                 variants={panelVariants}
                 initial="hidden"
                 animate="show"
                 exit="exit"
-              // ⛔️ Removed drag props:
-              // drag, dragConstraints, dragElastic, onDragEnd
               >
-                {/* Header */}
+                {/* Header (sticky so the close button stays visible) */}
                 <div className="flex items-center justify-between px-4 md:px-6 md:py-4 border-b border-white/10 lg:py-1">
                   <Dialog.Title className="text-sm md:text-lg lg:text-base font-semibold tracking-wide text-yellow-400">
                     {t('sidebar.title', { defaultValue: 'Menu' })}
@@ -163,8 +216,10 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                   </button>
                 </div>
 
-                {/* Content */}
-                <div className="flex h-auto flex-col px-3 py-3 md:px-5 md:py-5 lg:py-3 sidebar-scrollbar">
+                {/* Content (scrollable when the viewport is short) */}
+                <div
+                  className="flex h-auto flex-col px-3 py-3 md:px-5 md:py-5 lg:py-3 sidebar-scrollbar pb-2"
+                >
                   <nav aria-label={t('sidebar.navigation', { defaultValue: 'Primary' })} className="flex-1">
                     {/* Main pages */}
                     <motion.ul role="list" className="space-y-1 md:space-y-2 lg:space-y-1"

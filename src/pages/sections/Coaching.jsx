@@ -40,9 +40,9 @@ export default function Coaching({ onBookCoaching }) {
     PersonalTrainerIcon,   // Personal Trainer
     DatingIcon,            // Dating Coach
     OnlyFansIcon,          // OnlyFans Coaching
-    BusinessIcon,          // Business Advisor
     HabitsIcon,            // Habits & Personal Growth
     SocialMediaIcon,       // Social Media Manager
+    BusinessIcon,          // Business Advisor
     StockResearcherIcon,   // Stock Researcher
   ];
   const gridItems = types.map((c, i) => ({

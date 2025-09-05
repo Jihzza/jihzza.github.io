@@ -108,8 +108,8 @@ export default function Layout() {
         onClose={handleCloseMenu}
         onNavigate={handleNavigate}
         topOffset={headerHeight}
+        bottomOffset={navBarHeight}
         isAuthenticated={isAuthenticated}
-        style={{ top: headerHeight }}
       />
 
       <main ref={mainContentRef} className="flex-grow overflow-y-auto w-full overflow-x-hidden">
