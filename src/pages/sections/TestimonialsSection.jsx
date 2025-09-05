@@ -1,16 +1,18 @@
 // src/pages/sections/TestimonialsSection.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Autoplay, Pagination } from 'swiper/modules';
 import BaseCarousel from '../../components/carousel/BaseCarousel';
 import SectionTextWhite from '../../components/common/SectionTextWhite';
+import SectionCta from '../../components/ui/SectionCta';
 import TestimonialCard from '../../components/testimonials/TestimonialCard';
 import Button from '../../components/ui/Button';
 import { getTestimonials } from '../../services/testimonialService';
 import { useTranslation } from 'react-i18next'; // 1. Import hook
 
 export default function TestimonialsSection() {
+    const sectionRef = useRef(null);
     const { t } = useTranslation(); // 2. Initialize hook
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -54,7 +56,11 @@ export default function TestimonialsSection() {
     );
 
     return (
-        <section id="testimonials-section" className="w-full max-w-5xl mx-auto pt-4 pb-4 text-center md:px-6 ">
+        <section 
+            ref={sectionRef}
+            id="testimonials-section" 
+            className="w-full max-w-5xl mx-auto pt-4 pb-4 text-center md:px-6 "
+        >
             {/* 3. Use translated text */}
             <SectionTextWhite title={t('testimonials.title')}>
                 {t('testimonials.subtitle')}
@@ -76,9 +82,11 @@ export default function TestimonialsSection() {
                 </div>
             </div>
 
-            <div className="mt-10 md:mt-0">
-                <Button onClick={handleAddTestimonialClick}>{t('testimonials.leaveButton')}</Button>
-            </div>
+            <SectionCta sectionRef={sectionRef}>
+                <Button onClick={handleAddTestimonialClick}>
+                    {t('testimonials.leaveButton')}
+                </Button>
+            </SectionCta>
         </section>
     );
 }

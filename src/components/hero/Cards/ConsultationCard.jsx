@@ -19,7 +19,7 @@ export default function ConsultationCard({ onScheduleClick }) {
 
   return (
     <motion.div
-      className="bg-transparent border-2 md:border-3 border-[#BFA200] rounded-lg p-6 text-center flex flex-col items-center cursor-pointer h-full"
+      className="bg-transparent border-2 md:border-3 border-[#BFA200] rounded-2xl p-6 text-center flex flex-col items-center cursor-pointer h-full"
       onClick={handleCardClick}
       initial={prefersReduced ? false : { opacity: 0, y: 8 }}
       animate={prefersReduced ? {} : { opacity: 1, y: 0 }}

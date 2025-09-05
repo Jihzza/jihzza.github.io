@@ -38,7 +38,7 @@ export default function CoachingCard({ onScheduleClick }) {
   return (
     <motion.div
       onClick={handleCardClick}
-      className="bg-transparent border-2 md:border-3 border-[#BFA200] rounded-lg p-6 text-center flex flex-col items-center cursor-pointer h-full"
+      className="bg-transparent border-2 md:border-3 border-[#BFA200] rounded-2xl p-6 text-center flex flex-col items-center cursor-pointer h-full"
       initial={prefersReduced ? false : { opacity: 0, y: 8 }}
       animate={prefersReduced ? {} : { opacity: 1, y: 0 }}
       whileHover={prefersReduced ? undefined : { scale: 1.02 }}
@@ -54,7 +54,7 @@ export default function CoachingCard({ onScheduleClick }) {
             <motion.div
               key={tier.id}
               onClick={(e) => handleTierClick(e, tier.id)}
-              className="border-2 md:border-3 border-[#BFA200] rounded-md p-3 lg:p-2 flex-1 cursor-pointer"
+              className="border-2 md:border-3 border-[#BFA200] rounded-xl p-3 lg:p-2 flex-1 cursor-pointer"
               style={{ scale: isSelected ? 1.02 : 1 }}
               whileHover={prefersReduced ? undefined : { scale: isSelected ? 1.07 : 1.06 }}
               whileTap={{ scale: isSelected ? 1.02 : 0.95 }}
