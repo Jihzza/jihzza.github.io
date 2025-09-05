@@ -20,6 +20,8 @@ import ChatbotStep from '../components/scheduling/ChatbotStep';
 import ConfirmationStep from '../components/scheduling/ConfirmationStep';
 import { useTranslation } from 'react-i18next';
 
+import { motion } from 'framer-motion';
+
 // COMPONENT DEFINITION
 // This is our dedicated scheduling form page that manages the entire scheduling flow
 export default function SchedulingFormPage() {
@@ -349,13 +351,19 @@ export default function SchedulingFormPage() {
                         {currentStep >= 2 && (
                             <div className="flex justify-between pt-4">
                                 {/* Back Button: Always shown from step 2 onwards */}
-                                <button onClick={handleBack} className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md hover:bg-gray-300 transition-colors md:text-base">
+                                <motion.button
+                                    onClick={handleBack}
+                                    className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md  transition-colors md:text-base cursor-pointer"
+                                    whileHover={{ scale: 1.06, transition: { duration: 0.08 } }}
+                                    whileTap={{ scale: 0.95, transition: { duration: 0.08 } }}
+                                    type="button"   >
                                     {t('scheduling.backButton')}
-                                </button>
+                                </motion.button>
 
                                 {/* Next Button: Shown on intermediate steps */}
                                 {currentStep < totalSteps && (
-                                    <button
+                                    <motion.button
+
                                         onClick={handleNext}
                                         disabled={
                                             (currentStep === 2 && formData.serviceType === 'consultation' && (!formData.consultation.date || !formData.consultation.duration || !formData.consultation.time)) ||
@@ -365,24 +373,36 @@ export default function SchedulingFormPage() {
                                             (currentStep === 4 && (formData.serviceType === 'consultation' || formData.serviceType === 'coaching') && paymentStatus !== 'success') ||
                                             isProcessing
                                         }
-                                        className="px-6 py-2 text-sm font-semibold text-black bg-[#BFA200] rounded-md transition-colors disabled:bg-opacity-50 disabled:cursor-not-allowed hover:bg-yellow-500 md:text-base"
+                                        className="px-6 py-2 text-sm font-semibold text-black bg-[#BFA200] rounded-md transition-colors hover:bg-yellow-500 md:text-base
+                cursor-pointer disabled:bg-opacity-50 disabled:cursor-not-allowed"
+                                        whileHover={{ scale: 1.06, transition: { duration: 0.08 } }}
+                                        whileTap={{ scale: 0.95, transition: { duration: 0.08 } }}
+                                        type="button"
                                     >
                                         {t('scheduling.nextButton')}
-                                    </button>
+                                    </motion.button>
                                 )}
 
                                 {/* Finish Button: Shown only on the last step */}
                                 {currentStep === totalSteps && (
-                                    <button onClick={() => alert(t('scheduling.flowFinished'))} className="...">
+                                    <motion.button
+                                        onClick={() => alert(t('scheduling.flowFinished'))}
+                                        className="cursor-pointer ..."
+                                        whileHover={{ scale: 1.06, transition: { duration: 0.08 } }}
+                                        whileTap={{ scale: 0.95, transition: { duration: 0.08 } }}
+                                        type="button"
+                                    >
                                         {t('scheduling.finishButton')}
-                                    </button>
+
+                                    </motion.button>
                                 )}
                             </div>
                         )}
                     </>
-                )}
+                )
+                }
 
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

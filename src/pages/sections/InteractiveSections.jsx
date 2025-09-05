@@ -1,5 +1,4 @@
 // src/pages/sections/InteractiveSections.jsx
-
 import React, { useState, useMemo } from 'react';
 
 import SocialMediaSection from './SocialMediaSection';
@@ -31,7 +30,7 @@ export default function InteractiveSections() {
     <section className="w-full max-w-6xl mx-auto py-8">
       <SectionNavigator
         sections={sections}
-        activeSection={activeSection}
+        activeSectionId={activeSection}   // ✅ pass the prop name the component expects
         onSelectSection={setActiveSection}
         className="flex"
       />

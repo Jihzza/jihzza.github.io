@@ -1,21 +1,37 @@
-// src/components/ui/Button.jsx (or your Button file)
+// src/components/ui/Button.jsx
+import { motion, useReducedMotion } from 'framer-motion';
+
 export default function Button({
   children,
   className = '',
   isLoading = false,
   noOuterPadding = false,
-  ...rest // <-- `isLoading` is removed from rest by destructuring above
+  ...rest
 }) {
+  const prefersReduced = useReducedMotion();
+  const disabled = rest.disabled || isLoading;
+
+  const motionProps =
+    prefersReduced || disabled
+      ? {}
+      : { whileHover: { scale: 1.06 }, whileTap: { scale: 0.95 }, transition: { duration: 0.12 } };
+
   const btn = (
-    <button
+    <motion.button
       type="button"
-      className={`w-auto px-3 py-2 rounded-lg bg-[#BFA200] text-black font-semibold ${className}`}
-      disabled={rest.disabled || isLoading}
+      className={[
+        'w-auto px-3 py-2 rounded-lg bg-[#BFA200] text-black font-semibold',
+        disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
+        className,
+      ].join(' ')}
+      disabled={disabled}
       aria-busy={isLoading ? 'true' : undefined}
+      {...motionProps}
       {...rest}
     >
       {isLoading ? 'Loading…' : children}
-    </button>
+    </motion.button>
   );
+
   return noOuterPadding ? btn : <div className="py-4">{btn}</div>;
 }

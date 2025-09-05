@@ -67,7 +67,7 @@ export default function Login({ onSubmit, isLoading, containerClassName = 'space
                         type="button"
                         onClick={() => setShowPassword((v) => !v)}
                         aria-pressed={showPassword ? 'true' : 'false'}
-                        className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none"
+                        className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none cursor-pointer"
                     >
                         {showPassword ? 'Hide password' : 'Show password'}
                     </button>

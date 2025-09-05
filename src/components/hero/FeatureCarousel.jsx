@@ -15,7 +15,7 @@ export default function FeatureCarousel() {
         grabCursor: true,
         centeredSlides: true,
         slidesPerView: 'auto',
-        spaceBetween: 70,
+        spaceBetween: 120,
         coverflowEffect: {
             rotate: 0,
             stretch: 0,
@@ -25,7 +25,7 @@ export default function FeatureCarousel() {
     };
 
     const renderFeatureSlide = (feature, index) => (
-        <div className="space-y-2 space-x-2 justify-center items-center flex rounded-lg text-center h-full w-[250px] md:w-[340px] lg:w-[450px]">
+        <div className="space-y-2 space-x-2 justify-center items-center flex rounded-lg text-center h-full w-[290px] md:w-[340px] lg:w-[450px]">
             <img src={BoxLaurelLeft} alt="BoxLaurelLeft" className='h-15 w-15 md:h-22 md:w-22 lg:h-25 md:w-25' />
             <div className='justify-center items-center flex flex-col'>
                 <h3 className="font-bold text-white text-base md:text-2xl">{feature.title}</h3>

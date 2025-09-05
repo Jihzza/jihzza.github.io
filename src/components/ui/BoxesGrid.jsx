@@ -1,12 +1,7 @@
 // BoxesGrid.jsx — mobile 2-col, desktop 3-col with a centered *last* row.
-// The trick: on desktop we use 6 template columns and make each card span 2.
-// Then we use targeted `grid-column-end` values to center the leftovers:
-// - If 1 leftover → end at line 5  (places it in columns 3–4, the middle).
-// - If 2 leftovers → first ends at 4, last ends at -2 (columns 2–3 and 4–5).
-// This technique is adapted from Michelle Barker’s “Controlling Leftover Grid Items”.
-// See: https://css-irl.info/controlling-leftover-grid-items/
+// (unchanged layout logic)
 import React, { useEffect, useMemo, useRef, useState, useId } from "react";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup, useReducedMotion } from "framer-motion";
 
 // Simple presentational card/button used inside the grid.
 function CardTabSimple({
@@ -22,13 +17,16 @@ function CardTabSimple({
   panelId,
   focusRef,
 }) {
+  const prefersReduced = useReducedMotion();
+
   return (
     <motion.button
       layout
       initial={false}
-      // Small press feedback without fighting the active scale
-      whileTap={{ scale: 0.985 }}
-      // Animate the "size increase" and the shadow smoothly
+      // Header-style micro-interactions
+      whileHover={{ scale: 1.02, transition: { duration: 0.12 } }}
+      whileTap={{ scale: 0.95, transition: { duration: 0.12 } }}
+      // Animate the "active" emphasis smoothly
       animate={{
         scale: isActive ? 1.04 : 1,
         boxShadow: isActive
@@ -56,9 +54,9 @@ function CardTabSimple({
         "focus focus-visible:ring-[#BFA200]/40",
         "transition-all duration-200 ease-out",
         // Active vs. idle: thicker border & ring when active
-        isActive
-          ? "border-3 ring-2 ring-[#BFA200]/40"
-          : "border-2 hover:shadow-md",
+        isActive ? "border-3 ring-2 ring-[#BFA200]/40" : "border-2 hover:shadow-md",
+        // Pointer on clickable
+        "cursor-pointer",
       ].join(" ")}
     >
       {image && (
@@ -87,9 +85,7 @@ function useCols() {
   return cols;
 }
 
-export default function BoxesGrid({
-  items = [],
-}) {
+export default function BoxesGrid({ items = [] }) {
   // Normalize input to objects with a label / paragraph
   const normalized = useMemo(
     () =>
@@ -97,12 +93,12 @@ export default function BoxesGrid({
         typeof it === "string"
           ? { label: it, paragraph: "" }
           : {
-              id: it.id,
-              label: it.label ?? it.name ?? "",
-              paragraph: it.paragraph ?? it.subtitle ?? "",
-              image: it.image,
-              imageAlt: it.imageAlt,
-            }
+            id: it.id,
+            label: it.label ?? it.name ?? "",
+            paragraph: it.paragraph ?? it.subtitle ?? "",
+            image: it.image,
+            imageAlt: it.imageAlt,
+          }
       ),
     [items]
   );
@@ -110,10 +106,13 @@ export default function BoxesGrid({
   const cols = useCols();
   const [active, setActive] = useState(null);
   const listId = useId();
+  const prefersReduced = useReducedMotion();
 
   // focus refs + ids
   const tabRefs = useRef([]);
-  useEffect(() => { tabRefs.current = new Array(normalized.length); }, [normalized.length]);
+  useEffect(() => {
+    tabRefs.current = new Array(normalized.length);
+  }, [normalized.length]);
 
   // ids for a11y
   const ids = useMemo(() => {
@@ -148,7 +147,7 @@ export default function BoxesGrid({
         next = row * colCount; // first in this row
         break;
       case "End":
-        next = Math.min(row * colCount + (colCount - 1), last); // last in this row (or the real last item)
+        next = Math.min(row * colCount + (colCount - 1), last);
         break;
       case "Enter":
       case " ":
@@ -176,6 +175,21 @@ export default function BoxesGrid({
   const rem = normalized.length % cols; // leftovers on the last row
   const activeRow = active === null ? -1 : Math.floor(active / cols);
 
+  // Panel animation props (respect reduced motion)
+  const panelMotion = prefersReduced
+    ? {
+      initial: false,
+      animate: { height: "auto", opacity: 1 },
+      exit: { height: "auto", opacity: 1 },
+      transition: { duration: 0 },
+    }
+    : {
+      initial: { height: 0, opacity: 0 },
+      animate: { height: "auto", opacity: 1 },
+      exit: { height: 0, opacity: 0 },
+      transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+    };
+
   return (
     <section className="w-full">
       <div className="mx-auto w-full">
@@ -184,7 +198,6 @@ export default function BoxesGrid({
             <div
               role="tablist"
               aria-label="Options"
-              // 2 cols on mobile; 6 on md (each card spans 2 → visually 3 cols)
               className="grid grid-cols-2 md:grid-cols-6 gap-3 py-4"
             >
               {rows.map((row, rIdx) => (
@@ -196,26 +209,16 @@ export default function BoxesGrid({
                     const last = normalized.length - 1;
                     const penultimate = normalized.length - 2;
 
-                    // Base classes: mobile spans one col, desktop spans 2 (so 3 "visual" columns).
                     const base = "min-w-0 w-full md:col-span-2";
-
-                    // Centering logic for the *last* row on desktop only.
                     let desktopCentering = "";
                     if (cols === 3) {
                       if (rem === 1 && index === last) {
-                        // one leftover → center it
-                        desktopCentering = "md:col-end-5"; // columns 3–4
+                        desktopCentering = "md:col-end-5";
                       } else if (rem === 2) {
-                        if (index === penultimate) {
-                          desktopCentering = "md:col-end-4"; // columns 2–3
-                        } else if (index === last) {
-                          desktopCentering = "md:col-end-[-2]"; // columns 4–5
-                        }
+                        if (index === penultimate) desktopCentering = "md:col-end-4";
+                        else if (index === last) desktopCentering = "md:col-end-[-2]";
                       }
                     }
-
-                    // (Mobile single-widow usually looks fine without special rules.)
-
                     const wrapperClass = [base, desktopCentering].join(" ").trim();
 
                     return (
@@ -246,10 +249,7 @@ export default function BoxesGrid({
                         id={ids[active].panelId}
                         aria-labelledby={ids[active].tabId}
                         className="overflow-hidden col-span-2 md:col-span-6"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                        {...panelMotion}
                       >
                         <div className="px-2 py-4 text-center text-white">
                           <p className="text-sm md:text-lg">
