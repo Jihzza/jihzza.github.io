@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { signUpNewUser } from '../../services/authService';
+import { signUpNewUser, signInWithGoogle } from '../../services/authService';
 import SectionTextBlack from '../../components/common/SectionTextBlack';
 import Signup from '../../components/auth/Signup';
 import EmailVerificationModal from '../../components/auth/EmailVerificationModal';
@@ -38,6 +38,19 @@ export default function SignupSection() {
         }
     };
 
+    const handleGoogleSignIn = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const { error } = await signInWithGoogle();
+            if (error) throw error;
+            // Google sign-in will redirect, so no need to navigate manually
+        } catch (err) {
+            setError(err.message || 'Google sign-in failed');
+            setIsLoading(false);
+        }
+    };
+
     return (
         <section className="max-w-4xl mx-auto py-4 text-center md:px-6">
             <SectionTextBlack title={t('signup.title')}>
@@ -47,7 +60,7 @@ export default function SignupSection() {
             <div className="mt-8 flex justify-center">
                 <div className="homepage-signup-form w-full max-w-md">
                     <div>
-                        <Signup onSubmit={handleSignup} isLoading={isLoading} />
+                        <Signup onSubmit={handleSignup} onGoogleSignIn={handleGoogleSignIn} isLoading={isLoading} />
                         {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
                     </div>
                 </div>

@@ -37,19 +37,17 @@ function ImgIcon({ src, className, alt }) {
 }
 
 const ICON_BOX_CLASS = "h-7 w-7 md:h-8 md:w-8 lg:h-7 lg:w-7 shrink-0";
-
-const LABEL_CLASS =
-  "text-[10px] md:text-xs leading-none font-medium transition-opacity";
+const LABEL_CLASS = "text-[10px] md:text-xs leading-none font-medium transition-opacity";
 const BUTTON_CLASS = [
   "flex flex-col items-center justify-center gap-1 md:gap-1.5",
   "h-14 md:h-16 w-full focus:outline-none focus-visible:ring-2",
   "focus-visible:ring-cyan-400/70 rounded-lg",
-  "cursor-pointer", // hand cursor over the whole tappable area
+  "cursor-pointer",
 ].join(" ");
 const BAR_CLASS = "w-full sticky bottom-0 left-0 right-0 bg-black z-50";
 const INNER_CLASS = "mx-auto grid grid-cols-5 items-center w-full lg:w-[80%]";
 
-export default function NavigationBar({ onNavigate }) {
+export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -58,27 +56,71 @@ export default function NavigationBar({ onNavigate }) {
   const avatarSrc =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
+  // Mark which items require auth
   const navItems = useMemo(
     () => [
-      { icon: homeIcon,     label: t("navigation.home"),     path: "/" },
-      { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar" },
-      { icon: logo,         label: t("navigation.chat"),     path: "/chat", isLogo: true },
-      { icon: settingsIcon, label: t("navigation.settings"), path: "/settings" },
-      { icon: profileIcon,  label: t("navigation.profile"),  path: "/profile", isProfile: true },
+      { icon: homeIcon, label: t("navigation.home"), path: "/", requiresAuth: false },
+      { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar", requiresAuth: true },
+      { icon: logo, label: t("navigation.chat"), path: "/chat", requiresAuth: false, isLogo: true },
+      { icon: settingsIcon, label: t("navigation.settings"), path: "/settings", requiresAuth: true },
+      { icon: profileIcon, label: t("navigation.profile"), path: "/profile", requiresAuth: true, isProfile: true },
     ],
     [t, i18n.language]
   );
 
-  const isActive = (path) => {
-    if (!path) return false;
-    if (path === "/") return location.pathname === "/";
-    return location.pathname === path || location.pathname.startsWith(path + "/");
+  // Route match helper
+  const isActivePath = (base, current) => {
+    if (!base) return false;
+    if (base === "/") return current === "/";
+    return current === base || current.startsWith(base + "/");
   };
+
+  // Remember the "intended" selection for logged-out users
+  const [ghostActivePath, setGhostActivePath] = useState(() => {
+    // hydrate from session storage if logged out
+    if (!user) return sessionStorage.getItem("ghostActivePath");
+    return null;
+  });
+
+  // Keep ghost in sync with auth changes
+  useEffect(() => {
+    if (!user) {
+      const stored = sessionStorage.getItem("ghostActivePath");
+      if (stored) setGhostActivePath(stored);
+    } else {
+      setGhostActivePath(null);
+      sessionStorage.removeItem("ghostActivePath");
+    }
+  }, [user]);
+
+  // Only clear ghost once the user is authenticated and actually reaches the page
+  useEffect(() => {
+    if (!ghostActivePath) return;
+    if (user && isActivePath(ghostActivePath, location.pathname)) {
+      setGhostActivePath(null);
+      sessionStorage.removeItem("ghostActivePath");
+    }
+  }, [user, location.pathname, ghostActivePath]);
 
   const handleItemClick = (item) => {
     if (!item.path) return;
-    if (typeof onNavigate === "function") onNavigate(item.path);
-    else navigate(item.path);
+
+    const go = (p) => {
+      if (typeof onNavigate === "function") onNavigate(p);
+      else navigate(p);
+    };
+
+    // If logged out and the tab needs auth, show it as selected and go directly to login
+    if (!user && item.requiresAuth) {
+      setGhostActivePath(item.path);
+      sessionStorage.setItem("ghostActivePath", item.path);
+      const loginUrl = `/login?next=${encodeURIComponent(item.path)}`;
+      go(loginUrl);
+      return;
+    }
+
+    // Normal navigation
+    go(item.path);
   };
 
   const avatarPx = useBreakpointValue({ base: 24, md: 32, lg: 28 });
@@ -93,7 +135,11 @@ export default function NavigationBar({ onNavigate }) {
     >
       <div className={INNER_CLASS}>
         {navItems.map((item, idx) => {
-          const active = isActive(item.path);
+          const reallyActive = isActivePath(item.path, location.pathname);
+          const ghostActive =
+            !user && ghostActivePath && isActivePath(item.path, ghostActivePath);
+          const active = reallyActive || ghostActive;
+
           const isProfile = !!item.isProfile;
           const showAvatar = isProfile && !!avatarSrc;
 
@@ -107,10 +153,12 @@ export default function NavigationBar({ onNavigate }) {
               onClick={() => handleItemClick(item)}
               className={BUTTON_CLASS}
               aria-label={item.label}
-              aria-current={active ? "page" : undefined} // proper active announcement
+              aria-current={reallyActive ? "page" : undefined}
+              // helps SRs understand we toggled selection while not on that route
+              aria-pressed={!reallyActive && ghostActive ? true : undefined}
               type="button"
             >
-              {/* Icon / Avatar wrapper gets the motion, not the whole button */}
+              {/* Icon / Avatar */}
               {showAvatar ? (
                 <motion.div
                   className="grid place-items-center"
@@ -137,15 +185,17 @@ export default function NavigationBar({ onNavigate }) {
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.12 }}
                 >
-                  <ImgIcon
-                    src={item.icon}
-                    alt={item.label}
-                    className="w-full h-full object-contain p-[1px] pointer-events-none select-none"
-                  />
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ImgIcon
+                      src={item.icon}
+                      alt={item.label}
+                      className="w-full h-full object-contain object-center pointer-events-none select-none"
+                    />
+                  </div>
                 </motion.div>
               )}
 
-              {/* Label visible only on active */}
+              {/* Label */}
               {active && (
                 <span className={[LABEL_CLASS, "text-white opacity-100"].join(" ")}>
                   {item.label}

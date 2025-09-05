@@ -11,7 +11,7 @@ import Button from '../ui/Button';
 import GoogleButton from '../common/Forms/GoogleButton';
 import { useTranslation } from 'react-i18next';
 
-export default function Signup({ onSubmit, isLoading, containerClassName = 'space-y-6' }) {
+export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerClassName = 'space-y-6' }) {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const { t } = useTranslation();
 
@@ -155,7 +155,7 @@ export default function Signup({ onSubmit, isLoading, containerClassName = 'spac
 
             {/* Google button */}
             <div className="flex justify-center">
-                <GoogleButton />
+                <GoogleButton onClick={onGoogleSignIn} disabled={isLoading} />
             </div>
 
             {/* Bottom link */}

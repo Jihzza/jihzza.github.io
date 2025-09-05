@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Login from '../components/auth/Login';
 import { useAuth } from '../contexts/AuthContext';
-import { signInWithPassword } from '../services/authService';
+import { signInWithPassword, signInWithGoogle } from '../services/authService';
 import SectionTextWhite from '../components/common/SectionTextWhite';
 
 export default function LoginPage() {
@@ -34,6 +34,20 @@ export default function LoginPage() {
     }
   };
 
+  // Handle Google sign-in
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) throw error;
+      // Google sign-in will redirect, so no need to navigate manually
+    } catch (err) {
+      setError(err.message || 'Google sign-in failed');
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="relative h-full w-full overflow-hidden bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
       {/* Decorative background accents (subtle, no color change) */}
@@ -51,6 +65,7 @@ export default function LoginPage() {
             {/* Form */}
             <Login
               onSubmit={handleLogin}
+              onGoogleSignIn={handleGoogleSignIn}
               isLoading={loading}
               containerClassName="space-y-6"
             />

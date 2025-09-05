@@ -19,7 +19,7 @@ import GoogleButton from '../common/Forms/GoogleButton';
  * @param {boolean} isLoading - disables controls and shows loading on submit
  * @param {string} [containerClassName]
  */
-export default function Login({ onSubmit, isLoading, containerClassName = 'space-y-6' }) {
+export default function Login({ onSubmit, onGoogleSignIn, isLoading, containerClassName = 'space-y-6' }) {
     const {
         register,
         handleSubmit,
@@ -130,7 +130,7 @@ export default function Login({ onSubmit, isLoading, containerClassName = 'space
 
             {/* Google */}
             <div className="justify-center flex">
-                <GoogleButton />
+                <GoogleButton onClick={onGoogleSignIn} disabled={isLoading} />
             </div>
 
             {/* Bottom link */}

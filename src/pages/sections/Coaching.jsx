@@ -24,7 +24,7 @@ import ClassesIcon from '../../assets/icons/Classes Preto.svg';
 // Keep prices local; names/descriptions come from i18n
 const TIERS = [
   { id: "single", price: 40 },
-  { id: "pack5",  price: 90 },
+  { id: "pack5", price: 90 },
   { id: "pack20", price: 230 },
 ];
 
@@ -69,8 +69,10 @@ export default function Coaching({ onBookCoaching }) {
   }));
 
   // Button text — your JSON only has "buttons.default" for now
-  const buttonText = t('coaching.buttons.default');
-
+  const selectedTier = enrichedTiers.find(t => t.id === selectedPlanId) || null;
+  const buttonText = selectedTier
+    ? `${t('coaching.buttons.default')} - ${selectedTier.price}€${selectedTier.planName ? ` (${selectedTier.planName})` : ''}`
+    : t('coaching.buttons.default');
   const onClick = () => onBookCoaching?.(selectedPlanId);
 
   return (

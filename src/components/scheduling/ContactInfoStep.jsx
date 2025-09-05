@@ -92,7 +92,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
 
                     <div className="p-2">
                         {/* 5. Use translated text for the Google button */}
-                        <GoogleButton onClick={onGoogleSignIn} text={t('scheduling.contactInfo.googleButtonText')} />
+                        <GoogleButton onClick={onGoogleSignIn} />
                     </div>
                     <div className="text-center text-sm text-gray-600">
                         {t('scheduling.contactInfo.loginPrompt')}{' '}
