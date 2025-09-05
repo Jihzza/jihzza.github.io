@@ -5,18 +5,22 @@ import { useNavigate } from 'react-router-dom';
 import { Autoplay, Pagination } from 'swiper/modules';
 import BaseCarousel from '../../components/carousel/BaseCarousel';
 import SectionTextWhite from '../../components/common/SectionTextWhite';
-import SectionCta from '../../components/ui/SectionCta';
 import TestimonialCard from '../../components/testimonials/TestimonialCard';
 import Button from '../../components/ui/Button';
 import { getTestimonials } from '../../services/testimonialService';
-import { useTranslation } from 'react-i18next'; // 1. Import hook
+import { useTranslation } from 'react-i18next';
+
+// NEW: Floating CTA wrapper
+import SectionCta from '../../components/ui/SectionCta';
 
 export default function TestimonialsSection() {
-    const sectionRef = useRef(null);
-    const { t } = useTranslation(); // 2. Initialize hook
+    const { t } = useTranslation();
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+    // NEW: section ref for SectionCta exact-crossing behavior
+    const sectionRef = useRef(null);
 
     useEffect(() => {
         const fetchTestimonials = async () => {
@@ -56,12 +60,7 @@ export default function TestimonialsSection() {
     );
 
     return (
-        <section 
-            ref={sectionRef}
-            id="testimonials-section" 
-            className="w-full max-w-5xl mx-auto pt-4 pb-4 text-center md:px-6 "
-        >
-            {/* 3. Use translated text */}
+        <section ref={sectionRef} id="testimonials-section" className="w-full max-w-5xl mx-auto pt-4 pb-4 text-center md:px-6 ">
             <SectionTextWhite title={t('testimonials.title')}>
                 {t('testimonials.subtitle')}
             </SectionTextWhite>
@@ -82,10 +81,9 @@ export default function TestimonialsSection() {
                 </div>
             </div>
 
+            {/* NEW: Floating CTA identical to other sections */}
             <SectionCta sectionRef={sectionRef}>
-                <Button onClick={handleAddTestimonialClick}>
-                    {t('testimonials.leaveButton')}
-                </Button>
+                <Button onClick={handleAddTestimonialClick}>{t('testimonials.leaveButton')}</Button>
             </SectionCta>
         </section>
     );

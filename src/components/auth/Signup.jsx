@@ -2,11 +2,12 @@
 
 // A "dumb" sign-up form. It receives onSubmit + isLoading props from the parent page and never talks to global state.
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form'; // form helper
 import Input from '../common/Forms/Input';
-import FormButton from '../ui/Button';
+import SectionCta from '../ui/SectionCta';
+import Button from '../ui/Button';
 import GoogleButton from '../common/Forms/GoogleButton';
 import { useTranslation } from 'react-i18next';
 
@@ -21,9 +22,19 @@ export default function Signup({ onSubmit, isLoading, containerClassName = 'spac
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
+    // NEW: refs for floating CTA docking + programmatic submit
+    const formRef = useRef(null);
+
+    const handleCtaClick = () => {
+        const form = formRef.current;
+        if (form && typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+        }
+    };
+
     return (
         // HTML form landmark with visible heading label (via surrounding section)
-        <form onSubmit={handleSubmit(onSubmit)} className={containerClassName} noValidate>
+        <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className={containerClassName} noValidate>
             {/* Email field */}
             <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-900">
@@ -58,7 +69,7 @@ export default function Signup({ onSubmit, isLoading, containerClassName = 'spac
                         type="button"
                         onClick={() => setShowPassword(v => !v)}
                         aria-pressed={showPassword ? 'true' : 'false'}
-                        className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none cursor-pointer cursor-pointer"
+                        className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none cursor-pointer"
                     >
                         {showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                     </button>
@@ -97,7 +108,7 @@ export default function Signup({ onSubmit, isLoading, containerClassName = 'spac
                         aria-pressed={showConfirm ? 'true' : 'false'}
                         className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none cursor-pointer"
                     >
-                        {showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
+                        {showConfirm ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                     </button>
                 </div>
 
@@ -121,11 +132,13 @@ export default function Signup({ onSubmit, isLoading, containerClassName = 'spac
                 </div>
             </div>
 
-            {/* Submit button */}
+            {/* Submit button placeholder/docked anchor point (SectionCta renders floating + docked) */}
             <div className="justify-center flex">
-                <FormButton type="submit" isLoading={isLoading}>
-                    {t('signup.form.createAccountButton')}
-                </FormButton>
+                <SectionCta sectionRef={formRef}>
+                    <Button onClick={handleCtaClick} isLoading={isLoading}>
+                        {t('signup.cta', { defaultValue: 'Create your account' })}
+                    </Button>
+                </SectionCta>
             </div>
 
             {/* OR separator (matches Login) */}
