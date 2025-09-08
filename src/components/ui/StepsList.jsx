@@ -11,7 +11,7 @@ import React from 'react'
 export default function StepsList({ icon, title, description }) {
   return (
     <div className="flex flex-col items-center text-center space-y-4 py-4">
-      <div className="flex-shrink-0 rounded-full p-4 bg-white border-1 border-white/15 text-white md:p-5">
+      <div className="flex-shrink-0 rounded-full p-4 bg-white border-1 border-white/15 text-white md:p-5 shadow-lg hover:shadow-xl transition-shadow duration-200">
         <img src={icon} alt={`${title} icon`} className="w-8 h-8 md:w-10 md:h-10" />
       </div>
       <div className="flex flex-col items-center text-center space-y-2 md:space-y-4">

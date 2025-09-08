@@ -16,7 +16,7 @@ const ProfileMenuItem = ({ label, to }) => (
     // We use the Link component from react-router-dom for client-side navigation.
     <Link
         to={to}
-        className="flex items-center justify-between p-4 w-full text-left hover:bg-gray-50 transition-colors duration-200 md:p-5"
+        className="flex items-center justify-between p-4 w-full text-left transition-colors duration-200 md:p-5"
     >
         {/* The main text label for the menu item. */}
         <span className="text-lg text-gray-800 md:text-xl">{label}</span>

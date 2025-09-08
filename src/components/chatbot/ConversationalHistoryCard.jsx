@@ -17,7 +17,7 @@ const ConversationHistoryCard = ({ session }) => {
   return (
     <Link
       to={`/chat/${session.session_id}`}
-      className="block bg-white hover:bg-gray-50 transition-colors duration-200 shadow-md rounded-lg p-4"
+      className="block bg-white transition-colors duration-200 shadow-lg hover:shadow-xl transition-shadow duration-200 rounded-lg p-4"
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center">

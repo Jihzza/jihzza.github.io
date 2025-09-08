@@ -26,7 +26,7 @@ export default function SubscriptionCard({ subscription }) {
   const statusLabel = (status || t('subscriptions.card.statusUnknown')).replaceAll('_', ' '); // ← changed
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+    <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-200">
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div>
@@ -41,7 +41,7 @@ export default function SubscriptionCard({ subscription }) {
 
       {/* Key info */}
       <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <div className="bg-white rounded-lg p-3 border border-[#002147]">
+        <div className="bg-white rounded-lg p-3 border border-[#002147] shadow-lg hover:shadow-xl transition-shadow duration-200">
           <div className="text-xs uppercase tracking-wide text-black font-semibold md:text-sm lg:text-xs">
             {t('subscriptions.card.nextBilling')}{/* ← changed */}
           </div>
@@ -49,7 +49,7 @@ export default function SubscriptionCard({ subscription }) {
             {formatDate(current_period_end)}
           </div>
         </div>
-        <div className="bg-white border border-[#002147] rounded-lg p-3">
+        <div className="bg-white border border-[#002147] rounded-lg p-3 shadow-lg hover:shadow-xl transition-shadow duration-200">
           <div className="text-xs uppercase tracking-wide text-black font-semibold md:text-sm lg:text-xs">
             {t('subscriptions.card.started')}{/* ← changed */}
           </div>

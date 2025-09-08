@@ -33,7 +33,7 @@ export default function TermsOfServicePage() {
     <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
       <ProfileSectionLayout>
         <SectionTextWhite title={pageContent.title} />
-        <div className="bg-white rounded-xl shadow-md p-6 md:p-8 prose prose-sm md:prose-base max-w-none">
+        <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 p-6 md:p-8 prose prose-sm md:prose-base max-w-none">
           <p className="lead">{pageContent.lead}</p>
 
           {/* 5. Map and render the content */}

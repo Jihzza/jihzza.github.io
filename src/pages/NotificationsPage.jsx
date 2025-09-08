@@ -34,7 +34,7 @@ export default function NotificationsPage() {
         }
 
         return (
-            <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+            <div className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-200 rounded-lg overflow-hidden border border-gray-200">
                 <ul>
                     {notifications.map((notification) => (
                         <li key={notification.id}>

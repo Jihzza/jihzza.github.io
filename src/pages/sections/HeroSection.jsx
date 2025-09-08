@@ -19,11 +19,10 @@ export default function HeroSection({ onScheduleConsultation, onScheduleCoaching
             {/* Client Image - SOLUTION APPLIED HERE */}
             <div className="flex w-full justify-center">
                 {/* 1. We constrain the container. `max-w-xs` is a good mobile-first choice. */}
-                <div className="w-full py-2 md:py-4 max-w-xs md:max-w-lg lg:max-w-md"> 
+                <div className="w-full py-2 md:py-4 max-w-xs md:max-w-lg lg:max-w-lg"> 
                     <img 
                         src={Daniel} 
                         alt="Daniel" 
-                        // 2. The image now fills its constrained container.
                         className="rounded-xl w-full object-cover" 
                     />
                 </div>

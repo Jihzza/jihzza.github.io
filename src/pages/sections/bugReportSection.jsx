@@ -57,7 +57,7 @@ export default function BugReportSection() {
                 {t('bugReport.subtitle')}
             </SectionTextBlack>
 
-            <div className="mt-8 mx-auto w-full max-w-lg bg-[#002147] p-8 rounded-lg shadow-md">
+            <div className="mt-8 mx-auto w-full max-w-lg bg-[#002147] p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
                 {isAuthenticated ? (
                     success ? (
                         <div className="text-center">

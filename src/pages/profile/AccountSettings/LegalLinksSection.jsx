@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 const LegalLink = ({ to, label, icon: Icon }) => (
   <Link
     to={to}
-    className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-colors duration-150"
+    className="flex items-center justify-between p-4 rounded-xl  transition-colors duration-150"
   >
     <div className="flex items-center gap-3">
       {Icon && (

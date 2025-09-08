@@ -35,7 +35,7 @@ export default function AppointmentCard({ appointment }) {
 
   return (
     <article
-      className="relative overflow-hidden rounded-xl border border-gray-200 bg-white/90 p-5 shadow-sm transition hover:shadow-md focus-within:ring-2 focus-within:ring-indigo-500"
+      className="relative overflow-hidden rounded-xl border border-gray-200 bg-white/90 p-5 shadow-lg hover:shadow-xl transition-shadow duration-200 focus-within:ring-2 focus-within:ring-indigo-500"
       aria-label={t('appointments.card.ariaLabel', { serviceType, date: formattedDate })} // ← changed
     >
       {/* Subtle accent background & gradient spine */}

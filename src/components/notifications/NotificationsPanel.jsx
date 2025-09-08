@@ -72,7 +72,7 @@ export default function NotificationsPanel({ isOpen, onClose }) {
                         <li
                             key={n.id}
                             onClick={() => handleNotificationClick(n)}
-                            className={`p-4 border-b hover:bg-gray-50 cursor-pointer ${!n.is_read ? 'bg-indigo-50' : 'bg-white'}`}
+                            className={`p-4 border-b cursor-pointer ${!n.is_read ? 'bg-indigo-50' : 'bg-white'}`}
                         >
                             <p className="text-sm text-gray-700">
                                 <NotificationMessage notification={n} />

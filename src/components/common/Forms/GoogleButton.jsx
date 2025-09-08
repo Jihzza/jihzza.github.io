@@ -16,7 +16,7 @@ export default function GoogleButton({ onClick, disabled, fullWidth = true }) {
       onClick={onClick}
       disabled={disabled}
       className={[
-        'flex items-center justify-center gap-3 border border-gray-300 rounded-md text-gray-700 bg-white shadow-md',
+        'flex items-center justify-center gap-3 border border-gray-300 rounded-md text-gray-700 bg-white shadow-lg hover:shadow-xl transition-shadow duration-200',
         fullWidth
           ? 'w-auto py-2 px-4 md:px-5 md:py-4 md:text-lg font-bold lg:py-2 lg:px-4 lg:text-base'
           : 'px-4 py-2',

@@ -34,7 +34,7 @@ export default function PitchDeckRequestCard({ request }) {
   const canDownload = Boolean(fileUrl);
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
+    <div className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-200 rounded-lg p-6">
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-xl font-bold text-gray-800 md:text-2xl lg:text-xl">{company}</h3>

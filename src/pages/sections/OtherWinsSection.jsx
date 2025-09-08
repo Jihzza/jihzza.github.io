@@ -19,7 +19,7 @@ export default function OtherWinsSection() {
 
             <InteractiveVideo
                 videoSrc={TransformationVideo}
-                className="w-45 self-center rounded-xl mt-6 md:w-55 lg:w-45"
+                className="w-45 self-center rounded-xl mt-6 md:w-55 lg:w-45 shadow-lg"
             />
 
             <div className="max-w-5xl self-center">

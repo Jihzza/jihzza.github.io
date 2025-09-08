@@ -129,7 +129,7 @@ export default function HomePage() {
                     <SectionTextBlack title={t('scheduling.serviceSelection.title')}>
 
                     </SectionTextBlack>
-                    <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-md">
+                    <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <ServiceSelectionStep />
                     </div>
                 </div>

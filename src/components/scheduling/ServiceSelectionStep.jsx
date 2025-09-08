@@ -42,7 +42,7 @@ export default function ServiceSelectionStep({ selectedService, onSelectService 
                 'p-3 md:p-4 border rounded-lg cursor-pointer transition-all duration-200 w-full',
                 isSelected
                   ? 'border-2 border-[#BFA200] shadow-lg'
-                  : 'border-2 border-[#BFA200] hover:border-[#BFA200]',
+                  : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:shadow-lg transition-shadow duration-200',
               ].join(' ')}
             >
               <h3 className="text-lg text-center text-white md:text-xl">

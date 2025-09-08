@@ -54,7 +54,7 @@ export default function CoachingCard({ onScheduleClick }) {
             <motion.div
               key={tier.id}
               onClick={(e) => handleTierClick(e, tier.id)}
-              className="border-2 md:border-3 border-[#BFA200] rounded-xl p-3 lg:p-2 flex-1 cursor-pointer shadow-md hover:shadow-lg transition-shadow duration-200"
+              className="border-2 md:border-3 border-[#BFA200] rounded-xl p-3 lg:p-2 flex-1 cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-200"
               style={{ scale: isSelected ? 1.02 : 1 }}
               whileHover={prefersReduced ? undefined : { scale: isSelected ? 1.07 : 1.06 }}
               whileTap={{ scale: isSelected ? 1.02 : 0.95 }}
