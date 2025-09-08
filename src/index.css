@@ -57,7 +57,8 @@ body,
 @layer utilities {
   .sidebar-scrollbar {
     /* Firefox */
-    scrollbar-width: thin; /* 'auto' | 'thin' | 'none' */
+    scrollbar-width: thin;
+    /* 'auto' | 'thin' | 'none' */
     /* thumb track */
     scrollbar-color: var(--sb-thumb, #BFA200) var(--sb-track, transparent);
     /* Prevent layout shift when the bar appears (Chrome/Safari) */
@@ -69,20 +70,24 @@ body,
     width: 0.5rem;
     height: 0.5rem;
   }
+
   .sidebar-scrollbar::-webkit-scrollbar-track {
     background: transparent;
     border-radius: 9999px;
   }
+
   .sidebar-scrollbar::-webkit-scrollbar-thumb {
     background: #BFA200;
     border-radius: 9999px;
-    border: 2px solid transparent; /* creates a "gap" look */
+    border: 2px solid transparent;
+    /* creates a "gap" look */
   }
 
   /* Hover/active feedback (WebKit) */
   .sidebar-scrollbar:hover::-webkit-scrollbar-thumb {
     background: var(--sb-thumb-hover, #d8b400);
   }
+
   .sidebar-scrollbar::-webkit-scrollbar-thumb:active {
     background: var(--sb-thumb-active, #a88300);
   }
@@ -91,9 +96,11 @@ body,
   .dark .sidebar-scrollbar {
     scrollbar-color: var(--sb-thumb-dark, #cbd5e1) var(--sb-track-dark, #0b1220);
   }
+
   .dark .sidebar-scrollbar::-webkit-scrollbar-track {
     background: var(--sb-track-dark, #0b1220);
   }
+
   .dark .sidebar-scrollbar::-webkit-scrollbar-thumb {
     background: var(--sb-thumb-dark, #cbd5e1);
     border: 2px solid var(--sb-track-dark, #0b1220);
@@ -101,11 +108,15 @@ body,
 
   /* Utility to fully hide scrollbars but keep scrolling */
   .hide-scrollbar {
-    -ms-overflow-style: none;  /* IE 10+ */
-    scrollbar-width: none;     /* Firefox */
+    -ms-overflow-style: none;
+    /* IE 10+ */
+    scrollbar-width: none;
+    /* Firefox */
   }
+
   .hide-scrollbar::-webkit-scrollbar {
-    display: none;             /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
   }
 }
 
@@ -168,6 +179,9 @@ body,
 .swiper-slide-custom {
   /* This remains our mobile-first default */
   width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* --- ADD THESE MEDIA QUERIES --- */
@@ -222,6 +236,13 @@ body,
 
 .feature-swiper .swiper-slide-custom {
   height: 120px;
+}
+
+/* Ensure single slide is centered in feature carousel */
+.feature-swiper .swiper-slide-custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .testimonial-swiper .swiper-slide-custom {

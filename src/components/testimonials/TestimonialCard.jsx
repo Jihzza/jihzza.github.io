@@ -11,7 +11,7 @@ export default function TestimonialCard({ testimonial }) {
     : content;
 
   return (
-    <div className="bg-white text-black rounded-lg p-6 flex flex-col items-center justify-center text-center h-full md:h-85 lg:h-75 shadow-lg">
+    <div className="bg-white text-black rounded-lg p-6 flex flex-col items-center justify-center text-center h-full md:h-85 lg:h-75 shadow-lg hover:shadow-xl transition-shadow duration-200">
       <div className="w-24 h-24 mb-4 flex items-center justify-center lg:w-20 lg:h-20">
         {image_url && (
           <OctagonAvatar

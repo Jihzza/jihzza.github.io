@@ -18,7 +18,7 @@ export default function TierCards({ tiers, selectedPlanId, onTierSelect }) {
             <motion.div
               key={tier.id}
               onClick={() => handleTierClick(tier.id)}
-              className="border-2 border-[#BFA200] rounded-md p-3 flex-1 cursor-pointer space-y-1"
+              className="border-2 border-[#BFA200] rounded-md p-3 flex-1 cursor-pointer space-y-1 shadow-lg hover:shadow-xl transition-shadow duration-200"
               style={{ scale: isSelected ? 1.02 : 1 }}
               whileHover={prefersReduced ? undefined : { scale: isSelected ? 1.07 : 1.02 }}
               whileTap={{ scale: isSelected ? 1.02 : 0.95 }}

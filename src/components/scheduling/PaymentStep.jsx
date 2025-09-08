@@ -45,7 +45,7 @@ export default function PaymentStep({ paymentStatus, formData, price, onInitiate
             {/* 5. Use translated text for summary view */}
             <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">{t('scheduling.paymentStep.summaryTitle')}</h2>
 
-            <div className="border-2 border-[#BFA200] p-6 rounded-lg space-y-4 md:flex md:flex-col md:justify-center md:items-center md:text-center">
+            <div className="border-2 border-[#BFA200] p-6 rounded-lg space-y-4 md:flex md:flex-col md:justify-center md:items-center md:text-center shadow-lg hover:shadow-xl transition-shadow duration-200">
                 {formData.serviceType === 'consultation' && (
                     <div className="space-y-2">
                         <h3 className="text-lg font-semibold text-white">{t('scheduling.paymentStep.consultationTitle')}</h3>

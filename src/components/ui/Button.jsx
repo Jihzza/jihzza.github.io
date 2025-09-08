@@ -21,6 +21,7 @@ export default function Button({
       type="button"
       className={[
         'w-auto px-3 py-2 rounded-lg bg-[#BFA200] text-black font-semibold',
+        'shadow-lg hover:shadow-xl transition-shadow duration-200',
         disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
         className,
       ].join(' ')}

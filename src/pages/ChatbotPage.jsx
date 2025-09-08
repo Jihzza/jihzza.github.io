@@ -81,7 +81,11 @@ export default function ChatbotPage() {
               const { content, value, output } = item || {};
               const text = content ?? value ?? output ?? "👋";
               setMessages((prev) => [...prev, { from: "bot", text }]);
-              sessionStorage.setItem(welcomedKey, "1");
+              // Broadcast a preview so the shell can show the toast on other pages
+              try {
+                sessionStorage.setItem("welcome_preview_text", text);
+                window.dispatchEvent(new CustomEvent("chat:welcome", { detail: { text, sessionId } }));
+              } catch { } sessionStorage.setItem(welcomedKey, "1");
             } catch (e) {
               console.error("Welcome fetch failed:", e);
             }
@@ -99,7 +103,7 @@ export default function ChatbotPage() {
     try {
       sessionStorage.removeItem(SESSION_KEY);
       sessionStorage.removeItem(`welcomed:${sessionId}`);
-    } catch {}
+    } catch { }
     // Generate a fresh session id
     const newId =
       typeof crypto?.randomUUID === "function"

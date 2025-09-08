@@ -374,7 +374,7 @@ export default function SchedulingFormPage() {
                                             isProcessing
                                         }
                                         className="px-6 py-2 text-sm font-semibold text-black bg-[#BFA200] rounded-md transition-colors hover:bg-yellow-500 md:text-base
-                cursor-pointer disabled:bg-opacity-50 disabled:cursor-not-allowed"
+                cursor-pointer disabled:bg-opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-shadow duration-200"
                                         whileHover={{ scale: 1.06, transition: { duration: 0.08 } }}
                                         whileTap={{ scale: 0.95, transition: { duration: 0.08 } }}
                                         type="button"

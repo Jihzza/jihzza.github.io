@@ -11,16 +11,26 @@ import { useTranslation, Trans } from 'react-i18next'; // 1. Import hooks
 const NotificationMessage = ({ notification }) => {
     // Note: This is the same logic as in NotificationCard.jsx
     const { t } = useTranslation();
+    // inside NotificationMessage(...)
     switch (notification.type) {
         case 'new_message':
-            return <Trans i18nKey="notifications.types.newMessage" values={{ sender: notification.data.sender_username }} components={[<span className="font-bold" />]} />;
+            return <Trans i18nKey="notifications.types.newMessage" values={{ sender: notification.data?.sender_username }} components={[<span className="font-bold" />]} />;
         case 'consultation_reminder':
-            return <Trans i18nKey="notifications.types.consultationReminder" values={{ time: notification.data.consultation_time }} components={[<span className="font-bold" />]} />;
+            return <Trans i18nKey="notifications.types.consultationReminder" values={{ time: notification.data?.consultation_time }} components={[<span className="font-bold" />]} />;
         case 'new_consultation_booking':
-             return <Trans i18nKey="notifications.types.newConsultationBooking" components={[<span className="font-bold" />]} />;
+            return <Trans i18nKey="notifications.types.newConsultationBooking" components={[<span className="font-bold" />]} />;
+        // Add explicit cases you use now:
+        case 'admin_alert':
+        case 'subscription_started':
+        case 'subscription_expiring':
+        case 'pitch_request_submitted':
+        case 'pitch_request_status':
+            return <span>{notification.message || notification.title}</span>;
         default:
-            return t('notifications.types.default');
+            // FINAL fallback: show whatever the server sent, else i18n default
+            return <span>{notification.message || notification.title || t('notifications.types.default')}</span>;
     }
+
 };
 
 export default function NotificationsPanel({ isOpen, onClose }) {
@@ -46,9 +56,9 @@ export default function NotificationsPanel({ isOpen, onClose }) {
                 {/* 3. Use translated text */}
                 <h3 className="font-semibold text-red-800">{t('notifications.panel.title')}</h3>
                 {unreadCount > 0 && (
-                     <button onClick={markAllAsRead} className="text-sm text-indigo-600 hover:underline">
+                    <button onClick={markAllAsRead} className="text-sm text-indigo-600 hover:underline">
                         {t('notifications.panel.markAllAsRead')}
-                     </button>
+                    </button>
                 )}
             </div>
             <div className="max-h-96 overflow-y-auto">
@@ -65,7 +75,7 @@ export default function NotificationsPanel({ isOpen, onClose }) {
                             className={`p-4 border-b hover:bg-gray-50 cursor-pointer ${!n.is_read ? 'bg-indigo-50' : 'bg-white'}`}
                         >
                             <p className="text-sm text-gray-700">
-                               <NotificationMessage notification={n} />
+                                <NotificationMessage notification={n} />
                             </p>
                             <p className="text-xs text-gray-400 mt-1">
                                 {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}

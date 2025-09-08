@@ -52,9 +52,9 @@ function CardTabSimple({
         "bg-transparent border border-[#BFA200]",
         "text-white px-3 py-6 text-center",
         "focus focus-visible:ring-[#BFA200]/40",
-        "transition-all duration-200 ease-out",
+        "transition-all duration-200 ease-out transition-shadow",
         // Active vs. idle: thicker border & ring when active
-        isActive ? "border-3 ring-2 ring-[#BFA200]/40" : "border-2 hover:shadow-md",
+        isActive ? "border-3 ring-2 ring-[#BFA200]/40" : "border-2 shadow-lg hover:shadow-xl",
         // Pointer on clickable
         "cursor-pointer",
       ].join(" ")}
