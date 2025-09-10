@@ -45,7 +45,7 @@ export default function PaymentStep({ paymentStatus, formData, price, onInitiate
             {/* 5. Use translated text for summary view */}
             <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">{t('scheduling.paymentStep.summaryTitle')}</h2>
 
-            <div className="border-2 border-[#BFA200] p-6 rounded-lg space-y-4 md:flex md:flex-col md:justify-center md:items-center md:text-center shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <div className="border-2 border-[#BFA200] p-6 rounded-2xl space-y-4 md:flex md:flex-col md:justify-center md:items-center md:text-center shadow-xl hover:shadow-xl transition-shadow duration-200">
                 {formData.serviceType === 'consultation' && (
                     <div className="space-y-2">
                         <h3 className="text-lg font-semibold text-white">{t('scheduling.paymentStep.consultationTitle')}</h3>
@@ -69,8 +69,8 @@ export default function PaymentStep({ paymentStatus, formData, price, onInitiate
             </div>
 
             <div className="p-6 rounded-lg flex space-x-4 items-center justify-center md:space-x-8">
-                <img src={StripeLogo} alt="Stripe Logo" className="w-15 justify-center md:w-25" />
-                <img src={SSLLogo} alt="SSL Logo" className="w-10 justify-center md:w-13" />
+                <img src={StripeLogo} alt="Stripe Logo" className="w-15 justify-center md:w-25 text-shadow-xl" />
+                <img src={SSLLogo} alt="SSL Logo" className="w-10 justify-center md:w-13 text-shadow-xl" />
             </div>
 
             <div className='flex justify-center'>

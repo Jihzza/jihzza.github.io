@@ -41,7 +41,7 @@ export default function ServiceSelectionStep({ selectedService, onSelectService 
               className={[
                 'p-3 md:p-4 border rounded-lg cursor-pointer transition-all duration-200 w-full',
                 isSelected
-                  ? 'border-2 border-[#BFA200] shadow-lg'
+                  ? 'border-2 border-[#BFA200] shadow-xl'
                   : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:shadow-lg transition-shadow duration-200',
               ].join(' ')}
             >

@@ -34,7 +34,7 @@ export default function MediaAppearancesSection() {
                 <img
                     src={MediaAppearances}
                     alt={t("media.mainImageAlt", { defaultValue: "Aparições na mídia" })}
-                    className="w-60 max-w-3xl mx-auto md:w-80 lg:w-60"
+                    className="w-60 max-w-3xl mx-auto md:w-80 lg:w-60 text-shadow-lg"
                     loading="lazy"
                     decoding="async"
                 />

@@ -279,7 +279,7 @@ export default function SchedulingFormPage() {
     if (!formData.serviceType) {
         return (
             <div className="h-auto flex flex-col items-center justify-center py-4">
-                <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
+                <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-xl hover:shadow-xl transition-shadow duration-200">
                     <ServiceSelectionStep />
                 </div>
             </div>
@@ -291,7 +291,7 @@ export default function SchedulingFormPage() {
         // We use a container to center the form on the page and provide padding
         <div className="h-auto flex flex-col items-center justify-start p-4">
             <SectionTextWhite title={t('scheduling.title')} />
-            <div className="w-full max-w-2xl p-4 space-y-4 bg-[#002147] rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <div className="w-full max-w-2xl p-4 space-y-4 bg-[#002147] rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-200">
 
                 {/* --- START OF THE MODIFIED LOGIC --- */}
                 {paymentStatus === 'success' ? (
@@ -353,7 +353,7 @@ export default function SchedulingFormPage() {
                                 {/* Back Button: Always shown from step 2 onwards */}
                                 <motion.button
                                     onClick={handleBack}
-                                    className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md  transition-colors md:text-base cursor-pointer"
+                                    className="px-6 py-2 text-sm font-semibold text-white bg-black rounded-md shadow-xl transition-colors md:text-base cursor-pointer"
                                     whileHover={{ scale: 1.06, transition: { duration: 0.08 } }}
                                     whileTap={{ scale: 0.95, transition: { duration: 0.08 } }}
                                     type="button"   >
@@ -374,7 +374,7 @@ export default function SchedulingFormPage() {
                                             isProcessing
                                         }
                                         className="px-6 py-2 text-sm font-semibold text-black bg-[#BFA200] rounded-md transition-colors hover:bg-yellow-500 md:text-base
-                cursor-pointer disabled:bg-opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-shadow duration-200"
+                cursor-pointer disabled:bg-opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-xl transition-shadow duration-200"
                                         whileHover={{ scale: 1.06, transition: { duration: 0.08 } }}
                                         whileTap={{ scale: 0.95, transition: { duration: 0.08 } }}
                                         type="button"

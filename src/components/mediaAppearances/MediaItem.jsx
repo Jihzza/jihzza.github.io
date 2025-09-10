@@ -11,9 +11,9 @@ export default function MediaItem({ href, imgSrc, alt, label }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label || alt}
-                className="block rounded-xl w-full transition-transform duration-200 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black/50 justify-center items-center flex self-center"
+                className="block rounded-2xl w-full transition-transform duration-200 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black/50 justify-center items-center flex self-center shadow-xl"
             >
-                <figure className="overflow-hidden justify-center items-center flex self-center rounded-xl w-15 md:w-20 lg:w-15">
+                <figure className="overflow-hidden justify-center items-center flex self-center rounded-2xl w-15 md:w-20 lg:w-15">
                     <img
                         src={imgSrc}
                         alt={alt}

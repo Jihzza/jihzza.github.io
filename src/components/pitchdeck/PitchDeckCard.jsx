@@ -13,7 +13,7 @@ import React from 'react';
 export default function PitchDeckCard({ icon, title, description }) {
     // RENDER LOGIC
     return (
-        <div className="bg-transparent border-2 border-[#BFA200] rounded-lg p-6 flex flex-col items-center transition-transform duration-300 hover:scale-105 h-full space-y-2 md:space-y-4 shadow-lg hover:shadow-xl transition-shadow duration-200">
+        <div className="bg-transparent border-2 border-[#BFA200] rounded-2xl p-6 flex flex-col items-center transition-transform duration-300 hover:scale-105 h-full space-y-2 md:space-y-4 shadow-lg hover:shadow-xl transition-shadow duration-200">
             
             <img src={icon} alt={`${title} logo`} className="w-[200px] flex-shrink-0 md:w-[225px]" />
 

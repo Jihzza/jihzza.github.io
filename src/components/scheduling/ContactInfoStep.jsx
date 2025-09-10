@@ -42,7 +42,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                             placeholder={t('scheduling.contactInfo.fullNamePlaceholder')}
                             value={contactInfoData.name}
                             onChange={onUpdateField}
-                            className="md:text-lg"
+                            className="md:text-lg shadow-xl"
                         />
                     </div>
                     <div>
@@ -54,7 +54,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                             placeholder={t('scheduling.contactInfo.emailPlaceholder')}
                             value={contactInfoData.email}
                             onChange={onUpdateField}
-                            className="md:text-lg"
+                            className="md:text-lg shadow-xl"
                         />
                     </div>
                     <div>
@@ -66,7 +66,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                             placeholder={t('scheduling.contactInfo.phonePlaceholder')}
                             value={contactInfoData.phone}
                             onChange={onUpdateField}
-                            className="md:text-lg"
+                            className="md:text-lg shadow-xl"
                         />
                     </div>
                 </div>

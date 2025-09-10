@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next'; // 1. Import hooks
+import { motion } from 'framer-motion';
 
 // 2. Remove the hardcoded 'coachingPlans' and 'formatPrice' constants.
 
@@ -29,21 +30,34 @@ export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
 
             <div className="space-y-4 flex flex-col items-center">
                 {/* 6. The mapping logic remains the same, but it now uses the dynamic `coachingPlans` array */}
-                {coachingPlans.map((plan) => (
-                    <div
-                        key={plan.id}
-                        onClick={() => onSelectPlan(plan.id)}
-                        className={`
-                            w-full max-w-sm p-3 border rounded-lg cursor-pointer transition-all duration-200 md:p-4
-                            ${selectedPlan === plan.id
-                                ? 'border-2 border-[#BFA200] shadow-lg'
-                                : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:bg-gray-50 hover:shadow-lg transition-shadow duration-200'
-                            }
-                        `}
-                    >
-                        <h3 className="text-lg text-center text-white md:text-xl">{plan.title}</h3>
-                    </div>
-                ))}
+                {coachingPlans.map((plan) => {
+                    const isSelected = selectedPlan === plan.id;
+                    const baseScale = isSelected ? 1.06 : 1;
+                    const hoverScale = isSelected ? 1.03 : 1.03;
+
+                    return (
+                        <motion.button
+                            key={plan.id}
+                            type="button"
+                            onClick={() => onSelectPlan(plan.id)}
+                            aria-pressed={isSelected ? 'true' : 'false'}
+                            // header-style micro-interactions + pointer cursor
+                            animate={{ scale: baseScale }}
+                            whileHover={{ scale: hoverScale }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ duration: 0.04 }}
+                            className={`
+                                w-full max-w-sm p-3 border rounded-lg cursor-pointer transition-all duration-200 md:p-4
+                                ${isSelected
+                                    ? 'border-2 border-[#BFA200] shadow-xl'
+                                    : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:shadow-lg transition-shadow duration-200'
+                                }
+                            `}
+                        >
+                            <h3 className="text-lg text-center text-white md:text-xl">{plan.title}</h3>
+                        </motion.button>
+                    );
+                })}
             </div>
         </div>
     );
