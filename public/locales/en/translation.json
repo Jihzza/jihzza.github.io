@@ -245,6 +245,18 @@
       {
         "title": "Personalized Classes",
         "description": "Receive custom-tailored training sessions designed specifically for your skill level, learning style, and goals. Each class builds on your progress for maximum growth and development."
+      },
+      {
+        "title": "Anytime Communication",
+        "description": "Text or send audio messages anytime with questions, updates, or challenges. Get support when you need it most without waiting for scheduled appointments."
+      },
+      {
+        "title": "Flexible Response Formats",
+        "description": "Receive guidance through text, audio, or video responses based on your preference and the complexity of the topic. Visual demonstrations when needed, quick text answers when appropriate."
+      },
+      {
+        "title": "Personalized Classes",
+        "description": "Receive custom-tailored training sessions designed specifically for your skill level, learning style, and goals. Each class builds on your progress for maximum growth and development."
       }
     ],
     "tiers": [

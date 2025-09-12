@@ -196,7 +196,7 @@ export default function Layout() {
     // By setting its height to the `viewport.height`, we ensure that the entire
     // application resizes when the keyboard appears, preventing overlap.
     <div
-      className="h-full w-full flex flex-col bg-gradient-to-b from-[#002147] to-[#ECEBE5]"
+      className="h-full w-full flex flex-col bg-[#002147]"
       style={{ height: viewport.height }}
     >
       <Header ref={headerRef} onMenuClick={handleMenuClick} />

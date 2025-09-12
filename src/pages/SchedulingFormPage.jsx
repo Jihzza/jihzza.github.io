@@ -279,7 +279,7 @@ export default function SchedulingFormPage() {
     if (!formData.serviceType) {
         return (
             <div className="h-auto flex flex-col items-center justify-center py-4">
-                <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-xl hover:shadow-xl transition-shadow duration-200">
+                <div className="w-full max-w-2xl p-8 space-y-4 rounded-xl shadow-xl hover:shadow-xl transition-shadow duration-200">
                     <ServiceSelectionStep />
                 </div>
             </div>
@@ -291,7 +291,7 @@ export default function SchedulingFormPage() {
         // We use a container to center the form on the page and provide padding
         <div className="h-auto flex flex-col items-center justify-start p-4">
             <SectionTextWhite title={t('scheduling.title')} />
-            <div className="w-full max-w-2xl p-4 space-y-4 bg-[#002147] rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-200">
+            <div className="w-full max-w-2xl p-4 space-y-4">
 
                 {/* --- START OF THE MODIFIED LOGIC --- */}
                 {paymentStatus === 'success' ? (

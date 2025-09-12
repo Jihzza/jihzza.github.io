@@ -51,7 +51,7 @@ export default function CalendarPage() {
     }, [selectedDate, t]);
 
     return (
-        <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
+        <div className="bg-[#002147] h-auto min-h-full">
             <ProfileSectionLayout>
                 <SectionTextWhite title={t('calendar.pageTitle')}>
                     {t('calendar.pageSubtitle')}

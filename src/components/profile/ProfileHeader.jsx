@@ -12,7 +12,7 @@ export default function ProfileHeader({
     const src = avatarUrl || 'https://via.placeholder.com/150';
   
     return (
-      <div className="flex items-center p-4 space-x-4">
+      <div className="flex items-center border-b-0 p-4 space-x-4">
         <OctagonAvatar
           src={src}
           alt={`${fullName || 'User'}'s avatar`}
@@ -24,13 +24,13 @@ export default function ProfileHeader({
         />
   
         <div className="flex-grow">
-          <h2 className="text-xl font-bold text-gray-900 md:text-2xl">{fullName || 'User'}</h2>
-          {phone && <p className="text-sm text-gray-500 md:text-base">{phone}</p>}
+          <h2 className="text-xl font-bold text-white md:text-2xl">{fullName || 'User'}</h2>
+          {phone && <p className="text-sm text-white md:text-base">{phone}</p>}
         </div>
   
         <button
           onClick={onEdit}
-          className="p-2 text-gray-600 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="p-2 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           aria-label="Edit profile"
         >
           <PencilSquareIcon className="h-6 w-6 md:h-8 md:w-8" />

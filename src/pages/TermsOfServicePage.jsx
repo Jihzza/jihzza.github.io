@@ -30,7 +30,7 @@ export default function TermsOfServicePage() {
   const pageContent = t('termsOfService', { returnObjects: true });
 
   return (
-    <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
+    <div className="bg-[#002147] ">
       <ProfileSectionLayout>
         <SectionTextWhite title={pageContent.title} />
         <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 p-6 md:p-8 prose prose-sm md:prose-base max-w-none">

@@ -40,7 +40,7 @@ export default function ChatbotHistoryPage() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
+    <div className="bg-[#002147]  h-full">
       <ProfileSectionLayout>
         <SectionTextWhite title={t('chatbotHistory.title')} /> {/* ← was "Chatbot History" */}
         <div className="space-y-4">{renderContent()}</div>

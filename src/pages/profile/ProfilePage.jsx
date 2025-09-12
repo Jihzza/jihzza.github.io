@@ -72,7 +72,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="h-full bg-gray-50">
+    <div className="h-full bg-[#002147] ">
       <ProfileHeader
         fullName={profile.full_name}
         phone={profile.phone}

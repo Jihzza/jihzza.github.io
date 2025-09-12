@@ -77,7 +77,7 @@ function useCols() {
   const [cols, setCols] = useState(2);
   useEffect(() => {
     const mql = window.matchMedia("(min-width: 768px)"); // Tailwind md breakpoint
-    const onChange = () => setCols(mql.matches ? 3 : 2);
+    const onChange = () => setCols(mql.matches ? 4 : 2);
     onChange();
     mql.addEventListener("change", onChange);
     return () => mql.removeEventListener("change", onChange);
@@ -198,7 +198,7 @@ export default function BoxesGrid({ items = [] }) {
             <div
               role="tablist"
               aria-label="Options"
-              className="grid grid-cols-2 md:grid-cols-6 gap-3 py-4"
+              className="grid grid-cols-2 md:grid-cols-8 gap-3 py-4"
             >
               {rows.map((row, rIdx) => (
                 <React.Fragment key={`row-${rIdx}`}>
@@ -217,6 +217,19 @@ export default function BoxesGrid({ items = [] }) {
                       } else if (rem === 2) {
                         if (index === penultimate) desktopCentering = "md:col-end-4";
                         else if (index === last) desktopCentering = "md:col-end-[-2]";
+                      }
+                    } else if (cols === 4) {
+                      // For 8 grid lines (4 cols), each card spans 2 lines.
+                      if (rem === 1 && index === last) {
+                        // Single centered: end at line 6 → uses lines 4–5
+                        desktopCentering = "md:col-end-6";
+                      } else if (rem === 2) {
+                        // Two centered: use 3–4 and 5–6
+                        if (index === penultimate) desktopCentering = "md:col-end-5";
+                        else if (index === last) desktopCentering = "md:col-end-7";
+                      } else if (rem === 3) {
+                        // Shift the 3-card block right by one column (starts at col 2)
+                        if (index === last - 2) desktopCentering = "md:col-start-2";
                       }
                     }
                     const wrapperClass = [base, desktopCentering].join(" ").trim();
@@ -248,7 +261,7 @@ export default function BoxesGrid({ items = [] }) {
                         role="region"
                         id={ids[active].panelId}
                         aria-labelledby={ids[active].tabId}
-                        className="overflow-hidden col-span-2 md:col-span-6"
+                        className="overflow-hidden col-span-2 md:col-span-8"
                         {...panelMotion}
                       >
                         <div className="px-2 py-4 text-center text-white">

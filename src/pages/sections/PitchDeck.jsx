@@ -20,9 +20,11 @@ export default function Consultations({onBookPitchDeck }) {
     }));
     return (
         <section ref={sectionRef} className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4 md:px-6">
-            <SectionText title={t('pitchDeck.title')} />
-
-            <div className="flex flex-col md:flex-row gap-6 md:px-6">
+            <SectionText title={t('pitchDeck.investTitle')}>
+                {t('pitchDeck.investSubtitle')}
+            </SectionText>
+            
+            <div className="flex flex-col md:flex-row gap-6 md:px-6 mb-8">
                 {pitchDecks.map((deck) => (
                     // --- MODIFICATION START ---
                     // By adding `flex` here, this div becomes a flex container.
@@ -38,10 +40,6 @@ export default function Consultations({onBookPitchDeck }) {
                     // --- MODIFICATION END ---
                 ))}
             </div>
-
-            <SectionText title={t('pitchDeck.investTitle')}>
-                {t('pitchDeck.investSubtitle')}
-            </SectionText>
 
             <SectionCta sectionRef={sectionRef}>
             <Button onClick={onBookPitchDeck}>{t('pitchDeck.buttonText')}</Button>

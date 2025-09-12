@@ -14,7 +14,7 @@ const AccountSettingsPage = () => {
   const { t } = useTranslation();
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
+    <main className="min-h-screen bg-[#002147] ">
       <ProfileSectionLayout>
         <div className="pt-6 sm:pt-8">
           <SectionTextWhite title={t('accountSettings.pageTitle')} />

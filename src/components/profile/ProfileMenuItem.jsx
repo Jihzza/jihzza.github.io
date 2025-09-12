@@ -19,10 +19,10 @@ const ProfileMenuItem = ({ label, to }) => (
         className="flex items-center justify-between p-4 w-full text-left transition-colors duration-200 md:p-5"
     >
         {/* The main text label for the menu item. */}
-        <span className="text-lg text-gray-800 md:text-xl">{label}</span>
+        <span className="text-lg text-white md:text-xl">{label}</span>
         
         {/* The chevron icon, indicating that clicking will navigate to another view. */}
-        <ChevronRightIcon className="h-5 w-5 text-gray-700 md:h-6 md:w-6" />
+        <ChevronRightIcon className="h-5 w-5 text-white md:h-6 md:w-6" />
     </Link>
 );
 

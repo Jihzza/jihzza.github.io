@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import SectionCta from "../../components/ui/SectionCta";
 import SectionText from "../../components/ui/SectionText";
 import BoxesGrid from "../../components/ui/BoxesGrid";
-import StepsList from "../../components/ui/StepsList";
+import StepsCarousel from "../../components/ui/StepsCarousel";
 import Button from "../../components/ui/Button";
 
 import MindsetIcon from '../../assets/icons/Brain Branco.svg';
@@ -70,20 +70,18 @@ export default function Consultations({ onBookConsultation }) {
       ref={sectionRef}
       className="w-full max-w-5xl flex flex-col justify-center items-center mx-auto py-4 space-y-4 md:px-6"
     >
+
       <SectionText title={t('consultations.title')}>
         {t('consultations.subtitle')}
       </SectionText>
 
       <BoxesGrid items={gridItems} />
 
-      {steps.map((step) => (
-        <StepsList
-          key={step.title}
-          icon={step.icon}
-          title={step.title}
-          description={step.description}
-        />
-      ))}
+      <StepsCarousel
+        steps={steps}
+        className="max-w-5xl"
+        showNavigation={true}
+      />
 
       <SectionCta sectionRef={sectionRef}>
         <Button onClick={onBookConsultation}>

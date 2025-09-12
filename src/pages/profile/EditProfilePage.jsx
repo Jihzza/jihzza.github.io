@@ -95,7 +95,7 @@ export default function EditProfilePage() {
     }
 
     return (
-        <main className="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
+        <main className="max-w-3xl bg-[#002147]  mx-auto p-4 sm:p-6 lg:p-8">
 
             {/* Card */}
             <section className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl">

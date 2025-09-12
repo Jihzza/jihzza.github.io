@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
+import { Autoplay, EffectCoverflow, Navigation, Pagination, A11y } from 'swiper/modules';
 
 // --- STYLES ---
 // Import all possible Swiper styles here. This ensures that any Swiper feature
@@ -12,7 +12,7 @@ import 'swiper/css/autoplay';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-
+import 'swiper/css/a11y';
 /**
  * A highly reusable and configurable carousel component built on top of Swiper.js.
  * This component encapsulates common Swiper logic and allows for custom slide rendering
@@ -32,11 +32,17 @@ export default function BaseCarousel({
     slideClassName = '',
     containerClassName = ''
 }) {
+    console.log("🎡 BaseCarousel - items count:", items.length);
+    console.log("🎡 BaseCarousel - slideClassName:", slideClassName);
+    console.log("🎡 BaseCarousel - containerClassName:", containerClassName);
+    console.log("🎡 BaseCarousel - swiperConfig received:", swiperConfig);
+
     // --- 1. DEFINE DEFAULT CONFIGURATION ---
     // The "Why": We establish a baseline for all carousels. This ensures consistency.
     // Any instance of the carousel can override these defaults by passing a `swiperConfig` prop.
     const defaultConfig = {
-        modules: [Autoplay, EffectCoverflow, Navigation, Pagination],
+        modules: [Autoplay, EffectCoverflow, Navigation, Pagination, A11y],
+        a11y: { enabled: true },
         loop: true,
         autoplay: {
             delay: 3000,
@@ -50,10 +56,15 @@ export default function BaseCarousel({
     // The spread syntax `{...defaultConfig, ...swiperConfig}` ensures that any properties
     // in `swiperConfig` will overwrite the default ones, giving us precise control.
     const finalConfig = { ...defaultConfig, ...swiperConfig };
+    
+    console.log("🎡 BaseCarousel - defaultConfig:", defaultConfig);
+    console.log("🎡 BaseCarousel - finalConfig:", finalConfig);
 
     // --- 3. RENDER LOGIC ---
     // The "Why": The component's render output is clean and declarative. It's clear that
     // this component's job is to render a Swiper instance and loop over items.
+    console.log("🎡 BaseCarousel - Rendering Swiper with finalConfig:", finalConfig);
+    
     return (
         <Swiper {...finalConfig} className={containerClassName}>
             {/* --- 4. DYNAMIC SLIDE RENDERING --- */}
@@ -62,11 +73,14 @@ export default function BaseCarousel({
                 that was passed in as a prop. This delegates the responsibility of *what* to render
                 for each slide back to the parent component, giving us maximum flexibility.
             */}
-            {items.map((item, index) => (
-                <SwiperSlide key={index} className={slideClassName}>
-                    {renderItem(item, index)}
-                </SwiperSlide>
-            ))}
+            {items.map((item, index) => {
+                console.log(`🎡 BaseCarousel - Rendering slide ${index} with className:`, slideClassName);
+                return (
+                    <SwiperSlide key={index} className={slideClassName}>
+                        {renderItem(item, index)}
+                    </SwiperSlide>
+                );
+            })}
         </Swiper>
     );
 }

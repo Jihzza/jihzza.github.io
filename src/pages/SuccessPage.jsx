@@ -6,7 +6,7 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid';
 
 export default function SuccessPage() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center p-4">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#002147]  text-center p-4">
             <CheckCircleIcon className="w-16 h-16 text-green-500 mb-4" />
             <h1 className="text-2xl font-bold text-gray-800">Payment Successful!</h1>
             <p className="text-gray-600 mt-2">

@@ -54,7 +54,7 @@ export default function SubscriptionsPage() {
 
 
   return (
-    <div className="bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
+    <div className="bg-[#002147] h-full">
       <ProfileSectionLayout>
         <SectionTextWhite title={t('subscriptions.title')} />
         <div className="space-y-4">{renderContent()}</div>

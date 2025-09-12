@@ -22,6 +22,7 @@ const NotificationMessage = ({ notification }) => {
         case 'subscription_expiring':
         case 'pitch_request_submitted':
         case 'pitch_request_status':
+        case 'user_signup':
             return <span>{notification.message || notification.title}</span>;
         default:
             // FINAL fallback: show whatever the server sent, else i18n default

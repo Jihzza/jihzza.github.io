@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-gradient-to-b from-[#002147] to-[#ECEBE5]">
+    <div className="relative h-full w-full overflow-hidden bg-[#002147]">
       {/* Decorative background accents (same as Login/Signup) */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-white/10 blur-3xl" />

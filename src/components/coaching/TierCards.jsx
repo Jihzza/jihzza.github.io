@@ -10,7 +10,7 @@ export default function TierCards({ tiers, selectedPlanId, onTierSelect }) {
   };
 
   return (
-    <div className="bg-transparent rounded-lg text-center flex flex-col items-center">
+    <div className="bg-transparent rounded-lg text-center flex flex-col items-center m-0">
       <div className="flex justify-center space-x-4 my-6 w-full">
         {tiers.map((tier) => {
           const isSelected = selectedPlanId === tier.id;

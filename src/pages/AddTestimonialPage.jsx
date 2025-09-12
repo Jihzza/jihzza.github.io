@@ -57,7 +57,7 @@ export default function AddTestimonialPage() {
 
     // The container is now simplified. It will inherit the background and height from the main Layout component.
     return (
-        <div className="w-full max-w-lg mx-auto p-8 space-y-8 bg-gradient-to-b from-[#002147] to-[#ECEBE5] h-full">
+        <div className="w-full max-w-lg mx-auto p-8 space-y-8 bg-[#002147] h-full">
             <SectionTextWhite title="Leave a Testimonial" />
             
             <AddTestimonialForm
