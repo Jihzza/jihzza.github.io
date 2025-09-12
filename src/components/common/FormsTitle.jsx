@@ -1,4 +1,4 @@
-// src/components/common/SectionText.jsx
+// src/components/common/FormsTitle.jsx
 import React from 'react';
 
 /**
@@ -8,7 +8,7 @@ import React from 'react';
  * @param {React.ReactNode} children - The content of the section.
  */
 
-export default function SectionTextWhite({ title, children }) {
+export default function FormTitle({ title, children }) {
     return (
         <div className="w-full text-center py-4">
             <h2 className="text-2xl font-bold text-white leading-tight md:text-3xl">{title}</h2>

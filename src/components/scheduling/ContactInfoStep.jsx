@@ -5,7 +5,7 @@ import React from 'react';
 import Input from '../common/Forms/Input';
 import GoogleButton from '../common/Forms/GoogleButton';
 import { useTranslation } from 'react-i18next'; // 1. Import hooks
-
+import FormTitle from '../common/FormsTitle';
 
 // COMPONENT DEFINITION
 
@@ -23,12 +23,13 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
 
     return (
         <div className="w-full">
-            <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">
-                {/* 4. Use translated titles based on login state */}
-                {isLoggedIn 
-                    ? t('scheduling.contactInfo.loggedInTitle') 
-                    : t('scheduling.contactInfo.loggedOutTitle')}
-            </h2>
+            <FormTitle
+                title={
+                    isLoggedIn
+                        ? t('scheduling.contactInfo.loggedInTitle')
+                        : t('scheduling.contactInfo.loggedOutTitle')
+                }
+            />
 
             {isLoggedIn ? (
                 // LOGGED IN VIEW
@@ -47,7 +48,7 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
                     </div>
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-white md:text-lg">{t('scheduling.contactInfo.emailLabel')}</label>
-                        <Input 
+                        <Input
                             id="email"
                             name="email"
                             type="email"

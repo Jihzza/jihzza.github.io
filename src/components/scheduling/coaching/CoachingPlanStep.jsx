@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next'; // 1. Import hooks
 import { motion } from 'framer-motion';
+import FormTitle from '../../common/FormsTitle';
 
 // 2. Remove the hardcoded 'coachingPlans' and 'formatPrice' constants.
 
@@ -24,9 +25,7 @@ export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
     return (
         <div className="w-full">
             {/* 5. Use the translated title */}
-            <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">
-                {t('scheduling.coachingPlan.title')}
-            </h2>
+            <FormTitle title={t('scheduling.coachingPlan.title')} />
 
             <div className="space-y-4 flex flex-col items-center">
                 {/* 6. The mapping logic remains the same, but it now uses the dynamic `coachingPlans` array */}

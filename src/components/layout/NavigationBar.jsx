@@ -61,7 +61,7 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
     () => [
       { icon: homeIcon,     label: t("navigation.home"),     path: "/",          requiresAuth: false },
       { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar",  requiresAuth: true  },
-      { icon: logo,         label: t("navigation.chat"),     path: "/chat",      requiresAuth: false, isLogo: true },
+      { icon: logo,         label: t("navigation.chat"),     path: "/chat",      requiresAuth: true, isLogo: true },
       { icon: settingsIcon, label: t("navigation.settings"), path: "/settings",  requiresAuth: true  },
       { icon: profileIcon,  label: t("navigation.profile"),  path: "/profile",   requiresAuth: true,  isProfile: true },
     ],

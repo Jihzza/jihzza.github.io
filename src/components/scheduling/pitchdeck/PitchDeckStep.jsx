@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import FormTitle from '../../common/FormsTitle';
 
 export default function PitchDeckStep({ selectedDeck, onSelectDeck }) {
   const { t } = useTranslation();
@@ -14,9 +15,7 @@ export default function PitchDeckStep({ selectedDeck, onSelectDeck }) {
 
   return (
     <div className="w-full">
-      <h2 className="text-xl font-bold text-center text-white mb-4 md:text-2xl md:mb-6">
-        {t('scheduling.pitchDeck.title')}
-      </h2>
+      <FormTitle title={t('scheduling.pitchDeck.title')} />
 
       {/* Match CoachingPlanStep container: centered column */}
       <div className="space-y-4 flex flex-col items-center">

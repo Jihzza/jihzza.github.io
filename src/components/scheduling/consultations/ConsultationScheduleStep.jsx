@@ -7,7 +7,7 @@ import CustomCalendar from './CustomCalendar'
 import ScrollableSelector from './ScrollableSelector'
 import AppointmentSummary from './AppointmentSummary'
 import { useTranslation } from 'react-i18next'
-import SectionTextWhite from '../../../components/common/FormsTitle';
+import FormTitle from '../../common/FormsTitle';
 
 export default function ConsultationScheduleStep({ consultationData, onUpdateField }) {
   const { user } = useAuth()
@@ -70,9 +70,9 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
   }, [onUpdateField])
 
   return (
-    <div className="w-full space-y-8 py-4">
+    <div className="w-full space-y-8">
 
-      <SectionTextWhite title={t('scheduling.title')} />
+      <FormTitle title={t('scheduling.title')} />
 
       <CustomCalendar
         selectedDate={selectedDate}
