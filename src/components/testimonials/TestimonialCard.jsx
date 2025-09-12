@@ -11,14 +11,14 @@ export default function TestimonialCard({ testimonial }) {
     : content;
 
   return (
-    <div className="bg-white text-black rounded-2xl p-6 flex flex-col items-center justify-center text-center h-full md:h-85 lg:h-75 shadow-lg hover:shadow-xl transition-shadow duration-200">
+    <div className="bg-white text-black rounded-2xl p-6 flex flex-col items-center justify-center text-center h-85 md:h-85 lg:h-75 shadow-lg hover:shadow-xl transition-shadow duration-200">
       <div className="w-24 h-24 mb-4 flex items-center justify-center lg:w-20 lg:h-20">
         {image_url && (
           <OctagonAvatar
             src={image_url}
             alt={name}
-            size={96}          // ~ w-24 / h-24
-            ringWidth={4}
+            size={86}          // ~ w-24 / h-24
+            ringWidth={3}
             gap={4}
             ringColor="#BFA200" // gray-200, matches old border
           />
@@ -26,7 +26,7 @@ export default function TestimonialCard({ testimonial }) {
       </div>
 
       {/* use the truncated text to keep cards even */}
-      <p className="text-gray-700 italic text-lg flex-grow md:text-xl lg:text-lg">"{truncatedContent}"</p>
+      <p className="text-gray-700 italic text-base flex-grow md:text-xl lg:text-lg">"{truncatedContent}"</p>
 
       <p className="font-bold text-gray-900 self-end mt-auto md:text-lg">- {name}</p>
     </div>

@@ -59,11 +59,11 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
   // Mark which items require auth
   const navItems = useMemo(
     () => [
-      { icon: homeIcon,     label: t("navigation.home"),     path: "/",          requiresAuth: false },
-      { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar",  requiresAuth: true  },
-      { icon: logo,         label: t("navigation.chat"),     path: "/chat",      requiresAuth: true, isLogo: true },
-      { icon: settingsIcon, label: t("navigation.settings"), path: "/settings",  requiresAuth: true  },
-      { icon: profileIcon,  label: t("navigation.profile"),  path: "/profile",   requiresAuth: true,  isProfile: true },
+      { icon: homeIcon, label: t("navigation.home"), path: "/", requiresAuth: false },
+      { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar", requiresAuth: true },
+      { icon: logo, label: t("navigation.chat"), path: "/chat", requiresAuth: true, isLogo: true },
+      { icon: settingsIcon, label: t("navigation.settings"), path: "/settings", requiresAuth: true },
+      { icon: profileIcon, label: t("navigation.profile"), path: "/profile", requiresAuth: true, isProfile: true },
     ],
     [t, i18n.language]
   );
@@ -103,6 +103,13 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
 
   const handleItemClick = (item) => {
     if (!item.path) return;
+
+    // ✅ Special case: Home should never trigger the "second click goes back" logic.
+    // Bypass onNavigate (which implements that logic) and go straight to "/".
+    if (item.path === "/") {
+      navigate("/");
+      return;
+    }
 
     const go = (p) => {
       if (typeof onNavigate === "function") onNavigate(p);

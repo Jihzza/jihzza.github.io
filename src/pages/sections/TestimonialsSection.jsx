@@ -45,12 +45,13 @@ export default function TestimonialsSection() {
         grabCursor: true,
         centeredSlides: true,
         slidesPerView: 'auto',
-        spaceBetween: 30,
+        spaceBetween: 80,
         coverflowEffect: {
-            rotate: 0,
-            stretch: 0,
-            modifier: 2.5,
-            slideShadows: false,
+          rotate: 0,
+          stretch: 0,
+          depth: 200,       // NEW: adds the 3D “push forward” feel
+          modifier: 2.5,
+          slideShadows: false,
         },
         modules: [Autoplay, Pagination],
     };

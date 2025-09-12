@@ -55,8 +55,13 @@ export default function BaseCarousel({
     // The "Why": We merge the `defaultConfig` with the user-provided `swiperConfig`.
     // The spread syntax `{...defaultConfig, ...swiperConfig}` ensures that any properties
     // in `swiperConfig` will overwrite the default ones, giving us precise control.
-    const finalConfig = { ...defaultConfig, ...swiperConfig };
-    
+    const finalConfig = {
+        ...defaultConfig,
+        ...swiperConfig,
+        modules: [
+          ...new Set([...(defaultConfig.modules || []), ...((swiperConfig.modules) || [])])
+        ],
+      };    
     console.log("🎡 BaseCarousel - defaultConfig:", defaultConfig);
     console.log("🎡 BaseCarousel - finalConfig:", finalConfig);
 
