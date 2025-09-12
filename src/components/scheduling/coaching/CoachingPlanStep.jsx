@@ -47,10 +47,10 @@ export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
                             whileTap={{ scale: 0.95 }}
                             transition={{ duration: 0.04 }}
                             className={`
-                                w-full max-w-sm p-3 border rounded-lg cursor-pointer transition-all duration-200 md:p-4
+                                w-full max-w-sm p-3 border rounded-lg cursor-pointer shadow-xl transition-all duration-200 md:p-4
                                 ${isSelected
                                     ? 'border-2 border-[#BFA200] shadow-xl'
-                                    : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:shadow-lg transition-shadow duration-200'
+                                    : 'border-2 border-[#BFA200] hover:border-[#BFA200] hover:shadow-xl transition-shadow duration-200'
                                 }
                             `}
                         >

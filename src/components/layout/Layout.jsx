@@ -119,7 +119,7 @@ export default function Layout() {
   useEffect(() => {
     const handler = (e) => {
       const txt = e?.detail?.text || '';
-      try { sessionStorage.setItem('welcome_toast_shown', '1'); } catch {}
+      try { sessionStorage.setItem('welcome_toast_shown', '1'); } catch { }
       showWelcomeToast(txt);
     };
 
@@ -133,7 +133,7 @@ export default function Layout() {
         showWelcomeToast(cached);
         sessionStorage.setItem('welcome_toast_shown', '1');
       }
-    } catch {}
+    } catch { }
 
     return () => window.removeEventListener('chat:welcome', handler);
   }, [location.pathname]);
@@ -182,7 +182,7 @@ export default function Layout() {
             sessionStorage.setItem('welcome_preview_text', text);
             if (!location.pathname.startsWith('/chat')) showWelcomeToast(text);
           }
-        } catch {}
+        } catch { }
       })
       .catch(() => {
         // Ignore (likely CORS in dev); the chat page will raise the event instead
@@ -210,7 +210,7 @@ export default function Layout() {
         isAuthenticated={isAuthenticated}
       />
 
-      <main ref={mainContentRef} className="flex-grow overflow-y-auto w-full overflow-x-hidden">
+      <main ref={mainContentRef} className="flex-grow min-h-0 overflow-y-auto w-full overflow-x-hidden">
         <ScrollRootContext.Provider value={mainContentRef}>
           <Outlet />
         </ScrollRootContext.Provider>

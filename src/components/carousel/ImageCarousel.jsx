@@ -5,9 +5,7 @@ import BaseCarousel from './BaseCarousel';
 
 // Image Import
 // Twitter
-import Twitter1 from '../../assets/Twitter/Twitter1.png';
 import Twitter2 from '../../assets/Twitter/Twitter2.png';
-import Twitter3 from '../../assets/Twitter/Twitter3.png';
 import Twitter4 from '../../assets/Twitter/Twitter4.png';
 import Twitter5 from '../../assets/Twitter/Twitter5.png';
 import Twitter6 from '../../assets/Twitter/Twitter6.png';
@@ -26,8 +24,6 @@ import Twitter18 from '../../assets/Twitter/Twitter18.png';
 import Twitter19 from '../../assets/Twitter/Twitter19.png';
 import Twitter20 from '../../assets/Twitter/Twitter20.png';
 import Twitter21 from '../../assets/Twitter/Twitter21.png';
-import Twitter22 from '../../assets/Twitter/Twitter22.png';
-import Twitter23 from '../../assets/Twitter/Twitter23.png';
 import Twitter24 from '../../assets/Twitter/Twitter24.png';
 import Twitter25 from '../../assets/Twitter/Twitter25.png';
 import Twitter26 from '../../assets/Twitter/Twitter26.png';
@@ -67,9 +63,7 @@ import Tiktok20 from '../../assets/Tiktok/Tiktok20.png';
 
 // Keep your posts array using imageSrc + href
 const posts = [
-  { imageSrc: Twitter1, href: 'https://x.com/galo_portugues/status/1610017119252389888' },
   { imageSrc: Twitter2, href: 'https://x.com/galo_portugues/status/1610780921111740424' },
-  { imageSrc: Twitter3, href: 'https://x.com/galo_portugues/status/1612519780547706880' },
   { imageSrc: Twitter4, href: 'https://x.com/galo_portugues/status/1612540968967741449' },
   { imageSrc: Twitter5, href: 'https://x.com/galo_portugues/status/1612924472088219648' },
   { imageSrc: Twitter6, href: 'https://x.com/galo_portugues/status/1612870732031135759' },
@@ -88,8 +82,6 @@ const posts = [
   { imageSrc: Twitter19, href: 'https://x.com/galo_portugues/status/1615088749943160848' },
   { imageSrc: Twitter20, href: 'https://x.com/galo_portugues/status/1614669875586437122' },
   { imageSrc: Twitter21, href: 'https://x.com/galo_portugues/status/1616209812357877763' },
-  { imageSrc: Twitter22, href: 'https://x.com/galo_portugues/status/1622966814954393601' },
-  { imageSrc: Twitter23, href: 'https://x.com/galo_portugues/status/1623075900047720449' },
   { imageSrc: Twitter24, href: 'https://x.com/galo_portugues/status/1623111519088136197' },
   { imageSrc: Twitter25, href: 'https://x.com/galo_portugues/status/1623419940643434496' },
   { imageSrc: Twitter26, href: 'https://x.com/galo_portugues/status/1627804993184010241' },
