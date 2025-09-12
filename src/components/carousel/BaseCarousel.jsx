@@ -72,7 +72,6 @@ export default function BaseCarousel({
                 for each slide back to the parent component, giving us maximum flexibility.
             */}
             {items.map((item, index) => {
-                console.log(`🎡 BaseCarousel - Rendering slide ${index} with className:`, slideClassName);
                 return (
                     <SwiperSlide key={index} className={slideClassName}>
                         {renderItem(item, index)}

@@ -1,7 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-console.log('Delete user function started');
-
 Deno.serve(async (req) => {
   try {
     // Create a Supabase client with the Auth context of the user making the request.
@@ -40,7 +38,6 @@ Deno.serve(async (req) => {
       throw deleteError;
     }
 
-    console.log(`User ${user.id} deleted successfully.`);
     return new Response(JSON.stringify({ message: 'User deleted successfully' }), {
       headers: { 'Content-Type': 'application/json' },
       status: 200,

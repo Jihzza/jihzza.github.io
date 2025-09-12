@@ -310,7 +310,6 @@ export default function Layout() {
           <path d="M12 4l-7 7h4v7h6v-7h4z" />
         </svg>
       </button>
-
     </div>
   );
 }

@@ -32,20 +32,17 @@ export default function StepsCarousel({
   }, []);
 
   const swiperConfig = {
+    // Use standard carousel behavior like other carousels
     centeredSlides: true,
     slidesPerView: 1,
     spaceBetween: 0,
-    autoHeight: false,
     speed: 450,
-
-    // 🔁 Infinite loop
-    loop: canLoop,
-    loopAdditionalSlides: 1, // helps pre-render neighbors
-    rewind: false,
-    autoplay: false,
-
-    allowTouchMove: canLoop,
-
+    grabCursor: true,
+    
+    // Standard carousel settings (will be merged with BaseCarousel defaults)
+    // BaseCarousel provides: loop: true, autoplay: { delay: 3000 }, etc.
+    
+    // Custom navigation binding
     onBeforeInit: (swiper) => { swiperRef.current = swiper; },
     onInit: (swiper) => bindNavToActive(swiper),
     onSlideChange: (swiper) => bindNavToActive(swiper),
@@ -60,7 +57,8 @@ export default function StepsCarousel({
         </h2>
       )}
 
-      <div className="w-full lg:max-w-6xl mx-auto desktop-fade-container">
+      {/* Full width carousel that breaks out of parent container padding */}
+      <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
         <BaseCarousel
           items={steps}
           swiperConfig={swiperConfig}
