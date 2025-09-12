@@ -45,6 +45,7 @@ export default function Layout() {
   // --- STATE ---
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isChatbotOpen, setChatbotOpen] = useState(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const headerRef = useRef(null);
   const navBarRef = useRef(null);
@@ -66,6 +67,15 @@ export default function Layout() {
   const handleMenuClick = () => setMenuOpen(!isMenuOpen);
   const handleChatClick = () => setChatbotOpen(!isChatbotOpen);
   const handleCloseMenu = () => setMenuOpen(false);
+
+  const handleScrollToTop = () => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const handleNavigate = (path) => {
     // If clicking on the current active page, go back to previous page
@@ -97,6 +107,22 @@ export default function Layout() {
       setCurrentPath(location.pathname);
     }
   }, [location.pathname, currentPath]);
+
+  // Handle scroll to top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      if (mainContentRef.current) {
+        const scrollTop = mainContentRef.current.scrollTop;
+        setShowScrollToTop(scrollTop > 200);
+      }
+    };
+
+    const scrollElement = mainContentRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', handleScroll);
+      return () => scrollElement.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
 
   // --- WELCOME PREVIEW TOAST STATE ---
   const [toastOpen, setToastOpen] = useState(false);
@@ -253,6 +279,38 @@ export default function Layout() {
           </div>
         </button>
       )}
+
+      {/* SCROLL TO TOP BUTTON */}
+      <button
+        onClick={handleScrollToTop}
+        className={[
+          'fixed right-4 z-[70]',
+          'w-12 h-12 rounded-full',
+          'bg-black',
+          'text-[#bfa200]',
+          'shadow-lg backdrop-blur-sm',
+          'flex items-center justify-center',
+          'transition-all duration-200 ease-in-out',
+          'hover:scale-105 active:scale-95',
+          'focus:outline-none focus:ring focus:ring-[#bfa200]',
+          showScrollToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none',
+        ].join(' ')}
+        style={{
+          bottom: `calc(${(navBarRef.current?.offsetHeight || 0)}px + 1rem + env(safe-area-inset-bottom))`,
+        }}
+        aria-label="Scroll to top"
+        title="Scroll to top"
+      >
+        <svg
+          className="w-6 h-6"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M12 4l-7 7h4v7h6v-7h4z" />
+        </svg>
+      </button>
+
     </div>
   );
 }

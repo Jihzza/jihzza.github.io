@@ -32,10 +32,6 @@ export default function BaseCarousel({
     slideClassName = '',
     containerClassName = ''
 }) {
-    console.log("🎡 BaseCarousel - items count:", items.length);
-    console.log("🎡 BaseCarousel - slideClassName:", slideClassName);
-    console.log("🎡 BaseCarousel - containerClassName:", containerClassName);
-    console.log("🎡 BaseCarousel - swiperConfig received:", swiperConfig);
 
     // --- 1. DEFINE DEFAULT CONFIGURATION ---
     // The "Why": We establish a baseline for all carousels. This ensures consistency.
@@ -62,13 +58,10 @@ export default function BaseCarousel({
           ...new Set([...(defaultConfig.modules || []), ...((swiperConfig.modules) || [])])
         ],
       };    
-    console.log("🎡 BaseCarousel - defaultConfig:", defaultConfig);
-    console.log("🎡 BaseCarousel - finalConfig:", finalConfig);
 
     // --- 3. RENDER LOGIC ---
     // The "Why": The component's render output is clean and declarative. It's clear that
     // this component's job is to render a Swiper instance and loop over items.
-    console.log("🎡 BaseCarousel - Rendering Swiper with finalConfig:", finalConfig);
     
     return (
         <Swiper {...finalConfig} className={containerClassName}>
