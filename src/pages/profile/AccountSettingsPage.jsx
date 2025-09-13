@@ -29,17 +29,17 @@ const cn = (...args) => args.filter(Boolean).join(" ");
 const Card = ({ title, desc, children, danger = false, actions, className = "" }) => (
   <section
     className={cn(
-      "rounded-2xl border p-5 sm:p-6 bg-[#ECEBE5]/5 backdrop-blur",
-      danger ? "border-red-500/40" : "border-[#ECEBE5]/20",
+      "rounded-2xl border p-4 bg-white/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200",
+      danger ? "border-red-500/40" : "border-white/20",
       className
     )}
   >
     <div className="flex items-start justify-between gap-3">
       <div>
         {title && (
-          <h3 className={cn("text-lg font-semibold tracking-tight", danger ? "text-red-200" : "text-[#fff]")}>{title}</h3>
+          <h3 className={cn("text-lg font-semibold tracking-tight", danger ? "text-red-200" : "text-white")}>{title}</h3>
         )}
-        {desc && <p className="text-sm text-[#fff]/70 mt-1 max-w-prose">{desc}</p>}
+        {desc && <p className="text-sm text-white/70 mt-1 max-w-prose">{desc}</p>}
       </div>
       {actions}
     </div>
@@ -58,7 +58,7 @@ const Input = ({ id, type = "text", ...props }) => (
   <input
     id={id}
     type={type}
-    className="mt-1 block w-full rounded-xl bg-white text-gray-900 placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-[#bfa200] px-3 py-2"
+    className="mt-1 block w-full rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-[#bfa200] px-3 py-2"
     {...props}
   />
 );
@@ -171,14 +171,14 @@ const NAV = [
 
 const Sidebar = ({ active, onChange }) => (
   <aside className="sticky top-4 h-max">
-    <nav className="grid gap-1 rounded-2xl border border-[#ECEBE5]/20 p-2 bg-[#ECEBE5]/5">
+    <nav className="grid gap-1 rounded-lg border border-white/20 p-2 bg-white/10 backdrop-blur-md shadow-sm">
       {NAV.map((item) => (
         <button
           key={item.id}
           onClick={() => onChange(item.id)}
           className={cn(
-            "group flex items-center gap-3 rounded-xl px-3 py-2 text-left",
-            active === item.id ? "bg-[#bfa200] text-[#002147]" : "hover:bg-[#ECEBE5]/10 text-[#fff]/80"
+            "group flex items-center gap-3 rounded-lg px-3 py-2 text-left transition-all duration-200",
+            active === item.id ? "bg-[#bfa200] text-[#002147]" : "hover:bg-white/15 text-white/80"
           )}
         >
           <item.icon className="h-5 w-5" />
@@ -677,9 +677,9 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr]">
           {/* Sidebar on desktop, top tabs on mobile */}
           <div className="hidden lg:block"><Sidebar active={active} onChange={setActive} /></div>
-          <div className="lg:hidden -mx-1 mb-1 flex overflow-x-auto rounded-2xl border border-[#ECEBE5]/20 p-1 bg-[#ECEBE5]/5">
+          <div className="lg:hidden -mx-1 mb-1 flex overflow-x-auto rounded-lg border border-white/20 p-1 bg-white/10 backdrop-blur-md shadow-sm">
             {NAV.map((n) => (
-              <button key={n.id} onClick={() => setActive(n.id)} className={cn("mr-1 whitespace-nowrap rounded-xl px-3 py-2 text-sm", active === n.id ? "bg-[#bfa200] text-[#002147]" : "text-[#fff]/80")}>{n.label}</button>
+              <button key={n.id} onClick={() => setActive(n.id)} className={cn("mr-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm transition-all duration-200", active === n.id ? "bg-[#bfa200] text-[#002147]" : "text-white/80 hover:bg-white/15")}>{n.label}</button>
             ))}
           </div>
 

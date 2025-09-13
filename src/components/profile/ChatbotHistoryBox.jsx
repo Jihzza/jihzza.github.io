@@ -51,7 +51,7 @@ const ChatbotHistoryBox = ({
       <div className="space-y-2">
         {displayedConversations.length > 0 ? (
           displayedConversations.map((conversation, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+            <div key={index} className="flex items-center justify-between p-3 rounded-xl ring-1 ring-gray-300 shadow-sm">
               <div className="flex items-center space-x-3">
                 <ChatBubbleLeftRightIcon className="h-4 w-4 text-white/80" />
                 <div>

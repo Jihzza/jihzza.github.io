@@ -31,7 +31,7 @@ const FinancesBox = ({
       className="bg-white/10"
     >
       <div className="space-y-3">
-        <div className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+        <div className="flex items-center justify-between p-3 rounded-xl ring-1 ring-gray-300 shadow-sm">
           <div className="flex items-center space-x-2">
             <CurrencyEuroIcon className="h-5 w-5 text-white/80" />
             <span className="text-sm font-medium text-white/90">Consultations (Lifetime)</span>
@@ -41,7 +41,7 @@ const FinancesBox = ({
           </span>
         </div>
         
-        <div className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+        <div className="flex items-center justify-between p-3 rounded-xl ring-1 ring-gray-300 shadow-sm">
           <div className="flex items-center space-x-2">
             <CurrencyEuroIcon className="h-5 w-5 text-white/80" />
             <span className="text-sm font-medium text-white/90">Coaching (Monthly)</span>
@@ -51,7 +51,7 @@ const FinancesBox = ({
           </span>
         </div>
         
-        <div className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+        <div className="flex items-center justify-between p-3 rounded-xl ring-1 ring-gray-300 shadow-sm">
           <div className="flex items-center space-x-2">
             <CurrencyEuroIcon className="h-5 w-5 text-white/80" />
             <span className="text-sm font-medium text-white/90">Pitch Decks (Free)</span>
