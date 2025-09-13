@@ -16,6 +16,8 @@ function CardTabSimple({
   tabId,
   panelId,
   focusRef,
+  showLabels = true,
+  imageSize = "w-8 h-8",
 }) {
   const prefersReduced = useReducedMotion();
 
@@ -63,11 +65,11 @@ function CardTabSimple({
         <img
           src={image}
           alt={imageAlt ?? ""}
-          className="w-8 h-8 object-contain pointer-events-none select-none"
+          className={`${imageSize} object-contain pointer-events-none select-none`}
           {...(!imageAlt ? { "aria-hidden": true } : {})}
         />
       )}
-      <span className="text-base font-medium">{label}</span>
+      {showLabels && <span className="text-base font-medium">{label}</span>}
     </motion.button>
   );
 }
@@ -85,7 +87,7 @@ function useCols() {
   return cols;
 }
 
-export default function BoxesGrid({ items = [] }) {
+export default function BoxesGrid({ items = [], showLabels = true, imageSize = "w-8 h-8", fixedHeight = false }) {
   // Normalize input to objects with a label / paragraph
   const normalized = useMemo(
     () =>
@@ -248,6 +250,8 @@ export default function BoxesGrid({ items = [] }) {
                           tabId={ids[index].tabId}
                           panelId={ids[index].panelId}
                           focusRef={(el) => (tabRefs.current[index] = el)}
+                          showLabels={showLabels}
+                          imageSize={imageSize}
                         />
                       </motion.div>
                     );
@@ -264,7 +268,7 @@ export default function BoxesGrid({ items = [] }) {
                         className="overflow-hidden col-span-2 md:col-span-8"
                         {...panelMotion}
                       >
-                        <div className="px-2 py-4 text-center text-white">
+                        <div className={`px-2 py-4 text-center text-white ${fixedHeight ? 'h-20 flex items-center justify-center' : ''}`}>
                           <p className="text-sm md:text-lg">
                             {normalized[active].paragraph || ""}
                           </p>
