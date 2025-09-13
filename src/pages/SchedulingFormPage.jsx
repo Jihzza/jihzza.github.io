@@ -316,9 +316,9 @@ export default function SchedulingFormPage() {
 
   // MAIN RENDER
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-full flex flex-col">
       {/* Content area */}
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full flex items-start">
         <div className="w-full max-w-2xl mx-auto px-4 py-4">
           {/* Payment success branch shows confirmation only */}
           {paymentStatus === 'success' ? (
@@ -327,7 +327,7 @@ export default function SchedulingFormPage() {
               <ConfirmationStep />
             </div>
           ) : (
-            <div className="w-full rounded-2xl bg-[#002147] p-4 md:p-6 space-y-4">
+            <div className="w-full rounded-2xl bg-[#002147] p-4 md:p-6 space-y-4 flex-shrink-0">
               {/* Step content */}
               {currentStep === 2 && formData.serviceType === 'consultation' && (
                 <ConsultationScheduleStep
