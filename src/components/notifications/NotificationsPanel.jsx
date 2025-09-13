@@ -14,7 +14,7 @@ const NotificationMessage = ({ notification }) => {
         <Trans
           i18nKey="notifications.types.newMessage"
           values={{ sender: notification.data?.sender_username }}
-          components={[<span className="font-bold" />]}
+          components={[<span className="font-semibold text-white" />]}
         />
       );
     case 'consultation_reminder':
@@ -22,14 +22,14 @@ const NotificationMessage = ({ notification }) => {
         <Trans
           i18nKey="notifications.types.consultationReminder"
           values={{ time: notification.data?.consultation_time }}
-          components={[<span className="font-bold" />]}
+          components={[<span className="font-semibold text-white" />]}
         />
       );
     case 'new_consultation_booking':
       return (
         <Trans
           i18nKey="notifications.types.newConsultationBooking"
-          components={[<span className="font-bold" />]}
+          components={[<span className="font-semibold text-white" />]}
         />
       );
     case 'user_signup':
@@ -38,10 +38,17 @@ const NotificationMessage = ({ notification }) => {
     case 'subscription_expiring':
     case 'pitch_request_submitted':
     case 'pitch_request_status':
-      return <span>{notification.message || notification.title}</span>;
+      return <span className="text-white">{notification.message || notification.title}</span>;
     default:
-      return <span>{notification.message || notification.title || t('notifications.types.default')}</span>;
+      return <span className="text-white">{notification.message || notification.title || t('notifications.types.default')}</span>;
   }
+};
+
+// Simple white dot indicator for notifications
+const NotificationDot = () => {
+  return (
+    <div className="w-1 h-1 bg-b rounded-full flex-shrink-0 mt-1"></div>
+  );
 };
 
 export default function NotificationsPanel({ isOpen, onClose }) {
@@ -60,33 +67,76 @@ export default function NotificationsPanel({ isOpen, onClose }) {
   };
 
   return (
-    <div className="absolute right-0 mt-2 w-80 max-w-sm bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-      <div className="p-4 border-b flex justify-between items-center">
-        <h3 className="font-semibold text-red-800">{t('notifications.panel.title')}</h3>
+    <div className="absolute right-0 mt-2 w-80 max-w-sm bg-gray-900 rounded-lg shadow-2xl border border-gray-700 z-50">
+      {/* Header */}
+      <div className="p-4 border-b border-gray-700 flex justify-between items-center">
+        <h3 className="font-semibold text-white text-lg">{t('notifications.panel.title')}</h3>
         {unreadCount > 0 && (
-          <button onClick={markAllAsRead} className="text-sm text-indigo-600 hover:underline">
+          <button 
+            onClick={markAllAsRead} 
+            className="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors"
+          >
             {t('notifications.panel.markAllAsRead')}
           </button>
         )}
       </div>
+      
+      {/* Content */}
       <div className="max-h-96 overflow-y-auto">
-        {loading && <p className="p-4 text-center text-gray-500">{t('notifications.panel.loading')}</p>}
-        {!loading && notifications.length === 0 && (
-          <p className="p-4 text-center text-gray-500">{t('notifications.panel.noNotifications')}</p>
+        {loading && (
+          <div className="p-4 text-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mx-auto"></div>
+            <p className="text-gray-400 mt-2 text-sm">{t('notifications.panel.loading')}</p>
+          </div>
         )}
+        
+        {!loading && notifications.length === 0 && (
+          <div className="p-6 text-center">
+            <div className="w-16 h-16 mx-auto mb-3 bg-gray-800 rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 0 0-15 0v5h5l-5 5-5-5h5v-5a7.5 7.5 0 0 0 15 0v5z" />
+              </svg>
+            </div>
+            <p className="text-gray-400 text-sm">{t('notifications.panel.noNotifications')}</p>
+          </div>
+        )}
+        
         <ul>
           {notifications.map((n) => (
             <li
               key={n.id}
               onClick={() => handleNotificationClick(n)}
-              className={`p-4 border-b cursor-pointer ${!n.is_read ? 'bg-indigo-50' : 'bg-white'}`}
+              className={`px-4 py-3 cursor-pointer transition-all duration-200 hover:bg-gray-800/50 ${
+                !n.is_read ? 'bg-gray-800/40' : 'bg-gray-900/30'
+              }`}
             >
-              <p className="text-sm text-gray-700">
-                <NotificationMessage notification={n} />
-              </p>
-              <p className="text-xs text-gray-400 mt-1">
-                {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
-              </p>
+              <div className="flex items-start space-x-3">
+                {/* White dot indicator */}
+                <div className="flex-shrink-0">
+                  <NotificationDot />
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-100 leading-5">
+                        <NotificationMessage notification={n} />
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
+                      </p>
+                    </div>
+                    
+                    {/* Unread indicator */}
+                    {!n.is_read && (
+                      <div className="flex-shrink-0 ml-2 mt-1">
+                        <span className="w-2 h-2 bg-red-500 rounded-full block" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </li>
           ))}
         </ul>

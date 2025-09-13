@@ -159,7 +159,7 @@ const Header = forwardRef(({ onMenuClick }, ref) => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 style={{ top: `${headerHeight}px` }}
-                className="fixed inset-x-0 z-50 backdrop-blur-md shadow-lg"
+                className="fixed inset-x-0 z-50 bg-gradient-to-b from-[#002147] to-transparent shadow-lg"
             >
                 <div className="w-full py-3">
                     <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar px-4">
