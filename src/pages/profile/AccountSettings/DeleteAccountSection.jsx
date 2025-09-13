@@ -29,7 +29,7 @@ const DeleteAccountSection = () => {
   };
 
   return (
-    <section className="rounded-2xl bg-red-50/80 ring-1 ring-red-200/60 p-6 sm:p-8">
+    <section className="rounded-2xl border border-red-800 p-6 sm:p-8">
       <div className="mb-3 flex items-center gap-3">
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-red-100">
           <ExclamationTriangleIcon className="h-5 w-5 text-red-700" />

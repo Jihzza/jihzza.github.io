@@ -8,10 +8,10 @@ import { useTranslation } from 'react-i18next';
 const ToggleSwitch = ({ label, description, name, checked, onChange }) => (
   <div className="flex items-center justify-between py-4 border-b border-gray-200">
     <div className="flex-grow pr-4">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-800 md:text-base">
+      <label htmlFor={name} className="block text-sm font-medium text-white md:text-base">
         {label}
       </label>
-      <p className="text-xs text-gray-500 md:text-sm">{description}</p>
+      <p className="text-xs text-white md:text-sm">{description}</p>
     </div>
 
     {/* Accessible, modern toggle */}
@@ -32,10 +32,10 @@ const ToggleSwitch = ({ label, description, name, checked, onChange }) => (
 
 const SelectInput = ({ label, description, name, value, onChange, options }) => (
   <div className="py-4 border-b border-gray-200">
-    <label htmlFor={name} className="block text-sm font-medium text-gray-800 md:text-base">
+    <label htmlFor={name} className="block text-sm font-medium text-white md:text-base">
       {label}
     </label>
-    <p className="text-xs text-gray-500 mb-2 md:text-sm">{description}</p>
+    <p className="text-xs text-white mb-2 md:text-sm">{description}</p>
     <select
       id={name}
       name={name}
@@ -80,7 +80,7 @@ export default function PrivacySettingsSection() {
   ).map(([value, label]) => ({ value, label }));
 
   return (
-    <section className="rounded-2xl bg-white shadow-sm ring-1 ring-black/5 p-6 sm:p-8">
+    <section className="rounded-2xl border border-white p-6 sm:p-8">
       <SettingsSectionHeader title={t('accountSettings.privacy.title')} />
 
       <ToggleSwitch
@@ -102,10 +102,10 @@ export default function PrivacySettingsSection() {
 
       <div className="py-4 flex items-center justify-between">
         <div>
-          <h4 className="text-sm font-medium text-gray-800 md:text-base">
+          <h4 className="text-sm font-medium text-white md:text-base">
             {t('accountSettings.privacy.download.title')}
           </h4>
-          <p className="text-xs text-gray-500 md:text-sm">
+          <p className="text-xs text-white md:text-sm">
             {t('accountSettings.privacy.download.description')}
           </p>
         </div>

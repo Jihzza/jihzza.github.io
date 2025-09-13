@@ -29,10 +29,10 @@ const UpdatePasswordForm = () => {
   };
 
   return (
-    <section className="rounded-2xl bg-white shadow-sm ring-1 ring-black/5 p-6 sm:p-8">
+    <section className="rounded-2xl border border-white p-6 sm:p-8">
       <div className="mb-4 flex items-center gap-3">
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#002147]/5">
-          <KeyIcon className="h-5 w-5 text-[#002147]" />
+          <KeyIcon className="h-5 w-5 text-[#fff]" />
         </span>
         <SettingsSectionHeader title={t('accountSettings.updatePassword.title')} className="mb-0" />
       </div>
@@ -51,7 +51,7 @@ const UpdatePasswordForm = () => {
         </FormButton>
       </form>
 
-      {message && <p className="mt-4 text-sm text-center text-gray-600">{message}</p>}
+      {message && <p className="mt-4 text-sm text-center text-white">{message}</p>}
     </section>
   );
 };

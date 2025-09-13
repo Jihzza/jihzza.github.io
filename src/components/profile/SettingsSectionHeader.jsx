@@ -4,12 +4,11 @@ import React from 'react';
 
 /**
  * A reusable header for sections within settings cards.
- * @param {string} title
- * @param {string} [className]
+ * Color-only change: text color moved from gray-800 to slate-100 for dark surfaces.
  */
 const SettingsSectionHeader = ({ title, className = '' }) => {
   return (
-    <h3 className={`text-xl font-semibold text-white tracking-tight ${className}`}>
+    <h3 className={`text-xl font-semibold text-slate-100 tracking-tight ${className}`}>
       {title}
     </h3>
   );
