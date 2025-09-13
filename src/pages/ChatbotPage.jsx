@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext"; // adjust path if different
 import { useTranslation } from "react-i18next";
-import { ArrowLeftIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon, ClockIcon } from "@heroicons/react/24/outline";
 
 import ChatMessages from "../components/chatbot/ChatbotWindow/ChatMessages";
 import ChatInput from "../components/chatbot/ChatbotWindow/ChatInput";
@@ -174,31 +174,26 @@ export default function ChatbotPage() {
       className="flex flex-col bg-[#002147] text-white h-full"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {/* Header (with New Conversation icon) */}
+      {/* Header (with New Conversation and History icons) */}
       <div className="sticky top-0 z-10 bg-[#002147] border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3 lg:gap-1">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/profile/chatbot-history")}
             className="p-2 rounded-xl hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
-            aria-label={t("common.back") || "Back"}
+            aria-label={t("chatbot.history") || "Chat History"}
+            title={t("chatbot.history") || "Chat History"}
           >
-            <ArrowLeftIcon className="h-6 w-6 lg:h-4 lg:w-4" />
+            <ClockIcon className="h-6 w-6" />
           </button>
-
-          <h1 className="text-lg md:text-xl lg:text-lg">
-            {"Back"}
-          </h1>
-
-          <div className="ml-auto">
-            <button
-              onClick={startNewConversation}
-              className="p-2 rounded-xl hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
-              aria-label={t("chatbot.newConversation") || "New conversation"}
-              title={t("chatbot.newConversation") || "New conversation"}
-            >
-              <PlusCircleIcon className="h-6 w-6" />
-            </button>
-          </div>
+          
+          <button
+            onClick={startNewConversation}
+            className="p-2 rounded-xl hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
+            aria-label={t("chatbot.newConversation") || "New conversation"}
+            title={t("chatbot.newConversation") || "New conversation"}
+          >
+            <PlusCircleIcon className="h-6 w-6" />
+          </button>
         </div>
       </div>
 
