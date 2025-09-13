@@ -7,8 +7,18 @@ import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { getProfile, signOut } from '../../services/authService';
+import { getAppointmentsByUserId } from '../../services/appointmentService';
+import { getSubscriptionsByUserId } from '../../services/subscriptionService';
+import { getPitchDeckRequestsByUserId } from '../../services/pitchDeckServices';
+import { getConversationSessionsByUserId } from '../../services/chatbotService';
+import { getFinancialMetrics } from '../../services/financialService';
 import ProfileHeader from '../../components/profile/ProfileHeader';
-import ProfileMenuItem from '../../components/profile/ProfileMenuItem';
+import FinancesBox from '../../components/profile/FinancesBox';
+import ConsultationsBox from '../../components/profile/ConsultationsBox';
+import SubscriptionsBox from '../../components/profile/SubscriptionsBox';
+import PitchDeckBox from '../../components/profile/PitchDeckBox';
+import ChatbotHistoryBox from '../../components/profile/ChatbotHistoryBox';
+import AccountSettingsBox from '../../components/profile/AccountSettingsBox';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -23,27 +33,115 @@ export default function ProfilePage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [dashboardData, setDashboardData] = useState({
+    finances: {
+      consultationEarnings: 0,
+      coachingRevenue: 0,
+      pitchDeckEarnings: 0
+    },
+    consultations: [],
+    subscriptions: [],
+    pitchDeckRequests: [],
+    chatbotHistory: []
+  });
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchAllData = async () => {
       if (!user) return;
       setLoading(true);
-      const { data, error: fetchError } = await getProfile(user.id);
+      
+      try {
+        // Fetch profile data
+        const { data: profileData, error: profileError } = await getProfile(user.id);
+        if (profileError) throw profileError;
+        
+        if (profileData) {
+          const finalProfile = {
+            ...profileData,
+            avatar_url: profileData.avatar_url || user.user_metadata?.avatar_url || '',
+          };
+          setProfile(finalProfile);
+        }
 
-      if (fetchError) {
-        console.error('Profile fetch error:', fetchError);
-        setError(t('profile.errors.load'));
-      } else if (data) {
-        const finalProfile = {
-          ...data,
-          avatar_url: data.avatar_url || user.user_metadata?.avatar_url || '',
+        // Fetch all dashboard data in parallel
+        const [
+          { data: financialData, error: financialError },
+          { data: appointmentsData, error: appointmentsError },
+          { data: subscriptionsData, error: subscriptionsError },
+          { data: pitchDeckData, error: pitchDeckError },
+          { data: chatbotData, error: chatbotError }
+        ] = await Promise.all([
+          getFinancialMetrics(user.id),
+          getAppointmentsByUserId(user.id),
+          getSubscriptionsByUserId(user.id),
+          getPitchDeckRequestsByUserId(user.id),
+          getConversationSessionsByUserId(user.id)
+        ]);
+
+        // Handle financial data
+        if (financialError) {
+          console.error('Financial data error:', financialError);
+        }
+
+        // Transform appointments data for the consultations box
+        const consultationsData = appointmentsData?.map(appointment => ({
+          duration: appointment.duration_minutes,
+          status: appointment.status || 'Confirmed',
+          price: appointment.price || (appointment.duration_minutes * 1.5) // Default €1.5 per minute
+        })) || [];
+
+        // Transform subscriptions data
+        const planPricing = {
+          'basic': 40,    // €40/month for basic plan
+          'standard': 90, // €90/month for standard plan  
+          'premium': 230  // €230/month for premium plan
         };
-        setProfile(finalProfile);
+        
+        const subscriptionsDataFormatted = subscriptionsData?.map(subscription => {
+          const planId = subscription.plan_id?.toLowerCase();
+          const price = planPricing[planId] || 0;
+          return {
+            planName: subscription.plan_id || 'Subscription',
+            status: subscription.status || 'Active',
+            price: price
+          };
+        }) || [];
+
+        // Transform pitch deck requests data
+        const pitchDeckDataFormatted = pitchDeckData?.map(request => ({
+          company: request.company_name || request.project || request.name || 'Untitled Request',
+          status: request.status || 'submitted',
+          submittedAt: request.submitted_at || request.created_at
+        })) || [];
+
+        // Transform chatbot history data
+        const chatbotDataFormatted = chatbotData?.map(session => ({
+          created_at: session.last_message_at || session.created_at,
+          messageCount: 1 // We don't have message count in the current schema
+        })) || [];
+
+        // Update dashboard data
+        setDashboardData({
+          finances: financialData || {
+            consultationEarnings: 0,
+            coachingRevenue: 0,
+            pitchDeckEarnings: 0
+          },
+          consultations: consultationsData,
+          subscriptions: subscriptionsDataFormatted,
+          pitchDeckRequests: pitchDeckDataFormatted,
+          chatbotHistory: chatbotDataFormatted
+        });
+
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError(t('profile.errors.load'));
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    fetchProfile();
+    fetchAllData();
   }, [user, t]);
 
   const handleLogout = async () => {
@@ -51,18 +149,6 @@ export default function ProfilePage() {
     navigate('/login');
   };
 
-  // Route mapping so "Account Settings" goes to /settings (not /profile/account-settings)
-  const routeMap = {
-    'account-settings': '/settings',
-    // Add any future special cases here if needed
-  };
-
-  const userMenuItems = t('profile.menuItems', { returnObjects: true }).map(
-    (item) => ({
-      ...item, // expected to provide { key, label }
-      to: routeMap[item.key] ?? `/profile/${item.key}`,
-    })
-  );
 
   if (loading) {
     return <div className="p-4 text-center">{t('profile.loading')}</div>;
@@ -72,7 +158,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="h-full bg-[#002147] ">
+    <div className="h-full bg-[#002147]">
       <ProfileHeader
         fullName={profile.full_name}
         phone={profile.phone}
@@ -80,24 +166,66 @@ export default function ProfilePage() {
         onEdit={() => navigate('/profile/edit')}
       />
 
-      <hr />
+      <div className="p-4 space-y-6">
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Finances Box - Top Left */}
+          <FinancesBox
+            consultationEarnings={dashboardData.finances.consultationEarnings}
+            coachingRevenue={dashboardData.finances.coachingRevenue}
+            pitchDeckEarnings={dashboardData.finances.pitchDeckEarnings}
+            to="/profile/finances"
+          />
 
-      <nav className="divide-y divide-gray-200">
-        {userMenuItems.map(({ key, label, to }) => (
-          <ProfileMenuItem key={key} label={label} to={to} />
-        ))}
-      </nav>
+          {/* Consultations Box - Top Right */}
+          <ConsultationsBox
+            consultations={dashboardData.consultations}
+            to="/profile/appointments"
+          />
+        </div>
 
-      <div className="p-4 mt-4">
-        <button
-          onClick={handleLogout}
-          className="flex items-center justify-center p-3 w-full text-left text-red-600 hover:bg-red-50 transition-colors duration-200 rounded-lg"
-        >
-          <ArrowLeftOnRectangleIcon className="h-6 w-6 mr-3 md:h-8 md:w-8" />
-          <span className="text-lg font-base md:text-xl">
-            {t('profile.logout')}
-          </span>
-        </button>
+        {/* Second Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Subscriptions Box */}
+          <SubscriptionsBox
+            subscriptions={dashboardData.subscriptions}
+            to="/profile/subscriptions"
+          />
+
+          {/* Pitch Deck Requests Box */}
+          <PitchDeckBox
+            requests={dashboardData.pitchDeckRequests}
+            to="/profile/pitch-requests"
+          />
+        </div>
+
+        {/* Third Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Chatbot History Box */}
+          <ChatbotHistoryBox
+            conversations={dashboardData.chatbotHistory}
+            to="/profile/chatbot-history"
+          />
+
+          {/* Account Settings Box */}
+          <AccountSettingsBox
+            user={user}
+            to="/settings"
+          />
+        </div>
+
+        {/* Logout Button */}
+        <div className="pt-4">
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center p-3 w-full text-left text-red-400 hover:bg-red-900/20 transition-colors duration-200 rounded-lg border border-red-400/30"
+          >
+            <ArrowLeftOnRectangleIcon className="h-6 w-6 mr-3 md:h-8 md:w-8" />
+            <span className="text-lg font-base md:text-xl">
+              {t('profile.logout')}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );
