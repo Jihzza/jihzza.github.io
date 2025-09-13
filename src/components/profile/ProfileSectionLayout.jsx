@@ -1,6 +1,5 @@
 // src/components/profile/ProfileSectionLayout.jsx
 import React from 'react';
-import BackButton from '../common/BackButton';
 
 /**
  * A reusable layout component for all profile subpages, styled for a consistent dark theme.
@@ -13,9 +12,6 @@ const ProfileSectionLayout = ({ children }) => {
         // The container is now set for a dark theme, with white text as the default.
         // It remains within the same max-width for consistency.
         <div className="max-w-4xl mx-auto p-6 lg:p-8 text-black">
-            <div> {/* Increased bottom margin for better spacing */}
-                <BackButton />
-            </div>
 
             <main>
                 {children}

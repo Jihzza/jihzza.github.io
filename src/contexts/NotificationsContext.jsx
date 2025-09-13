@@ -1,5 +1,5 @@
 // src/contexts/NotificationsContext.jsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from './AuthContext';
 
@@ -11,10 +11,23 @@ export const NotificationsProvider = ({ children }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let channel;
+  // Hold the current Realtime channel so we can clean it up between mounts/users
+  const channelRef = useRef(null);
 
-    const start = async () => {
+  useEffect(() => {
+    let disposed = false;
+
+    const setup = async () => {
+      // Clean up any previous channel first (prevents multi-subscribe)
+      if (channelRef.current) {
+        try {
+          await supabase.removeChannel(channelRef.current);
+        } catch (e) {
+          console.warn('removeChannel failed (ignored):', e);
+        }
+        channelRef.current = null;
+      }
+
       if (!user) {
         setNotifications([]);
         setUnreadCount(0);
@@ -22,7 +35,7 @@ export const NotificationsProvider = ({ children }) => {
         return;
       }
 
-      // Initial fetch
+      // Initial load
       setLoading(true);
       const { data, error } = await supabase
         .from('notifications')
@@ -30,17 +43,31 @@ export const NotificationsProvider = ({ children }) => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
+      if (disposed) return;
+
       if (error) {
         console.error('Error fetching notifications:', error);
+        setNotifications([]);
+        setUnreadCount(0);
       } else {
         setNotifications(data || []);
         setUnreadCount((data || []).filter(n => !n.is_read).length);
       }
       setLoading(false);
 
-      // Realtime: INSERT + UPDATE
-      channel = supabase
-        .channel('notifications-ui')
+      // ----- Realtime -----
+      const channelName = `notifications:${user.id}`; // unique per user/session
+
+      // Reuse an existing channel with the same topic if it exists
+      const existing =
+        typeof supabase.getChannels === 'function'
+          ? supabase.getChannels().find((c) => c.topic === channelName)
+          : null;
+
+      const channel = existing || supabase.channel(channelName);
+
+      // Attach handlers (attaching more than once is fine; we destroy the channel on cleanup)
+      channel
         .on('postgres_changes', {
           event: 'INSERT',
           schema: 'public',
@@ -59,19 +86,32 @@ export const NotificationsProvider = ({ children }) => {
         }, (payload) => {
           const row = payload.new;
           setNotifications(prev => {
-            const next = prev.map(n => n.id === row.id ? { ...n, ...row } : n);
+            const next = prev.map(n => (n.id === row.id ? { ...n, ...row } : n));
             setUnreadCount(next.filter(n => !n.is_read).length);
             return next;
           });
-        })
-        .subscribe();
+        });
+
+      // Subscribe only if not already joining/joined
+      if (!['joining', 'joined'].includes(channel.state)) {
+        channel.subscribe((status, err) => {
+          if (err) console.error('Realtime subscribe error:', err);
+        });
+      }
+
+      channelRef.current = channel;
     };
 
-    start();
+    setup();
+
     return () => {
-      if (channel) supabase.removeChannel(channel);
+      disposed = true;
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
-  }, [user]);
+  }, [user?.id]);
 
   // Persist a single read
   const markAsRead = async (notificationId) => {
@@ -88,13 +128,13 @@ export const NotificationsProvider = ({ children }) => {
     }
 
     setNotifications(prev => {
-      const next = prev.map(n => n.id === notificationId ? { ...n, ...data } : n);
+      const next = prev.map(n => (n.id === notificationId ? { ...n, ...data } : n));
       setUnreadCount(next.filter(n => !n.is_read).length);
       return next;
     });
   };
 
-  // Persist all reads
+  // Persist mark-all-read
   const markAllAsRead = async () => {
     if (!user) return;
     const { error } = await supabase
