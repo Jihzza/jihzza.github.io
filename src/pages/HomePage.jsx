@@ -23,6 +23,7 @@ export default function HomePage() {
     const schedulingRef = useRef(null);
     const { t } = useTranslation();
 
+    // All buttons on home page go directly to step 2 (specific service step)
     const handleScheduleService = (serviceId, details = null) => {
         // Build the URL with service parameter
         let url = `/schedule?service=${serviceId}`;
@@ -96,7 +97,7 @@ export default function HomePage() {
         >
             <HeroSection
                 onScheduleConsultation={() => handleScheduleService('consultation')}
-                onScheduleCoaching={() => handleScheduleService('coaching')}
+                onScheduleCoaching={(tier) => handleScheduleService('coaching', tier)}
                 onScheduleInvestment={() => handleScheduleService('pitchdeck')}
             />
             <AboutMeSection />
@@ -130,7 +131,7 @@ export default function HomePage() {
 
                     </SectionTextBlack>
                     <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
-                        <ServiceSelectionStep />
+                        <ServiceSelectionStep onSelectService={(serviceId) => handleScheduleService(serviceId)} />
                     </div>
                 </div>
             </div>

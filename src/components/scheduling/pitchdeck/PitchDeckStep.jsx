@@ -18,7 +18,7 @@ export default function PitchDeckStep({ selectedDeck, onSelectDeck }) {
       <FormTitle title={t('scheduling.pitchDeck.title')} />
 
       {/* Match CoachingPlanStep container: centered column */}
-      <div className="space-y-4 flex flex-col items-center">
+      <div className="space-y-4 flex flex-col items-start">
         {pitchDecks.map((deck) => {
           const isSelected = selectedDeck === deck.id;
           const baseScale = isSelected ? 1.06 : 1;

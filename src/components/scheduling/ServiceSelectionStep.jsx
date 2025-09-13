@@ -15,8 +15,17 @@ export default function ServiceSelectionStep({ selectedService, onSelectService 
   const { t } = useTranslation();
 
   const handleServiceClick = (serviceId) => {
-    navigate(`/schedule?service=${serviceId}`);
-    onSelectService?.(serviceId);
+    // If onSelectService is provided, use it and auto-proceed (for use within ServiceSelectionPage)
+    // Otherwise, navigate to the scheduling form (for standalone use)
+    if (onSelectService) {
+      onSelectService(serviceId);
+      // Auto-proceed to next step after selection
+      setTimeout(() => {
+        navigate(`/schedule?service=${serviceId}`);
+      }, 100);
+    } else {
+      navigate(`/schedule?service=${serviceId}`);
+    }
   };
 
   return (

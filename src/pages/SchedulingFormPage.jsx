@@ -44,7 +44,7 @@ export default function SchedulingFormPage() {
 
   // Flow state
   const [profile, setProfile] = useState(null);
-  const [currentStep, setCurrentStep] = useState(2);              // start at step 2 (selection on home)
+  const [currentStep, setCurrentStep] = useState(2); // always start at step 2 (service-specific step)
   const [paymentStatus, setPaymentStatus] = useState('awaiting'); // 'awaiting' | 'success' | 'cancelled'
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -94,10 +94,11 @@ export default function SchedulingFormPage() {
     setCurrentStep(prev => prev + 1);
   };
 
-  // BACK: if at step 2, go home
+  // BACK: if at step 2, go to service selection page; otherwise go to previous step
   const handleBack = () => {
     if (currentStep === 2) {
-      navigate('/');
+      // Go to service selection page when at step 2
+      navigate('/select-service');
       return;
     }
     setCurrentStep(prev => prev - 1);
@@ -327,7 +328,7 @@ export default function SchedulingFormPage() {
               <ConfirmationStep />
             </div>
           ) : (
-            <div className="w-full rounded-2xl bg-[#002147] p-4 md:p-6 space-y-4 flex-shrink-0">
+            <div className="w-full rounded-2xl bg-[#002147] p-4 md:p-6 flex-shrink-0">
               {/* Step content */}
               {currentStep === 2 && formData.serviceType === 'consultation' && (
                 <ConsultationScheduleStep

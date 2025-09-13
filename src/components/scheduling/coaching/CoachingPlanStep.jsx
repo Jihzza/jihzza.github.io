@@ -27,7 +27,7 @@ export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
             {/* 5. Use the translated title */}
             <FormTitle title={t('scheduling.coachingPlan.title')} />
 
-            <div className="space-y-4 flex flex-col items-center">
+            <div className="space-y-4 flex flex-col items-start">
                 {/* 6. The mapping logic remains the same, but it now uses the dynamic `coachingPlans` array */}
                 {coachingPlans.map((plan) => {
                     const isSelected = selectedPlan === plan.id;
