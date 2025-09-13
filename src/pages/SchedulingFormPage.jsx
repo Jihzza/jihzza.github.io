@@ -374,6 +374,7 @@ export default function SchedulingFormPage() {
                 <ServiceSelectionStep 
                   selectedService={formData.serviceType}
                   onSelectService={handleServiceSelect}
+                  showSelectedState={false}
                 />
               )}
 

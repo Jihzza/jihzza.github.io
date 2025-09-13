@@ -10,7 +10,7 @@ const services = [
   { id: 'pitchdeck', title: 'Pitch Deck' },
 ];
 
-export default function ServiceSelectionStep({ selectedService, onSelectService }) {
+export default function ServiceSelectionStep({ selectedService, onSelectService, showSelectedState = true }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -28,7 +28,7 @@ export default function ServiceSelectionStep({ selectedService, onSelectService 
     <div className="w-full max-w-2xl mx-auto">
       <div className="space-y-4">
         {services.map((service) => {
-          const isSelected = selectedService === service.id;
+          const isSelected = showSelectedState && selectedService === service.id;
           const baseScale = isSelected ? 1.06 : 1;
           const hoverScale = isSelected ? 1.03 : 1.03;
 
