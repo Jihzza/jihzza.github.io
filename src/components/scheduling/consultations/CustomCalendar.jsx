@@ -258,7 +258,7 @@ export default function CustomCalendar({
         </div>
         <h2
           id="calendar-month-label"
-          className="justify-self-center font-semibold text-lg tracking-tight"
+          className="justify-self-center font-semibold text-lg tracking-tight text-center"
           aria-live="polite"
         >
           {format(currentMonth, "MMMM yyyy", { locale })}

@@ -44,7 +44,7 @@ export default function SchedulingFormPage() {
 
   // Flow state
   const [profile, setProfile] = useState(null);
-  const [currentStep, setCurrentStep] = useState(2); // always start at step 2 (service-specific step)
+  const [currentStep, setCurrentStep] = useState(serviceFromUrl ? 2 : 1); // start at step 1 if no service, step 2 if service provided
   const [paymentStatus, setPaymentStatus] = useState('awaiting'); // 'awaiting' | 'success' | 'cancelled'
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -94,11 +94,16 @@ export default function SchedulingFormPage() {
     setCurrentStep(prev => prev + 1);
   };
 
-  // BACK: if at step 2, go to service selection page; otherwise go to previous step
+  // BACK: if at step 1, go to home; if at step 2, go to step 1; otherwise go to previous step
   const handleBack = () => {
+    if (currentStep === 1) {
+      // Go to home when at step 1
+      navigate('/');
+      return;
+    }
     if (currentStep === 2) {
-      // Go to service selection page when at step 2
-      navigate('/select-service');
+      // Go to step 1 (service selection) when at step 2
+      setCurrentStep(1);
       return;
     }
     setCurrentStep(prev => prev - 1);
@@ -111,6 +116,14 @@ export default function SchedulingFormPage() {
 
   const handlePitchDeckSelect = (deckId) => {
     handleUpdateField('pitchdeck', 'type', deckId);
+    handleNext();
+  };
+
+  const handleServiceSelect = (serviceId) => {
+    setFormData(prev => ({
+      ...prev,
+      serviceType: serviceId,
+    }));
     handleNext();
   };
 
@@ -184,9 +197,9 @@ export default function SchedulingFormPage() {
 
   // Flow definitions
   const flowConfig = {
-    consultation: { totalSteps: 5 },
-    coaching: { totalSteps: 5 },
-    pitchdeck: { totalSteps: 4 },
+    consultation: { totalSteps: 6 },
+    coaching: { totalSteps: 6 },
+    pitchdeck: { totalSteps: 5 },
   };
 
   // Read payment status from URL and clean it
@@ -238,7 +251,11 @@ export default function SchedulingFormPage() {
   // Step title (per-step, shown above content)
   const stepTitle = useMemo(() => {
     const st = formData.serviceType;
-    if (!st) return t('scheduling.selectServiceTitle', { defaultValue: 'Choose a service' });
+    
+    // Step 1: Service selection (always the same)
+    if (currentStep === 1) return t('scheduling.selectServiceTitle', { defaultValue: 'Choose a service' });
+    
+    if (!st) return t('scheduling.selectServiceTitle', { defaultValue: 'Service Selection' });
 
     if (st === 'consultation') {
       if (currentStep === 2) return t('scheduling.consultation.title', { defaultValue: 'Schedule your consultation' });
@@ -263,11 +280,31 @@ export default function SchedulingFormPage() {
     return t('scheduling.title', { defaultValue: 'Scheduling' });
   }, [currentStep, formData.serviceType, t]);
 
+  // Step indicator text (Step X / Y)
+  const stepIndicator = useMemo(() => {
+    const st = formData.serviceType;
+    const totalSteps = (st && flowConfig[st]) ? flowConfig[st].totalSteps : 6;
+    
+    return (
+      <>
+        <div className="text-white">Step</div>
+        <div className="text-white">
+          <span className="text-[#bfa200]">{currentStep}</span> / {totalSteps}
+        </div>
+      </>
+    );
+  }, [currentStep, formData.serviceType, flowConfig]);
+
   // Centralized disabled logic so we can style and remove motion when disabled
   const isNextDisabled = useMemo(() => {
     if (isProcessing) return true;
 
     const st = formData.serviceType;
+
+    // Step 1: Service selection
+    if (currentStep === 1) {
+      if (!st) return true;
+    }
 
     // Step 2 per-flow requirements
     if (currentStep === 2) {
@@ -301,13 +338,13 @@ export default function SchedulingFormPage() {
     return false;
   }, [currentStep, formData, isProcessing, paymentStatus]);
 
-  // If no service is selected, show service selection step
-  if (!formData.serviceType) {
+  // If no service is selected and we're not on step 1, show service selection step
+  if (!formData.serviceType && currentStep !== 1) {
     return (
       <div className="min-h-screen flex flex-col">
         <main className="flex-1 w-full flex items-center justify-center p-4">
           <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-2xl shadow-xl transition-shadow duration-200">
-            <FormTitle title={t('scheduling.selectServiceTitle', { defaultValue: 'Choose a service' })} />
+            <FormTitle title={stepTitle} />
             <ServiceSelectionStep />
           </div>
         </main>
@@ -329,7 +366,17 @@ export default function SchedulingFormPage() {
             </div>
           ) : (
             <div className="w-full rounded-2xl bg-[#002147] p-4 md:p-6 flex-shrink-0">
+              {/* Step title */}
+              <FormTitle title={stepTitle} />
+
               {/* Step content */}
+              {currentStep === 1 && (
+                <ServiceSelectionStep 
+                  selectedService={formData.serviceType}
+                  onSelectService={handleServiceSelect}
+                />
+              )}
+
               {currentStep === 2 && formData.serviceType === 'consultation' && (
                 <ConsultationScheduleStep
                   consultationData={formData.consultation}
@@ -396,6 +443,13 @@ export default function SchedulingFormPage() {
             >
               {t('scheduling.backButton')}
             </motion.button>
+
+            {/* Step indicator */}
+            <div className="flex-1 flex justify-center">
+              <span className="text-lg font-bold text-white">
+                {stepIndicator}
+              </span>
+            </div>
 
             {/* Next or Finish */}
             {paymentStatus !== 'success' && currentStep < totalSteps ? (

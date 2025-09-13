@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 import FormButton from '../common/Forms/FormButton';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next'; // 1. Import the hook
-import FormTitle from '../common/FormsTitle';
 import StripeLogo from '../../assets/images/stripe.svg';
 import SSLLogo from '../../assets/images/ssl.svg';
 
@@ -42,9 +41,6 @@ export default function PaymentStep({ paymentStatus, formData, price, onInitiate
 
     return (
         <div className="w-full">
-            {/* 5. Use translated text for summary view */}
-            <FormTitle title={t('scheduling.paymentStep.summaryTitle')} />
-
             <div className="border-2 border-[#BFA200] p-6 rounded-2xl space-y-4 md:flex md:flex-col md:justify-center md:items-center md:text-center shadow-xl hover:shadow-xl transition-shadow duration-200">
                 {formData.serviceType === 'consultation' && (
                     <div className="space-y-2">

@@ -5,7 +5,6 @@ import React from 'react';
 import Input from '../common/Forms/Input';
 import GoogleButton from '../common/Forms/GoogleButton';
 import { useTranslation } from 'react-i18next'; // 1. Import hooks
-import FormTitle from '../common/FormsTitle';
 
 // COMPONENT DEFINITION
 
@@ -23,14 +22,6 @@ export default function ContactInfoStep({ isLoggedIn, contactInfoData, onUpdateF
 
     return (
         <div className="w-full">
-            <FormTitle
-                title={
-                    isLoggedIn
-                        ? t('scheduling.contactInfo.loggedInTitle')
-                        : t('scheduling.contactInfo.loggedOutTitle')
-                }
-            />
-
             {isLoggedIn ? (
                 // LOGGED IN VIEW
                 <div className="space-y-4 text-white">
