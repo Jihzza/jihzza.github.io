@@ -284,7 +284,7 @@ export default function Layout() {
       <button
         onClick={handleScrollToTop}
         className={[
-          'fixed right-4 z-[40]',
+          'fixed right-4 z-[70]',
           'w-12 h-12 rounded-full',
           'bg-black',
           'text-[#bfa200]',
