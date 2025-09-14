@@ -124,53 +124,12 @@ export default function Layout() {
     }
   }, []);
 
-  // --- WELCOME PREVIEW TOAST STATE ---
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastText, setToastText] = useState('');
-  const toastTimerRef = useRef(null);
 
-  const showWelcomeToast = (text) => {
-    if (!text || location.pathname.startsWith('/chat')) return; // don't show on chat page
-    const cleaned = (text || '').replace(/\s+/g, ' ').trim();
-    const preview = cleaned.length > 120 ? `${cleaned.slice(0, 120)}…` : cleaned;
-    setToastText(preview || '');
-    setToastOpen(true);
-    clearTimeout(toastTimerRef.current);
-    toastTimerRef.current = setTimeout(() => setToastOpen(false), 6500);
-  };
-
-  useEffect(() => () => clearTimeout(toastTimerRef.current), []);
-
-  // Listen for chat:welcome events & read cached preview (if any)
+  // --- WELCOME MESSAGE SYSTEM: Trigger n8n welcome WF site-wide on first load (once per tab). ---
+  // This ensures users get a welcome message as soon as they enter the website.
   useEffect(() => {
-    const handler = (e) => {
-      const txt = e?.detail?.text || '';
-      try { sessionStorage.setItem('welcome_toast_shown', '1'); } catch { }
-      showWelcomeToast(txt);
-    };
-
-    window.addEventListener('chat:welcome', handler);
-
-    // Seed from cache if present and not yet shown in this tab
-    try {
-      const cached = sessionStorage.getItem('welcome_preview_text');
-      const already = sessionStorage.getItem('welcome_toast_shown');
-      if (cached && !already && !location.pathname.startsWith('/chat')) {
-        showWelcomeToast(cached);
-        sessionStorage.setItem('welcome_toast_shown', '1');
-      }
-    } catch { }
-
-    return () => window.removeEventListener('chat:welcome', handler);
-  }, [location.pathname]);
-
-  // --- OPTIONAL: Trigger n8n welcome WF site-wide on first load (once per tab). ---
-  // If this fails due to CORS in dev, the toast will still appear when ChatbotPage dispatches
-  // the `chat:welcome` event.
-  useEffect(() => {
-    const WELCOME_ENDPOINT = import.meta.env.VITE_N8N_WELCOME_WEBHOOK_URL;
-    if (!WELCOME_ENDPOINT) return; // no endpoint configured
-
+    console.log('🔍 Welcome effect triggered', { isAuthenticated, user: user?.id, location: location.pathname });
+    
     const SESSION_KEY = 'chatbot-session-id';
     let sid = sessionStorage.getItem(SESSION_KEY);
     if (!sid) {
@@ -178,43 +137,102 @@ export default function Layout() {
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
       sessionStorage.setItem(SESSION_KEY, sid);
+      console.log('🆔 Generated new session ID:', sid);
+    } else {
+      console.log('🆔 Using existing session ID:', sid);
     }
 
+    // Check if we've already triggered the welcome workflow for this session
     const welcomedKey = `welcomed:${sid}`;
-    if (sessionStorage.getItem(welcomedKey)) return; // already fired
-    sessionStorage.setItem(welcomedKey, '1'); // guard against double-run
+    if (sessionStorage.getItem(welcomedKey)) {
+      console.log('⏭️ Welcome workflow already triggered for this session, skipping');
+      return; // already triggered for this session
+    }
+    
+    // Check if there's already a pending welcome message
+    const pendingMessage = sessionStorage.getItem('pending_welcome_message');
+    if (pendingMessage) {
+      console.log('⏭️ Welcome message already pending, skipping new request');
+      return; // already have a pending message
+    }
+    
+    // Wait a bit for authentication to be ready, then trigger
+    const timeoutId = setTimeout(() => {
+      console.log('✅ Welcome workflow will be triggered for session:', sid);
+      
+      // Mark this session as having triggered the welcome workflow
+      sessionStorage.setItem(welcomedKey, '1');
 
-    const payload = {
-      session_id: sid,
-      user_id: isAuthenticated ? (user?.id ?? null) : null,
-      path: location.pathname,
-      referrer: document.referrer || null,
-      ts: new Date().toISOString(),
-    };
+      const WELCOME_ENDPOINT = import.meta.env.VITE_N8N_WELCOME_WEBHOOK_URL;
+    
+      // Default welcome message (fallback)
+      const defaultWelcomeMessage = "Hello! I'm Daniel, your personal coach. I'm here to help you with mindset, business, finance, and growth. How can I assist you today?";
+      
+      if (WELCOME_ENDPOINT) {
+        console.log('🚀 Triggering N8N welcome workflow...', {
+          session_id: sid,
+          user_id: isAuthenticated ? (user?.id ?? null) : null,
+          path: location.pathname,
+          referrer: document.referrer || null,
+          endpoint: WELCOME_ENDPOINT
+        });
+        
+        // Try n8n webhook first
+        const payload = {
+          session_id: sid,
+          user_id: isAuthenticated ? (user?.id ?? null) : null,
+          path: location.pathname,
+          referrer: document.referrer || null,
+          ts: new Date().toISOString(),
+        };
 
-    fetch(WELCOME_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      keepalive: true,
-    })
-      .then(async (res) => {
-        // Try to extract a preview for the toast
-        try {
-          const raw = await res.json();
-          const first = Array.isArray(raw) ? raw[0] : raw;
-          const text = first?.content ?? first?.value ?? first?.output ?? '';
-          if (text) {
-            sessionStorage.setItem('welcome_preview_text', text);
-            if (!location.pathname.startsWith('/chat')) showWelcomeToast(text);
-          }
-        } catch { }
-      })
-      .catch(() => {
-        // Ignore (likely CORS in dev); the chat page will raise the event instead
-      });
-    // run only once
-  }, []);
+        fetch(WELCOME_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          keepalive: true,
+        })
+          .then(async (res) => {
+            try {
+              const raw = await res.json();
+              const first = Array.isArray(raw) ? raw[0] : raw;
+              const text = first?.content ?? first?.value ?? first?.output ?? '';
+              if (text) {
+                // Store welcome message for chatbot page
+                sessionStorage.setItem('pending_welcome_message', text);
+                console.log('🎉 Welcome message received from N8N workflow:', text);
+                // Trigger notification badge update
+                window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
+              } else {
+                // Fallback to default if n8n returns empty response
+                sessionStorage.setItem('pending_welcome_message', defaultWelcomeMessage);
+                console.log('⚠️ N8N returned empty response, using default welcome message:', defaultWelcomeMessage);
+                window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
+              }
+            } catch (error) {
+              console.warn('Failed to parse n8n welcome response:', error);
+              sessionStorage.setItem('pending_welcome_message', defaultWelcomeMessage);
+              window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
+            }
+          })
+          .catch((error) => {
+            console.warn('❌ N8N welcome webhook failed:', error);
+            // Fallback to default message
+            sessionStorage.setItem('pending_welcome_message', defaultWelcomeMessage);
+            console.log('🔄 Using fallback welcome message due to webhook failure:', defaultWelcomeMessage);
+            window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
+          });
+      } else {
+        // No n8n webhook configured, use default message
+        console.log('⚠️ No VITE_N8N_WELCOME_WEBHOOK_URL configured, using default welcome message');
+        sessionStorage.setItem('pending_welcome_message', defaultWelcomeMessage);
+        console.log('🔄 Default welcome message stored:', defaultWelcomeMessage);
+        window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
+      }
+    }, 1000); // Wait 1 second for auth to be ready
+
+    return () => clearTimeout(timeoutId);
+  }, [isAuthenticated, user?.id, location.pathname]);
 
   // --- RENDER LOGIC ---
   return (
@@ -253,63 +271,39 @@ export default function Layout() {
         </div>
       )}
 
-      {/* WELCOME PREVIEW TOAST — slides up from behind the bottom nav */}
-      {!location.pathname.startsWith('/chat') && (
+
+      {/* SCROLL TO TOP BUTTON - Only show on home page */}
+      {location.pathname === '/' && (
         <button
-          type="button"
-          onClick={() => navigate('/chat')}
+          onClick={handleScrollToTop}
           className={[
-            'fixed left-1/2 -translate-x-1/2 w-[92%] md:w-[520px] text-left',
-            'rounded-3xl border px-4 py-3 shadow-xl',
-            'backdrop-blur bg-black/60 border-[#BFA200]',
-            'transition-transform duration-300 ease-out',
-            toastOpen ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0 pointer-events-none',
+            'fixed right-4 z-[70]',
+            'w-12 h-12 rounded-full',
+            'bg-black',
+            'text-[#bfa200]',
+            'shadow-lg backdrop-blur-sm',
+            'flex items-center justify-center',
+            'transition-all duration-200 ease-in-out',
+            'hover:scale-105 active:scale-95',
+            'focus:outline-none focus:ring focus:ring-[#bfa200]',
+            showScrollToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none',
           ].join(' ')}
           style={{
-            bottom: `calc(${(navBarRef.current?.offsetHeight || 0) + 8}px + env(safe-area-inset-bottom))`,
-            zIndex: 60, // above nav (z-50)
+            bottom: `calc(${(navBarRef.current?.offsetHeight || 0)}px + 1rem + env(safe-area-inset-bottom))`,
           }}
-          aria-live="polite"
+          aria-label="Scroll to top"
+          title="Scroll to top"
         >
-          <div className="text-[#BFA200] text-[11px] uppercase tracking-wide mb-0.5">
-            New from Daniel
-          </div>
-          <div className="text-white text-sm md:text-base leading-snug">
-            {toastText || 'Hello, my name is Daniel, how can I help you?'}
-          </div>
+          <svg
+            className="w-6 h-6"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M12 4l-7 7h4v7h6v-7h4z" />
+          </svg>
         </button>
       )}
-
-      {/* SCROLL TO TOP BUTTON */}
-      <button
-        onClick={handleScrollToTop}
-        className={[
-          'fixed right-4 z-[70]',
-          'w-12 h-12 rounded-full',
-          'bg-black',
-          'text-[#bfa200]',
-          'shadow-lg backdrop-blur-sm',
-          'flex items-center justify-center',
-          'transition-all duration-200 ease-in-out',
-          'hover:scale-105 active:scale-95',
-          'focus:outline-none focus:ring focus:ring-[#bfa200]',
-          showScrollToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none',
-        ].join(' ')}
-        style={{
-          bottom: `calc(${(navBarRef.current?.offsetHeight || 0)}px + 1rem + env(safe-area-inset-bottom))`,
-        }}
-        aria-label="Scroll to top"
-        title="Scroll to top"
-      >
-        <svg
-          className="w-6 h-6"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path d="M12 4l-7 7h4v7h6v-7h4z" />
-        </svg>
-      </button>
     </div>
   );
 }

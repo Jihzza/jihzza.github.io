@@ -52,6 +52,37 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t, i18n } = useTranslation();
+  
+  // State for notification badge
+  const [hasPendingWelcome, setHasPendingWelcome] = useState(false);
+
+  // Check for pending welcome message on mount and listen for new ones
+  useEffect(() => {
+    // Check if there's already a pending message
+    const pendingMessage = sessionStorage.getItem('pending_welcome_message');
+    if (pendingMessage) {
+      console.log('🔴 Notification badge activated - pending welcome message found:', pendingMessage);
+      setHasPendingWelcome(true);
+    }
+
+    // Listen for new welcome messages
+    const handleWelcomeReady = () => {
+      console.log('🔴 Notification badge activated - welcome message ready event received');
+      setHasPendingWelcome(true);
+    };
+
+    window.addEventListener('welcomeMessageReady', handleWelcomeReady);
+    return () => window.removeEventListener('welcomeMessageReady', handleWelcomeReady);
+  }, []);
+
+  // Clear notification when user visits chatbot page
+  useEffect(() => {
+    if (location.pathname === '/chat' || location.pathname.startsWith('/chat/')) {
+      console.log('✅ User entered chatbot page - notification badge cleared');
+      setHasPendingWelcome(false);
+      sessionStorage.removeItem('pending_welcome_message');
+    }
+  }, [location.pathname]);
 
   const avatarSrc =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
@@ -193,7 +224,7 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
                 </motion.div>
               ) : (
                 <motion.div
-                  className={["grid place-items-center", ICON_BOX_CLASS].join(" ")}
+                  className={["grid place-items-center relative", ICON_BOX_CLASS].join(" ")}
                   animate={{ scale: baseScale }}
                   whileHover={{ scale: hoverScale }}
                   whileTap={{ scale: 0.95 }}
@@ -204,6 +235,10 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
                     alt={item.label}
                     className="w-full h-full object-contain p-[1px] pointer-events-none select-none"
                   />
+                  {/* Notification badge for chatbot */}
+                  {item.isLogo && hasPendingWelcome && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black animate-pulse" />
+                  )}
                 </motion.div>
               )}
 

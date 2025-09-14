@@ -37,9 +37,26 @@ export default function ChatbotPage() {
     return id;
   });
 
-  const WELCOME_ENDPOINT = import.meta.env.VITE_N8N_WELCOME_WEBHOOK_URL;
+  // ---- Welcome message display ----
+  useEffect(() => {
+    // Only show welcome message for new sessions (not existing ones from URL params)
+    if (isExistingSession) return;
+    
+    // Check if there's a pending welcome message
+    const pendingMessage = sessionStorage.getItem('pending_welcome_message');
+    if (pendingMessage) {
+      console.log('💬 Displaying welcome message in chatbot:', pendingMessage);
+      // Show the stored welcome message
+      setMessages(prev => [...prev, { from: "bot", text: pendingMessage }]);
+      // Clear the pending message
+      sessionStorage.removeItem('pending_welcome_message');
+      console.log('✅ Welcome message displayed and cleared from storage');
+    } else {
+      console.log('ℹ️ No pending welcome message found for this session');
+    }
+  }, [isExistingSession]);
 
-  // ---- Initializer: load messages first, then (maybe) send welcome ----
+  // ---- Initializer: load messages for this session ----
   useEffect(() => {
     if (!user?.id || !sessionId) return;
     if (initedSessionsRef.current.has(sessionId)) return; // already initialized this session
@@ -48,12 +65,11 @@ export default function ChatbotPage() {
     (async () => {
       setLoading(true);
       try {
-        // 1) Load any prior messages for this session
-        let mapped = [];
+        // Load any prior messages for this session
         try {
           const { data, error } = await getMessagesBySession(user.id, sessionId);
           if (error) throw error;
-          mapped = (data ?? []).map((m) => ({
+          const mapped = (data ?? []).map((m) => ({
             from: m.role === "assistant" ? "bot" : "user",
             text: m.content,
             created_at: m.created_at,
@@ -62,40 +78,11 @@ export default function ChatbotPage() {
         } catch (e) {
           console.error("getMessagesBySession failed:", e);
         }
-
-        // 2) Only welcome when it’s truly a brand-new session:
-        // - no :sessionId in URL
-        // - DB returned 0 messages
-        // - we haven’t welcomed this session before in this tab
-        const welcomedKey = `welcomed:${sessionId}`;
-        if (!isExistingSession && mapped.length === 0 && !sessionStorage.getItem(welcomedKey)) {
-          if (WELCOME_ENDPOINT) {
-            try {
-              const res = await fetch(WELCOME_ENDPOINT, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ session_id: sessionId, user_id: user?.id }),
-              });
-              const raw = await res.json();
-              const item = Array.isArray(raw) ? raw[0] : raw;
-              const { content, value, output } = item || {};
-              const text = content ?? value ?? output ?? "👋";
-              setMessages((prev) => [...prev, { from: "bot", text }]);
-              // Broadcast a preview so the shell can show the toast on other pages
-              try {
-                sessionStorage.setItem("welcome_preview_text", text);
-                window.dispatchEvent(new CustomEvent("chat:welcome", { detail: { text, sessionId } }));
-              } catch { } sessionStorage.setItem(welcomedKey, "1");
-            } catch (e) {
-              console.error("Welcome fetch failed:", e);
-            }
-          }
-        }
       } finally {
         setLoading(false);
       }
     })();
-  }, [user?.id, sessionId, isExistingSession, WELCOME_ENDPOINT]);
+  }, [user?.id, sessionId]);
 
   // ---- Start a brand-new conversation (header icon) ----
   const startNewConversation = () => {
@@ -134,9 +121,10 @@ export default function ChatbotPage() {
     setUserText("");
     setLoading(true);
 
+    // Use environment variables with fallbacks to hardcoded URLs
     const webhooks = [
-      "https://rafaello.app.n8n.cloud/webhook/filter",
-      "https://rafaello.app.n8n.cloud/webhook/decision",
+      import.meta.env.VITE_N8N_FILTER_WEBHOOK_URL || "https://rafaello.app.n8n.cloud/webhook/filter",
+      import.meta.env.VITE_N8N_WEBHOOK_URL || "https://rafaello.app.n8n.cloud/webhook/decision",
     ];
 
     try {
@@ -200,7 +188,11 @@ export default function ChatbotPage() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto" ref={chatListRef}>
         <div className="max-w-4xl mx-auto">
-          <ChatMessages messages={messages} loading={loading} scrollRef={chatListRef} />
+          <ChatMessages 
+            messages={messages} 
+            loading={loading} 
+            scrollRef={chatListRef} 
+          />
         </div>
       </div>
 

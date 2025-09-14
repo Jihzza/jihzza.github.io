@@ -16,7 +16,7 @@ const exploreLinksHrefs = [
   '/#interactive-sections', '/#interactive-sections', '/#interactive-sections'
 ];
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, style, topOffset, bottomOffset, topOffsetSelector, bottomOffsetSelector }) {
   const { t } = useTranslation();

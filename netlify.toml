@@ -4,6 +4,10 @@
   publish = "dist"               # The folder that contains the built site (Vite's default)
   functions = "netlify/functions" # The folder where our serverless functions live
 
+# Environment Variables
+[build.environment]
+  VITE_N8N_WELCOME_WEBHOOK_URL = "https://rafaello.app.n8n.cloud/webhook/decision"
+
 # Redirects and Rewrites
 [[redirects]]
   from = "/api/*"
