@@ -20,12 +20,14 @@ export default function InfoBlock({ iconSrc, altText, children }) {
     // - `space-y-4`: Adds vertical spacing between the icon and the text.
     <div className="flex flex-col items-center space-y-2">
 
-      {/* The icon is displayed here. Its size is controlled by Tailwind classes. */}
-      <img
-        src={iconSrc}
-        alt={altText}
-        className="w-4 md:w-6" // A medium, distinct size for the icon.
-      />
+      {/* Icon inside a styled box */}
+      <div className="relative overflow-hidden rounded-2xl shadow-[#002147] shadow-[0_0_5px_rgba(0,33,71,0.3)] text-white cursor-pointer hover:shadow-white hover:shadow-[0_0_10px_rgba(0,33,71,0.4)] transition-all duration-20 p-4">
+        <img
+          src={iconSrc}
+          alt={altText}
+          className="w-14 md:w-16 h-14 md:h-16"
+        />
+      </div>
 
       {/* The text content passed in as children is rendered here. */}
       {/* We ensure the text is centered and has a constrained width for readability. */}

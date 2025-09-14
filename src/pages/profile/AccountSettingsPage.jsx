@@ -683,17 +683,12 @@ export default function SettingsPage() {
                   onClick={() => setActive(n.id)}
                   aria-current={isActive ? 'true' : undefined}
                   className={cn(
-                    // keep your original sizing/shape
                     'mr-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm',
-                    // colors for active/inactive (removed scale-105 utility; Motion handles scale)
                     isActive
                       ? 'bg-white/50 text-white font-medium shadow-lg'
                       : 'bg-transparent text-white border-2 border-white/20 hover:bg-white/10 hover:text-white hover:shadow-lg transition-shadow duration-200',
-                    // hand cursor for obvious clickability
                     'cursor-pointer',
-                    // focus ring stays for a11y
                   )}
-                  // header-like micro-interactions
                   animate={{ scale: baseScale }}
                   whileHover={{ scale: hoverScale }}
                   whileTap={{ scale: 0.95 }}
