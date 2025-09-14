@@ -27,8 +27,7 @@ export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
                 {/* 6. The mapping logic remains the same, but it now uses the dynamic `coachingPlans` array */}
                 {coachingPlans.map((plan) => {
                     const isSelected = selectedPlan === plan.id;
-                    const baseScale = isSelected ? 1.06 : 1;
-                    const hoverScale = isSelected ? 1.03 : 1.03;
+                    const hoverScale = 1.03;
 
                     return (
                         <motion.button
@@ -37,7 +36,6 @@ export default function CoachingPlanStep({ selectedPlan, onSelectPlan }) {
                             onClick={() => onSelectPlan(plan.id)}
                             aria-pressed={isSelected ? 'true' : 'false'}
                             // header-style micro-interactions + pointer cursor
-                            animate={{ scale: baseScale }}
                             whileHover={{ scale: hoverScale }}
                             whileTap={{ scale: 0.95 }}
                             transition={{ duration: 0.04 }}
