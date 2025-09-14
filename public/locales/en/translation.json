@@ -560,6 +560,12 @@
         "required": "Please describe the issue in detail",
         "placeholder": "Describe the steps to reproduce the bug, what you expected to happen, and what actually happened."
       },
+      "image": {
+        "label": "Screenshot (Optional)",
+        "optional": "optional",
+        "uploadText": "Upload an image",
+        "helpText": "PNG, JPG, GIF up to 10MB"
+      },
       "submitButton": "Submit Bug Report"
     }
   },

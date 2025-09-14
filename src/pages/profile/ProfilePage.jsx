@@ -49,12 +49,12 @@ export default function ProfilePage() {
     const fetchAllData = async () => {
       if (!user) return;
       setLoading(true);
-      
+
       try {
         // Fetch profile data
         const { data: profileData, error: profileError } = await getProfile(user.id);
         if (profileError) throw profileError;
-        
+
         if (profileData) {
           const finalProfile = {
             ...profileData,
@@ -96,7 +96,7 @@ export default function ProfilePage() {
           'standard': 90, // €90/month for standard plan  
           'premium': 230  // €230/month for premium plan
         };
-        
+
         const subscriptionsDataFormatted = subscriptionsData?.map(subscription => {
           const planId = subscription.plan_id?.toLowerCase();
           const price = planPricing[planId] || 0;
@@ -169,13 +169,6 @@ export default function ProfilePage() {
       <div className="p-4 space-y-6">
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Finances Box - Top Left */}
-          <FinancesBox
-            consultationEarnings={dashboardData.finances.consultationEarnings}
-            coachingRevenue={dashboardData.finances.coachingRevenue}
-            pitchDeckEarnings={dashboardData.finances.pitchDeckEarnings}
-            to="/profile/finances"
-          />
 
           {/* Consultations Box - Top Right */}
           <ConsultationsBox
@@ -205,6 +198,14 @@ export default function ProfilePage() {
           <ChatbotHistoryBox
             conversations={dashboardData.chatbotHistory}
             to="/profile/chatbot-history"
+          />
+
+          {/* Finances Box - Top Left */}
+          <FinancesBox
+            consultationEarnings={dashboardData.finances.consultationEarnings}
+            coachingRevenue={dashboardData.finances.coachingRevenue}
+            pitchDeckEarnings={dashboardData.finances.pitchDeckEarnings}
+            to="/profile/finances"
           />
 
           {/* Account Settings Box */}

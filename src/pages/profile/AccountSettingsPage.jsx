@@ -15,6 +15,7 @@ import {
   ArrowPathIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import { motion } from 'framer-motion';
 import Input from '../../components/common/Forms/Input';
 
 /**************************************
@@ -670,10 +671,38 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr]">
           {/* Sidebar on desktop, top tabs on mobile */}
           <div className="hidden lg:block"><Sidebar active={active} onChange={setActive} /></div>
-          <div className="lg:hidden -mx-1 mb-1 flex overflow-x-auto rounded-lg border border-white/20 p-1 bg-white/10 backdrop-blur-md shadow-sm">
-            {NAV.map((n) => (
-              <button key={n.id} onClick={() => setActive(n.id)} className={cn("mr-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm transition-all duration-200", active === n.id ? "bg-[#bfa200] text-[#002147]" : "text-white/80 hover:bg-white/15")}>{n.label}</button>
-            ))}
+          <div className="lg:hidden -mx-1 mb-1 flex overflow-x-auto hide-scrollbar rounded-lg border border-white/20 p-1 bg-white/10 backdrop-blur-md shadow-sm">
+            {NAV.map((n) => {
+              const isActive = active === n.id;
+              const baseScale = isActive ? 1.06 : 1;
+              const hoverScale = isActive ? 1.09 : 1.06;
+
+              return (
+                <motion.button
+                  key={n.id}
+                  onClick={() => setActive(n.id)}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={cn(
+                    // keep your original sizing/shape
+                    'mr-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm',
+                    // colors for active/inactive (removed scale-105 utility; Motion handles scale)
+                    isActive
+                      ? 'bg-white/50 text-white font-medium shadow-lg'
+                      : 'bg-transparent text-white border-2 border-white/20 hover:bg-white/10 hover:text-white hover:shadow-lg transition-shadow duration-200',
+                    // hand cursor for obvious clickability
+                    'cursor-pointer',
+                    // focus ring stays for a11y
+                  )}
+                  // header-like micro-interactions
+                  animate={{ scale: baseScale }}
+                  whileHover={{ scale: hoverScale }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.12 }}
+                >
+                  {n.label}
+                </motion.button>
+              );
+            })}
           </div>
 
           <div className="min-w-0 space-y-6">{Section}</div>
