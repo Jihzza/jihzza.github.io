@@ -163,7 +163,7 @@ export default function Layout() {
       // Mark this session as having triggered the welcome workflow
       sessionStorage.setItem(welcomedKey, '1');
 
-      const WELCOME_ENDPOINT = import.meta.env.VITE_N8N_WELCOME_WEBHOOK_URL;
+      const WELCOME_ENDPOINT = import.meta.env.VITE_N8N_WELCOME_WEBHOOK_URL || 'https://rafaello.app.n8n.cloud/webhook/welcome-message';
     
       // Default welcome message (fallback)
       const defaultWelcomeMessage = "Hello! I'm Daniel, your personal coach. I'm here to help you with mindset, business, finance, and growth. How can I assist you today?";

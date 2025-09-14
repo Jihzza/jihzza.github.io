@@ -41,19 +41,24 @@ export default function ChatbotPage() {
   useEffect(() => {
     // Only show welcome message for new sessions (not existing ones from URL params)
     if (isExistingSession) return;
-    
-    // Check if there's a pending welcome message
-    const pendingMessage = sessionStorage.getItem('pending_welcome_message');
-    if (pendingMessage) {
-      console.log('💬 Displaying welcome message in chatbot:', pendingMessage);
-      // Show the stored welcome message
-      setMessages(prev => [...prev, { from: "bot", text: pendingMessage }]);
-      // Clear the pending message
-      sessionStorage.removeItem('pending_welcome_message');
-      console.log('✅ Welcome message displayed and cleared from storage');
-    } else {
-      console.log('ℹ️ No pending welcome message found for this session');
-    }
+
+    const showPending = () => {
+      const pendingMessage = sessionStorage.getItem('pending_welcome_message');
+      if (pendingMessage) {
+        console.log('💬 Displaying welcome message in chatbot:', pendingMessage);
+        setMessages(prev => [...prev, { from: "bot", text: pendingMessage }]);
+        sessionStorage.removeItem('pending_welcome_message');
+        console.log('✅ Welcome message displayed and cleared from storage');
+      }
+    };
+
+    // Show if already available
+    showPending();
+
+    // Also handle late arrivals
+    const handler = () => showPending();
+    window.addEventListener('welcomeMessageReady', handler);
+    return () => window.removeEventListener('welcomeMessageReady', handler);
   }, [isExistingSession]);
 
   // ---- Initializer: load messages for this session ----
@@ -124,7 +129,7 @@ export default function ChatbotPage() {
     // Use environment variables with fallbacks to hardcoded URLs
     const webhooks = [
       import.meta.env.VITE_N8N_FILTER_WEBHOOK_URL || "https://rafaello.app.n8n.cloud/webhook/filter",
-      import.meta.env.VITE_N8N_WEBHOOK_URL || "https://rafaello.app.n8n.cloud/webhook/decision",
+      import.meta.env.VITE_N8N_DECISION_WEBHOOK_URL || "https://rafaello.app.n8n.cloud/webhook/brain",
     ];
 
     try {
@@ -186,7 +191,7 @@ export default function ChatbotPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto" ref={chatListRef}>
+      <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto">
           <ChatMessages 
             messages={messages} 

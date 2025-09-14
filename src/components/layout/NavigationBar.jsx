@@ -84,7 +84,6 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
     if (location.pathname === '/chat' || location.pathname.startsWith('/chat/')) {
       console.log('✅ User entered chatbot page - notification badge cleared');
       setHasPendingWelcome(false);
-      sessionStorage.removeItem('pending_welcome_message');
     }
   }, [location.pathname]);
 
