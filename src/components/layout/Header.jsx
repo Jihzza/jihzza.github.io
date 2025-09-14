@@ -159,9 +159,11 @@ const Header = forwardRef(({ onMenuClick }, ref) => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 style={{ top: `${headerHeight}px` }}
-                className="fixed inset-x-0 z-50 bg-gradient-to-b from-[#002147] to-transparent shadow-lg"
+                className="fixed inset-x-0 z-50"
             >
-                <div className="w-full py-3">
+                {/* Background with mask effect */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#002147] from-10% via-[#002147] via-85% to-transparent"></div>
+                <div className="relative w-full py-3">
                     <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar px-4">
                         {languages.map((lang) => {
                             const isSelected = i18n.language === lang.key;
