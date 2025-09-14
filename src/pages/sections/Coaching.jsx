@@ -4,8 +4,9 @@ import { useTranslation } from "react-i18next";
 import SectionCta from "../../components/ui/SectionCta";
 import SectionText from "../../components/ui/SectionText";
 import BoxesGrid from "../../components/ui/BoxesGrid";
+import BoxesGridText from "../../components/ui/BoxesGridText";
 import StepsCarousel from "../../components/ui/StepsCarousel";
-import TierCards from "../../components/coaching/TierCards";
+// import TierCards from "../../components/coaching/TierCards";
 import Button from "../../components/ui/Button";
 
 import SocialMediaIcon from '../../assets/icons/Phone Branco.svg';
@@ -93,13 +94,17 @@ export default function Coaching({ onBookCoaching }) {
         showNavigation={true}
       />
 
-      <TierCards
-        tiers={enrichedTiers}
-        selectedPlanId={selectedPlanId}
-        onTierSelect={setSelectedPlanId}
+      <BoxesGridText
+        items={enrichedTiers.map(t => ({
+          id: t.id,
+          label: t.planName,
+          paragraph: `${t.price}€`,
+          expandedText: `${t.planDesc} ${t.planDesc} ${t.planDesc}`,
+        }))}
+        onSelectItem={setSelectedPlanId}
       />
 
-      <div className="mt-6">
+      <div className="mt-4">
         <SectionCta sectionRef={sectionRef}>
           <Button onClick={onClick}>
             {buttonText}

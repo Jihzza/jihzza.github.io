@@ -31,7 +31,7 @@ export default function PitchDeck({ onBookPitchDeck }) {
 
             <BoxesGrid items={pitchDecks} showLabels={false} imageSize="w-16 h-16" fixedHeight={true} showExpandedImage={true} />
 
-            <div>
+            <div className="mt-6">
                 <SectionCta sectionRef={sectionRef}>
                     <Button onClick={onBookPitchDeck}>{t('pitchDeck.buttonText')}</Button>
                 </SectionCta>
