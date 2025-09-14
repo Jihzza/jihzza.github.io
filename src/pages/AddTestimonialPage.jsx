@@ -15,6 +15,7 @@ export default function AddTestimonialPage() {
     const [profileData, setProfileData] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -38,6 +39,7 @@ export default function AddTestimonialPage() {
 
         setIsSubmitting(true);
         setError(null);
+        setSuccess(false);
 
         const fullData = {
             ...testimonialData,
@@ -45,13 +47,34 @@ export default function AddTestimonialPage() {
             existingAvatarUrl: profileData?.avatar_url,
         };
 
-        const { error: createError } = await createTestimonial(fullData, imageFile);
+        try {
+            const { data, error: createError } = await createTestimonial(fullData, imageFile);
 
-        if (createError) {
-            setError(createError.message);
+            if (createError) {
+                // Provide more specific error messages based on the error type
+                let errorMessage = createError.message;
+                
+                if (createError.message.includes('duplicate key') || createError.message.includes('unique constraint')) {
+                    errorMessage = "You have already submitted a testimonial. Your previous testimonial has been updated.";
+                } else if (createError.message.includes('Invalid key')) {
+                    errorMessage = "There was an issue with the image file. Please try with a different image.";
+                } else if (createError.message.includes('storage')) {
+                    errorMessage = "There was an issue uploading your image. Please try again.";
+                }
+                
+                setError(errorMessage);
+                setIsSubmitting(false);
+            } else {
+                // Success - show success message and navigate after delay
+                setSuccess(data?._isUpdate ? 'updated' : 'created');
+                setTimeout(() => {
+                    navigate('/');
+                }, 2000);
+            }
+        } catch (err) {
+            console.error('Unexpected error:', err);
+            setError("An unexpected error occurred. Please try again later.");
             setIsSubmitting(false);
-        } else {
-            navigate('/');
         }
     };
 
@@ -67,6 +90,17 @@ export default function AddTestimonialPage() {
             />
             
             {error && <p className="mt-4 text-sm text-red-600 text-center">{error}</p>}
+            {success && (
+                <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded text-center">
+                    <p className="font-semibold">
+                        {success === 'updated' 
+                            ? 'Testimonial updated successfully!' 
+                            : 'Testimonial submitted successfully!'
+                        }
+                    </p>
+                    <p className="text-sm">Redirecting you back to the home page...</p>
+                </div>
+            )}
         </div>
     );
 }

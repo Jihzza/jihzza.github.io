@@ -44,7 +44,7 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
             type="file"
             {...register('image')}
             accept="image/*"
-            className="mt-1"
+            className="mt-1 text-white"
           />
         </div>
       </div>
@@ -55,7 +55,7 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
           id="name"
           type="text"
           {...register('name', { required: t('addTestimonial.yourNameRequired') })}
-          className="mt-1"
+          className="mt-1 text-white"
           readOnly
         />
         {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
@@ -70,7 +70,7 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
             required: t('addTestimonial.testimonialRequired'),
             maxLength: { value: 120, message: t('addTestimonial.testimonialMaxLength') }
           })}
-          className="w-full px-3 py-2 border-2 border-[#BFA200] rounded-md shadow-sm mt-1 focus:ring-indigo-500 focus:border-indigo-500"
+          className="w-full px-3 py-2 border-2 border-[#BFA200] rounded-md shadow-sm mt-1 text-white"
         />
         {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
       </div>
