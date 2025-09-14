@@ -53,8 +53,8 @@ export default function ScrollableSelector({ title, options = [], selectedValue,
 
       <div className="relative group">
         {/* gradient edges */}
-        <div className="absolute top-0 bottom-0 left-0 w-8 bg-gradient-to-r from-[#002147] to-transparent z-10 pointer-events-none" />
-        <div className="absolute top-0 bottom-0 right-0 w-8 bg-gradient-to-l from-[#002147] to-transparent z-10 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 left-0 w-8 bg-gradient-to-r from-[#002147] to-transparent z-0 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 right-0 w-8 bg-gradient-to-l from-[#002147] to-transparent z-0 pointer-events-none" />
 
         <div
           ref={containerRef}
@@ -75,12 +75,12 @@ export default function ScrollableSelector({ title, options = [], selectedValue,
                 }}
                 disabled={disabled}
                 className={[
-                  'flex-shrink-0 px-3 py-1 rounded-lg border-2 transition-all duration-200 ease-in-out whitespace-nowrap md:px-5 md:py-2 text-sm md:text-base shadow-xl lg:text-sm lg:px-3 lg:py-1',
+                  'flex-shrink-0 px-3 py-1 rounded-lg transition-all duration-200 ease-in-out whitespace-nowrap md:px-5 md:py-2 text-sm md:text-base shadow-xl lg:text-sm lg:px-3 lg:py-1 bg-white/10 backdrop-blur-md border border-white/20',
                   disabled
                     ? 'text-gray-500 border-gray-600/60 cursor-not-allowed opacity-60'
                     : selected
-                      ? 'bg-[#BFA200] text-black border-[#BFA200] scale-105 shadow-xl font-bold'
-                      : 'bg-transparent text-white border-gray-600 hover:border-[#BFA200] shadow-xl hover:bg-gray-800',
+                      ? 'bg-white/40 text-white border-white/50 scale-105 shadow-xl font-bold'
+                      : 'text-white hover:border-[#bfa200] shadow-xl hover:bg-white/15',
                 ].join(' ')}
                 aria-pressed={selected}
                 aria-disabled={disabled}

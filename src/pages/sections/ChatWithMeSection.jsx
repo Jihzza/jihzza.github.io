@@ -3,7 +3,7 @@ import React from 'react';
 import SectionTextBlack from '../../components/common/SectionTextBlack';
 import Button from '../../components/ui/Button';
 import InfoBlock from '../../components/common/InfoBlock';
-import ChatIcon from '../../assets/icons/Dagalow Preto.svg';
+import ChatIcon from '../../assets/icons/Dagalow Yellow.svg';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom'; // <— add this
 

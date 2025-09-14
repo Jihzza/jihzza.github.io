@@ -21,7 +21,7 @@ export default function ForgotPassword({
     <form onSubmit={handleSubmit(onSubmit)} className={containerClassName} noValidate>
       {/* Email */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-900 md:text-base">
+        <label htmlFor="email" className="block text-sm font-medium text-white md:text-base">
           Enter your account email
         </label>
         <div className="mt-1">
@@ -49,9 +49,9 @@ export default function ForgotPassword({
       </FormButton>
 
       {/* Back to login */}
-      <p className="text-center text-sm text-gray-700">
+      <p className="text-center text-sm text-white/80">
         Go back to{' '}
-        <Link to="/login" className="font-semibold text-indigo-600 underline">
+        <Link to="/login" className="font-semibold text-[#bfa200] hover:text-[#bfa200]/80 underline">
           Log in
         </Link>
       </p>

@@ -15,6 +15,7 @@ import {
   ArrowPathIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import Input from '../../components/common/Forms/Input';
 
 /**************************************
  * SettingsPage.jsx — Brand palette applied
@@ -54,14 +55,6 @@ const Label = ({ children, htmlFor, hint }) => (
   </label>
 );
 
-const Input = ({ id, type = "text", ...props }) => (
-  <input
-    id={id}
-    type={type}
-    className="mt-1 block w-full rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-[#bfa200] px-3 py-2"
-    {...props}
-  />
-);
 
 const Select = ({ id, children, ...props }) => (
   <select

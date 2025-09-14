@@ -251,10 +251,10 @@ export default function SchedulingFormPage() {
   // Step title (per-step, shown above content)
   const stepTitle = useMemo(() => {
     const st = formData.serviceType;
-    
+
     // Step 1: Service selection (always the same)
     if (currentStep === 1) return t('scheduling.selectServiceTitle', { defaultValue: 'Choose a service' });
-    
+
     if (!st) return t('scheduling.selectServiceTitle', { defaultValue: 'Service Selection' });
 
     if (st === 'consultation') {
@@ -284,7 +284,7 @@ export default function SchedulingFormPage() {
   const stepIndicator = useMemo(() => {
     const st = formData.serviceType;
     const totalSteps = (st && flowConfig[st]) ? flowConfig[st].totalSteps : 6;
-    
+
     return (
       <>
         <div className="text-white">Step</div>
@@ -360,18 +360,18 @@ export default function SchedulingFormPage() {
         <div className="w-full max-w-2xl mx-auto px-4 py-4">
           {/* Payment success branch shows confirmation only */}
           {paymentStatus === 'success' ? (
-            <div className="w-full rounded-2xl shadow-xl bg-[#002147] p-4 md:p-6 space-y-4">
+            <div className="w-full rounded-2xl shadow-xl bg-white/10 p-4 md:p-6 space-y-4">
               <FormTitle title={t('scheduling.confirmation.title', { defaultValue: 'Payment Successful!' })} />
               <ConfirmationStep />
             </div>
           ) : (
-            <div className="w-full rounded-2xl bg-[#002147] p-4 md:p-6 flex-shrink-0">
+            <div className="w-full rounded-2xl bg-white/10 border border-white/20 p-4 md:p-6 flex-shrink-0">
               {/* Step title */}
               <FormTitle title={stepTitle} />
 
               {/* Step content */}
               {currentStep === 1 && (
-                <ServiceSelectionStep 
+                <ServiceSelectionStep
                   selectedService={formData.serviceType}
                   onSelectService={handleServiceSelect}
                   showSelectedState={false}
@@ -420,8 +420,6 @@ export default function SchedulingFormPage() {
               {(formData.serviceType === 'pitchdeck' && currentStep === 4) && <ChatbotStep />}
               {(formData.serviceType !== 'pitchdeck' && currentStep === 5) && <ChatbotStep />}
 
-              {/* Bottom padding so content won't be hidden under sticky controls */}
-              <div style={{ height: '88px' }} />
             </div>
           )}
         </div>

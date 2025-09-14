@@ -27,11 +27,7 @@ export default function EditProfilePage() {
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
 
-    // shared input style to keep a consistent look
-    const inputClass =
-        'w-full mt-2 px-3 py-2 border-2 border-[#BFA200] rounded-lg shadow-sm placeholder-white/40 ' +
-        'bg-transparent text-white focus:outline-none focus:ring-1 focus:ring-[#BFA200] focus:border-[#BFA200] ' +
-        'md:text-lg';
+    // Use common Input component for consistency
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -128,7 +124,7 @@ export default function EditProfilePage() {
                                 disabled
                                 aria-readonly="true"
                                 autoComplete="email"
-                                className={inputClass}
+                                className="md:text-lg"
                                 aria-describedby="email-info"
                             />
                             <div id="email-info" className="flex items-center mt-2 text-xs text-white/60">
@@ -153,7 +149,7 @@ export default function EditProfilePage() {
                                     onChange={(e) => setUsername(normalizeUsername(e.target.value))}
                                     required
                                     autoComplete="username"
-                                    className={`pl-7 ${inputClass}`}
+                                    className="pl-7 md:text-lg"
                                 />
                             </div>
                         </div>
@@ -170,7 +166,7 @@ export default function EditProfilePage() {
                                 onChange={(e) => setFullName(e.target.value)}
                                 required
                                 autoComplete="name"
-                                className={inputClass}
+                                className="md:text-lg"
                             />
                         </div>
 
@@ -186,7 +182,7 @@ export default function EditProfilePage() {
                                 autoComplete="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className={inputClass}
+                                className="md:text-lg"
                             />
                         </div>
                     </div>

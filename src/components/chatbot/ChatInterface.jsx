@@ -76,14 +76,14 @@ export default function ChatInterface({
     // RENDER LOGIC
     return (
         // Step 2: Update the main container styling
-        <div className={`flex flex-col w-full bg-transparent rounded-lg shadow-sm ${containerHeight}`}>
+        <div className={`flex flex-col w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-sm ${containerHeight}`}>
             {/* Message Display Area */}
             {/* Step 3: Remove padding from the scroll area */}
             <div className="py-4 overflow-y-auto flex-1">
                 {messages.map((msg, index) => (
                     <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`}>
                         {/* Step 4: Update message bubble styling */}
-                        <div className={`w-full p-1 flex items-start gap-2 ${msg.sender === 'bot' ? 'rounded-xl rounded-tl-sm bg-[#333333]/70 md:text-lg' : ''
+                        <div className={`w-full p-1 flex items-start gap-2 ${msg.sender === 'bot' ? 'rounded-xl rounded-tl-sm bg-white/10 backdrop-blur-md border border-white/20 md:text-lg shadow-sm' : ''
                             }`}>
                             {/* Step 5: Wrap user message to align it properly */}
                             <span className={`w-auto px-4 py-2 text-white ${msg.sender === 'user'
@@ -98,7 +98,7 @@ export default function ChatInterface({
                 {/* Step 6: Update loading indicator styling */}
                 {isLoading && (
                     <div className="flex justify-start">
-                        <div className="w-full p-4 flex items-center gap-2 bg-[#333333]/70">
+                        <div className="w-full p-4 flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-sm">
                             <img src={BotIcon} alt="Bot Avatar" className="w-6 h-6" />
                             <span className="animate-pulse text-white">...</span>
                         </div>
@@ -109,7 +109,7 @@ export default function ChatInterface({
 
             {/* Message Input Form */}
             {/* Step 7: Update input area styling */}
-            <div>
+            <div className="p-4">
                 <form onSubmit={handleSendMessage} className="relative flex items-center">
                     <input
                         type="text"
@@ -118,13 +118,13 @@ export default function ChatInterface({
                         placeholder={inputPlaceholder}
                         disabled={isLoading}
                         // Step 8: Update input field styling
-                        className="w-full bg-transparent border-2 border-[#bfa200] rounded-full py-3 pl-4 pr-14 text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-[#BFA200] md:text-lg"
+                        className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl py-3 pl-4 pr-14 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-[#bfa200] md:text-lg shadow-sm"
                     />
                     {/* Step 9: Update send button styling */}
                     <button
                         type="submit"
                         disabled={isLoading || !input.trim()}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-2 text-white hover:bg-white/20 disabled:text-gray-500"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-2 text-[#bfa200] hover:bg-[#bfa200]/10 hover:scale-110 disabled:text-white/50 disabled:cursor-not-allowed transition-all duration-200"
                         aria-label="Send message"
                     >
                         <PaperAirplaneIcon className="w-6 h-6 md:w-7 md:h-7" />

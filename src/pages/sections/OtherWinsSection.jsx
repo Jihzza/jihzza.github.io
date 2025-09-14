@@ -24,7 +24,8 @@ export default function OtherWinsSection() {
           <FullScreenVideo
             src={TransformationVideo}
             // poster={Poster}
-            autoPlay={false}
+            autoPlay={true}
+            muted={true}
             className="self-center rounded-xl mt-6 w-45 md:w-55 lg:w-45"
           />
         </div>

@@ -1,7 +1,7 @@
 // src/pages/HomePage.jsx
 
-import React, { useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef, useEffect, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import HeroSection from './sections/HeroSection';
 import AboutMeSection from './sections/AboutMeSection';
 import ConsultationsSection from './sections/Consultations';
@@ -14,14 +14,17 @@ import SignupSection from './sections/SignupSection';
 import ChatWithMeSection from './sections/ChatWithMeSection';
 import InteractiveSections from './sections/InteractiveSections';
 import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
-import SectionTextBlack from '../components/common/SectionTextBlack';
+import { saveHomeScrollPosition, getHomeScrollPosition, scrollToPosition } from '../utils/scrollPositionManager';
+import { ScrollRootContext } from '../contexts/ScrollRootContext';
 
 import { useTranslation } from 'react-i18next';
 
 export default function HomePage() {
     const navigate = useNavigate();
+    const location = useLocation();
     const schedulingRef = useRef(null);
     const { t } = useTranslation();
+    const scrollContainer = useContext(ScrollRootContext);
 
     // All buttons on home page go directly to step 2 (specific service step)
     const handleScheduleService = (serviceId, details = null) => {
@@ -90,6 +93,46 @@ export default function HomePage() {
     // The `return` statement must be OUTSIDE the `useEffect` block.
     // =================================================================
 
+    // Scroll position tracking and restoration
+    useEffect(() => {
+        if (!scrollContainer?.current) return;
+
+        const scrollElement = scrollContainer.current;
+
+        // Check if we should restore scroll position
+        const savedScrollPosition = getHomeScrollPosition();
+        if (savedScrollPosition !== null) {
+            // Small delay to ensure the page is fully rendered
+            setTimeout(() => {
+                scrollToPosition(savedScrollPosition, scrollElement);
+            }, 100);
+        }
+
+        // Track scroll position changes
+        const handleScroll = () => {
+            const scrollTop = scrollElement.scrollTop;
+            saveHomeScrollPosition(scrollTop);
+        };
+
+        scrollElement.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            scrollElement.removeEventListener('scroll', handleScroll);
+        };
+    }, [scrollContainer]);
+
+    // Save scroll position when leaving the home page
+    useEffect(() => {
+        return () => {
+            // This cleanup function runs when the component unmounts
+            // (i.e., when navigating away from home page)
+            if (scrollContainer?.current) {
+                const scrollTop = scrollContainer.current.scrollTop;
+                saveHomeScrollPosition(scrollTop);
+            }
+        };
+    }, [scrollContainer]);
+
     return (
         <div
             id="page-top"
@@ -127,10 +170,10 @@ export default function HomePage() {
             </div>
             <div id="scheduling-section" ref={schedulingRef} className="w-full">
                 <div className="h-auto flex flex-col items-center justify-center py-4">
-                    <SectionTextBlack title={t('scheduling.serviceSelection.title')}>
-
-                    </SectionTextBlack>
                     <div className="w-full max-w-2xl p-8 space-y-4 bg-[#002147] rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
+                        <h2 className="text-2xl font-bold text-white leading-tight md:text-3xl text-center mb-6">
+                            {t('scheduling.serviceSelection.title')}
+                        </h2>
                         <ServiceSelectionStep onSelectService={(serviceId) => handleScheduleService(serviceId)} />
                     </div>
                 </div>

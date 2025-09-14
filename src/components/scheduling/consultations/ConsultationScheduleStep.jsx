@@ -109,11 +109,16 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
       )}
 
       {selectedDate && selectedDuration && selectedTime && (
-        <AppointmentSummary
-          date={selectedDate}
-          startTime={selectedTime}
-          duration={selectedDuration}
-        />
+        <>
+          <h3 className="text-base font-semibold text-white mb-3 text-center md:text-xl lg:text-base">
+            {t('scheduling.consultationSummaryTitle', { defaultValue: 'Consultation Summary' })}
+          </h3>
+          <AppointmentSummary
+            date={selectedDate}
+            startTime={selectedTime}
+            duration={selectedDuration}
+          />
+        </>
       )}
     </div>
   )

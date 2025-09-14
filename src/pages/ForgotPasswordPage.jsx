@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
         <SectionTextWhite title={sent ? 'Check your inbox' : 'Reset your password'} />
 
         <div className="mt-8 w-full max-w-md">
-          <div className="rounded-2xl bg-white/80 p-8 shadow-2xl ring-1 ring-black/5 backdrop-blur-xl">
+          <div className="rounded-2xl bg-white/10  border border-white/20 p-8 shadow-2xl ring-1 ring-black/5 backdrop-blur-xl">
             {sent ? (
               <div role="status" aria-live="polite" className="space-y-4 text-center">
                 <p className="text-sm text-black/80">
@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
             )}
           </div>
 
-          <p className="mt-6 text-center text-xs text-black/70">
+          <p className="mt-6 text-center text-xs text-white">
             For security, we don’t confirm whether an email is registered. You’ll only receive mail
             if there’s an account for that address.
           </p>

@@ -32,7 +32,7 @@ export default function Login({ onSubmit, onGoogleSignIn, isLoading, containerCl
         <form onSubmit={handleSubmit(onSubmit)} className={containerClassName} noValidate>
             {/* Email */}
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+                <label htmlFor="email" className="block text-sm font-medium text-white">
                     Email
                 </label>
                 <div className="mt-1">
@@ -59,7 +59,7 @@ export default function Login({ onSubmit, onGoogleSignIn, isLoading, containerCl
             {/* Password + Show/Hide */}
             <div>
                 <div className="flex items-center justify-between">
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+                    <label htmlFor="password" className="block text-sm font-medium text-white">
                         Password
                     </label>
                     {/* Show/Hide toggle — accessible name + pressed state */}
@@ -67,7 +67,7 @@ export default function Login({ onSubmit, onGoogleSignIn, isLoading, containerCl
                         type="button"
                         onClick={() => setShowPassword((v) => !v)}
                         aria-pressed={showPassword ? 'true' : 'false'}
-                        className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none cursor-pointer"
+                        className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none cursor-pointer"
                     >
                         {showPassword ? 'Hide password' : 'Show password'}
                     </button>
@@ -100,12 +100,12 @@ export default function Login({ onSubmit, onGoogleSignIn, isLoading, containerCl
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         {...register('rememberMe')}
                     />
-                    <span className="text-sm text-gray-700">Remember me</span>
+                    <span className="text-sm text-white/80">Remember me</span>
                 </label>
 
                 <Link
                     to="/forgot-password"
-                    className="text-sm font-medium text-indigo-600 hover:text-indigo-500 underline underline-offset-2"
+                    className="text-sm font-medium text-[#bfa200] hover:text-[#bfa200]/80 underline underline-offset-2"
                 >
                     Forgot password?
                 </Link>
@@ -135,9 +135,9 @@ export default function Login({ onSubmit, onGoogleSignIn, isLoading, containerCl
 
             {/* Bottom link */}
             <div className="mt-6 text-center text-sm">
-                <p className="text-gray-600">
+                        <p className="text-white/80">
                     Don&apos;t have an account?{' '}
-                    <Link to="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500 underline">
+                    <Link to="/signup" className="font-semibold text-[#bfa200] hover:text-[#bfa200]/80 underline">
                         Create one
                     </Link>
                 </p>

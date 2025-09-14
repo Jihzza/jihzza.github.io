@@ -13,13 +13,14 @@ export default function FullScreenVideo({
   src,
   poster,
   autoPlay = false,
+  muted = false,
   className = "",
 }) {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
 
   const [isPlaying, setIsPlaying] = useState(autoPlay);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(muted);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isFsActive, setIsFsActive] = useState(false);
@@ -102,6 +103,38 @@ export default function FullScreenVideo({
       document.removeEventListener("MSFullscreenChange", onFsChange);
     };
   }, []);
+
+  // Set initial muted state and handle fullscreen mute/unmute behavior
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Set initial muted state
+    video.muted = muted;
+    setIsMuted(muted);
+  }, [muted]);
+
+  // Handle mute/unmute based on fullscreen state
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isFullscreen) {
+      // When entering fullscreen, unmute and continue playing
+      video.muted = false;
+      setIsMuted(false);
+      if (autoPlay && video.paused) {
+        video.play().catch(() => {});
+      }
+    } else {
+      // When exiting fullscreen, mute and continue playing
+      video.muted = true;
+      setIsMuted(true);
+      if (autoPlay && video.paused) {
+        video.play().catch(() => {});
+      }
+    }
+  }, [isFullscreen, autoPlay]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -274,6 +307,8 @@ export default function FullScreenVideo({
         playsInline
         controls={false}
         autoPlay={autoPlay}
+        muted={muted}
+        loop
         preload="metadata"
         onClick={onVideoClick}
       />

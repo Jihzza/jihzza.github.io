@@ -30,7 +30,7 @@ export default function AppointmentSummary({ date, startTime, duration }) {
   }, [date, startTime, duration])
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-2xl bg-black/30 backdrop-blur-lg text-white shadow-xl ring-1 ring-white/10">
+    <div className="w-full max-w-md mx-auto rounded-2xl bg-white/10 backdrop-blur-lg text-white shadow-xl ring-1 ring-white/10">
       <div className="p-4 sm:p-5">
         <div className="flex items-center justify-center gap-2 text-center font-semibold text-base md:text-lg mb-4 border-b border-white/10 pb-3 lg:text-base">
           <CalendarDays className="h-5 w-5 opacity-80" aria-hidden="true" />

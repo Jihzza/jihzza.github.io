@@ -22,14 +22,14 @@ export default function ResetPassword({ onSubmit, isLoading }) {
       {/* New Password */}
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-900 md:text-base">
+          <label htmlFor="password" className="block text-sm font-medium text-white md:text-base">
             New password
           </label>
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             aria-pressed={showPassword ? 'true' : 'false'}
-            className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none md:text-sm"
+            className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none md:text-sm"
           >
             {showPassword ? 'Hide password' : 'Show password'}
           </button>
@@ -60,14 +60,14 @@ export default function ResetPassword({ onSubmit, isLoading }) {
       {/* Confirm Password */}
       <div>
         <div className="flex items-center justify-between">
-          <label htmlFor="confirm" className="block text-sm font-medium text-gray-900 md:text-base">
+          <label htmlFor="confirm" className="block text-sm font-medium text-white md:text-base">
             Confirm password
           </label>
           <button
             type="button"
             onClick={() => setShowConfirm((v) => !v)}
             aria-pressed={showConfirm ? 'true' : 'false'}
-            className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none md:text-sm"
+            className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none md:text-sm"
           >
             {showConfirm ? 'Hide password' : 'Show password'}
           </button>

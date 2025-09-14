@@ -162,7 +162,7 @@ const Header = forwardRef(({ onMenuClick }, ref) => {
                 className="fixed inset-x-0 z-50"
             >
                 {/* Background with mask effect */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[#002147] from-10% via-[#002147] via-85% to-transparent"></div>
+                <div className="absolute inset-0"></div>
                 <div className="relative w-full py-3">
                     <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar px-4">
                         {languages.map((lang) => {

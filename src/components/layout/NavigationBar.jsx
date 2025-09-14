@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import OctagonAvatar from "../common/OctagonAvatar";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import { scrollToTop } from "../../utils/scrollPositionManager";
 
 import logo from "../../assets/icons/CluckinsLogo.svg";
 import homeIcon from "../../assets/icons/House Branco.svg";
@@ -48,6 +49,9 @@ const BAR_CLASS = "w-full sticky bottom-0 left-0 right-0 bg-black z-50";
 const INNER_CLASS = "mx-auto grid grid-cols-5 items-center w-full lg:w-[80%]";
 
 export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }) {
+  // Double-click tracking for home icon
+  const homeClickTimeoutRef = useRef(null);
+  const homeClickCountRef = useRef(0);
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -132,13 +136,50 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
     }
   }, [user, location.pathname, ghostActivePath]);
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (homeClickTimeoutRef.current) {
+        clearTimeout(homeClickTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleItemClick = (item) => {
     if (!item.path) return;
 
-    // ✅ Special case: Home should never trigger the "second click goes back" logic.
-    // Bypass onNavigate (which implements that logic) and go straight to "/".
+    // Special case: Home icon with double-click behavior
     if (item.path === "/") {
-      navigate("/");
+      const isOnHomePage = location.pathname === "/";
+      
+      if (isOnHomePage) {
+        // On home page: handle double-click logic
+        homeClickCountRef.current += 1;
+        
+        // Clear any existing timeout
+        if (homeClickTimeoutRef.current) {
+          clearTimeout(homeClickTimeoutRef.current);
+        }
+        
+        // Set timeout to reset click count
+        homeClickTimeoutRef.current = setTimeout(() => {
+          homeClickCountRef.current = 0;
+        }, 300); // 300ms window for double-click
+        
+        // If this is the second click, scroll to top
+        if (homeClickCountRef.current === 2) {
+          // Find the scroll container (main content area)
+          const scrollContainer = document.querySelector('main');
+          if (scrollContainer) {
+            scrollToTop(scrollContainer);
+          }
+          homeClickCountRef.current = 0; // Reset immediately after action
+        }
+        // If it's the first click, do nothing (as requested)
+      } else {
+        // Not on home page: navigate to home (will restore scroll position)
+        navigate("/");
+      }
       return;
     }
 

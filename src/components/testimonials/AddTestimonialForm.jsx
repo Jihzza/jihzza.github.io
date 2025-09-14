@@ -58,7 +58,7 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
           className="mt-1 text-white"
           readOnly
         />
-        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+        {errors.name && <p className="mt-2 text-sm text-red-500">{errors.name.message}</p>}
       </div>
 
       <div>
@@ -70,9 +70,9 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
             required: t('addTestimonial.testimonialRequired'),
             maxLength: { value: 120, message: t('addTestimonial.testimonialMaxLength') }
           })}
-          className="w-full px-3 py-2 border-2 border-[#BFA200] rounded-md shadow-sm mt-1 text-white"
+          className="w-full px-3 py-2 mt-2 rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-[#bfa200] bg-white/10 backdrop-blur-md border border-white/20"
         />
-        {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
+        {errors.content && <p className="mt-2 text-sm text-red-500">{errors.content.message}</p>}
       </div>
 
       <FormButton type="submit" disabled={isSubmitting} fullWidth>

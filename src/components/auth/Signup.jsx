@@ -37,7 +37,7 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
         <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className={containerClassName} noValidate>
             {/* Email field */}
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+                <label htmlFor="email" className="block text-sm font-medium text-white">
                     {t('signup.form.emailLabel')}
                 </label>
                 <div className="mt-1">
@@ -62,14 +62,14 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
             {/* Password field + Show/Hide */}
             <div>
                 <div className="flex items-center justify-between">
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+                    <label htmlFor="password" className="block text-sm font-medium text-white">
                         {t('signup.form.passwordLabel')}
                     </label>
                     <button
                         type="button"
                         onClick={() => setShowPassword(v => !v)}
                         aria-pressed={showPassword ? 'true' : 'false'}
-                        className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none cursor-pointer"
+                        className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none cursor-pointer"
                     >
                         {showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                     </button>
@@ -99,14 +99,14 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
             {/* Confirm Password field + Show/Hide */}
             <div>
                 <div className="flex items-center justify-between">
-                    <label htmlFor="confirm" className="block text-sm font-medium text-gray-900">
+                    <label htmlFor="confirm" className="block text-sm font-medium text-white">
                         {t('signup.form.confirmPasswordLabel')}
                     </label>
                     <button
                         type="button"
                         onClick={() => setShowConfirm(v => !v)}
                         aria-pressed={showConfirm ? 'true' : 'false'}
-                        className="text-xs font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-500 focus:outline-none cursor-pointer"
+                        className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none cursor-pointer"
                     >
                         {showConfirm ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                     </button>
@@ -159,9 +159,9 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
             </div>
 
             {/* Bottom link */}
-            <p className="mt-6 text-center text-sm text-gray-600">
+            <p className="mt-6 text-center text-sm text-white/80">
                 {t('signup.form.loginPrompt')}{' '}
-                <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 underline">
+                <Link to="/login" className="font-semibold text-[#bfa200] hover:text-[#bfa200]/80 underline">
                     {t('signup.form.loginLink')}
                 </Link>
             </p>
