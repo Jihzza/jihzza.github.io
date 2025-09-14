@@ -34,5 +34,5 @@ export default function Button({
     </motion.button>
   );
 
-  return noOuterPadding ? btn : <div className="py-4">{btn}</div>;
+  return noOuterPadding ? btn : <div className="py-2">{btn}</div>;
 }

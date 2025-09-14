@@ -20,24 +20,26 @@ export default function InvestmentCard({ onScheduleClick }) {
   return (
     <motion.div
       onClick={handleCardClick}
-      className="bg-transparent border-2 md:border-3 border-[#BFA200] rounded-2xl p-6 text-center flex flex-col items-center cursor-pointer h-full shadow-lg hover:shadow-xl transition-shadow duration-200"
+      className="bg-transparent border-2 md:border-3 border-[#BFA200] rounded-2xl p-4 text-center flex flex-col items-center cursor-pointer h-full shadow-lg hover:shadow-xl transition-shadow duration-200 min-h-[258px]"
       initial={prefersReduced ? false : { opacity: 0, y: 8 }}
       animate={prefersReduced ? {} : { opacity: 1, y: 0 }}
       whileHover={prefersReduced ? undefined : { scale: 1.02 }}
       whileTap={{ scale: 0.95 }}
       transition={{ duration: 0.12 }}
     >
-      <h3 className="text-3xl font-bold text-white">{t('hero.services.investment.title')}</h3>
+      <div className="flex-1 flex flex-col justify-start">
+        <h3 className="text-2xl font-bold text-white mb-3">{t('hero.services.investment.title')}</h3>
 
-      <p className="text-white my-6 text-base md:text-lg">
-        {t('hero.services.investment.description')}
-      </p>
+        <p className="text-white mt-4 text-sm md:text-base">
+          {t('hero.services.investment.description')}
+        </p>
+      </div>
 
-      <div className="w-full mt-auto flex flex-col justify-center items-center">
+      <div className="w-full mt-4 flex flex-col justify-center items-center">
         <Button onClick={handleButtonClick} className="cursor-pointer">
           {t('hero.services.investment.button')}
         </Button>
-        <a href="#invest-section" className="inline-block mt-3 text-sm md:text-base text-white cursor-pointer" onClick={(e)=>e.stopPropagation()}>
+        <a href="#invest-section" className="inline-block text-xs md:text-base text-white/75 cursor-pointer" onClick={(e)=>e.stopPropagation()}>
           {t('hero.services.investment.learnMore')}
         </a>
       </div>
