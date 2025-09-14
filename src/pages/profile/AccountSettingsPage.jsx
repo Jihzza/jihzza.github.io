@@ -319,91 +319,161 @@ function BillingSection() {
     })();
   }, []);
 
-  const setDefault = async (id) => { await services.setDefaultPM(id); alert("Default payment method updated."); };
-  const removePM = async (id) => { if (confirm("Remove this payment method?")) { await services.removePM(id); alert("Removed."); } };
+  const setDefault = async (id) => {
+    await services.setDefaultPM(id);
+    alert("Default payment method updated.");
+    setData((prev) => ({
+      ...prev,
+      methods: prev.methods.map((m) => ({ ...m, default: m.id === id }))
+    }));
+  };
 
-  if (loading) return <Card title="Billing & Payments"><div className="animate-pulse h-24 bg-[#ECEBE5]/10 rounded" /></Card>;
+  const removePM = async (id) => {
+    if (confirm("Remove this payment method?")) {
+      await services.removePM(id);
+      alert("Removed.");
+      setData((prev) => ({
+        ...prev,
+        methods: prev.methods.filter((m) => m.id !== id)
+      }));
+    }
+  };
 
-  return (
+  if (loading) return (
     <div className="grid gap-6">
-      <Card title="Subscription" desc="Manage your plan, invoices, and payment details.">
-        <div className="flex flex-wrap items-center gap-3 text-[#fff]/90">
-          <span className="rounded-full bg-[#ECEBE5]/10 px-3 py-1 text-sm">{data.subscription.plan}</span>
-          <span className="text-sm">Status: <span className="font-semibold text-green-300">{data.subscription.status}</span></span>
-          <span className="text-sm">Renews on {data.subscription.renewsOn}</span>
-          <div className="ml-auto flex gap-2">
-            <Button onClick={() => services.customerPortal()}>
-              Open customer portal <ArrowTopRightOnSquareIcon className="h-4 w-4" />
-            </Button>
-            <Button variant="secondary">Change plan</Button>
-          </div>
-        </div>
-      </Card>
-
-      <Card title="Payment methods" desc="Add, remove, or set a default card.">
+      <Card title="Billing & Payments">
         <div className="grid gap-3">
-          {data.methods.map((m) => (
-            <div key={m.id} className="flex items-center justify-between rounded-xl border border-[#ECEBE5]/20 p-3">
-              <div className="flex items-center gap-3 text-[#fff]">
-                <CreditCardIcon className="h-5 w-5" />
-                <div className="text-sm">
-                  <p className="font-medium uppercase">{m.brand} •••• {m.last4}</p>
-                  <p className="text-[#fff]/70">Exp {m.exp}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                {m.default ? (
-                  <span className="rounded-full bg-green-600/20 text-green-300 px-2 py-1 text-xs">Default</span>
-                ) : (
-                  <Button variant="secondary" onClick={() => setDefault(m.id)}>Make default</Button>
-                )}
-                <Button variant="ghost" onClick={() => removePM(m.id)}>Remove</Button>
-              </div>
-            </div>
-          ))}
-          <div className="flex justify-end">
-            <Button variant="secondary">Add payment method</Button>
-          </div>
+          <div className="h-24 rounded bg-[#ECEBE5]/10 animate-pulse" />
+          <div className="h-24 rounded bg-[#ECEBE5]/10 animate-pulse" />
+          <div className="h-24 rounded bg-[#ECEBE5]/10 animate-pulse" />
         </div>
-      </Card>
-
-      <Card title="Invoices & receipts">
-        {data.invoices.length === 0 ? (
-          <EmptyState icon={DocumentTextIcon} title="No invoices yet" />
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-[#fff]/90">
-              <thead className="text-[#fff]/70">
-                <tr>
-                  <th className="py-2 pr-4 text-left">Number</th>
-                  <th className="py-2 px-4 text-left">Date</th>
-                  <th className="py-2 px-4 text-left">Amount</th>
-                  <th className="py-2 px-4 text-left">Status</th>
-                  <th className="py-2 pl-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.invoices.map((inv) => (
-                  <tr key={inv.id} className="border-t border-[#ECEBE5]/10">
-                    <td className="py-3 pr-4">{inv.number}</td>
-                    <td className="py-3 px-4">{inv.date}</td>
-                    <td className="py-3 px-4">€{inv.amount.toFixed(2)}</td>
-                    <td className="py-3 px-4">
-                      <span className={cn("rounded-full px-2 py-1 text-xs", inv.status === "paid" ? "bg-green-600/20 text-green-300" : "bg-yellow-500/20 text-yellow-300")}>{inv.status}</span>
-                    </td>
-                    <td className="py-3 pl-4 text-right">
-                      <Button variant="secondary" onClick={() => window.open(inv.url, "_blank")}>Download</Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
       </Card>
     </div>
   );
+
+  const { subscription, methods, invoices } = data;
+
+  return (
+    <div className="grid gap-6">
+      <SubscriptionCard subscription={subscription} />
+      <PaymentMethodsCard methods={methods} onMakeDefault={setDefault} onRemove={removePM} />
+      <InvoicesCard invoices={invoices} />
+    </div>
+  );
 }
+
+const SubscriptionCard = ({ subscription }) => (
+  <Card title="Subscription" desc="Manage your plan, invoices, and payment details.">
+    <div className="grid gap-3 text-[#fff]/90 sm:grid-cols-[1fr_auto] sm:items-center">
+      <div className="min-w-0 space-y-1">
+        <span className="inline-block rounded-full bg-[#ECEBE5]/10 px-3 py-1 text-sm">{subscription.plan}</span>
+        <div className="text-sm">Status: <span className="font-semibold text-green-300">{subscription.status}</span></div>
+        <div className="text-sm">Renews on {subscription.renewsOn}</div>
+      </div>
+      <div className="flex w-full flex-col gap-2 sm:w-auto sm:ml-auto sm:flex-row sm:justify-end">
+        <Button onClick={() => services.customerPortal()}>
+          Open customer portal <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+        </Button>
+        <Button variant="secondary">Change plan</Button>
+      </div>
+    </div>
+  </Card>
+);
+
+const PaymentMethodRow = ({ m, onMakeDefault, onRemove }) => (
+  <div className="flex flex-col gap-3 rounded-xl border border-[#ECEBE5]/20 p-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex items-center gap-3 text-[#fff]">
+      <CreditCardIcon className="h-5 w-5" />
+      <div className="text-sm">
+        <p className="font-medium uppercase">{m.brand} •••• {m.last4}</p>
+        <p className="text-[#fff]/70">Exp {m.exp}</p>
+      </div>
+    </div>
+    <div className="flex items-center gap-2">
+      {m.default ? (
+        <span className="rounded-full bg-green-600/20 text-green-300 px-2 py-1 text-xs">Default</span>
+      ) : (
+        <Button variant="secondary" onClick={() => onMakeDefault(m.id)}>Make default</Button>
+      )}
+      <Button variant="ghost" onClick={() => onRemove(m.id)}>Remove</Button>
+    </div>
+  </div>
+);
+
+const PaymentMethodsCard = ({ methods, onMakeDefault, onRemove }) => (
+  <Card title="Payment methods" desc="Add, remove, or set a default card.">
+    {methods.length === 0 ? (
+      <EmptyState icon={CreditCardIcon} title="No payment methods" subtitle="Add a card to start your subscription." action={<Button variant="secondary">Add payment method</Button>} />
+    ) : (
+      <div className="grid gap-3">
+        {methods.map((m) => (
+          <PaymentMethodRow key={m.id} m={m} onMakeDefault={onMakeDefault} onRemove={onRemove} />
+        ))}
+        <div className="flex justify-end w-full">
+          <Button variant="secondary" className="w-full sm:w-auto">Add payment method</Button>
+        </div>
+      </div>
+    )}
+  </Card>
+);
+
+const InvoicesCard = ({ invoices }) => (
+  <Card title="Invoices & receipts">
+    {invoices.length === 0 ? (
+      <EmptyState icon={DocumentTextIcon} title="No invoices yet" />
+    ) : (
+      <>
+        {/* Mobile cards */}
+        <div className="grid gap-3 sm:hidden">
+          {invoices.map((inv) => (
+            <div key={inv.id} className="rounded-xl border border-[#ECEBE5]/20 p-3">
+              <div className="flex items-center justify-between text-sm text-[#fff]">
+                <span className="font-medium">{inv.number}</span>
+                <span className={cn("rounded-full px-2 py-1 text-xs", inv.status === "paid" ? "bg-green-600/20 text-green-300" : "bg-yellow-500/20 text-yellow-300")}>{inv.status}</span>
+              </div>
+              <div className="mt-1 text-sm text-[#fff]/80">{inv.date}</div>
+              <div className="mt-1 text-sm text-[#fff] font-semibold">€{inv.amount.toFixed(2)}</div>
+              <div className="mt-3 flex justify-end">
+                <Button variant="secondary" onClick={() => window.open(inv.url, "_blank")}>Download</Button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="min-w-full text-sm text-[#fff]/90">
+            <thead className="text-[#fff]/70">
+              <tr>
+                <th className="py-2 pr-4 text-left">Number</th>
+                <th className="py-2 px-4 text-left">Date</th>
+                <th className="py-2 px-4 text-left">Amount</th>
+                <th className="py-2 px-4 text-left">Status</th>
+                <th className="py-2 pl-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {invoices.map((inv) => (
+                <tr key={inv.id} className="border-t border-[#ECEBE5]/10">
+                  <td className="py-3 pr-4">{inv.number}</td>
+                  <td className="py-3 px-4">{inv.date}</td>
+                  <td className="py-3 px-4">€{inv.amount.toFixed(2)}</td>
+                  <td className="py-3 px-4">
+                    <span className={cn("rounded-full px-2 py-1 text-xs", inv.status === "paid" ? "bg-green-600/20 text-green-300" : "bg-yellow-500/20 text-yellow-300")}>{inv.status}</span>
+                  </td>
+                  <td className="py-3 pl-4 text-right">
+                    <Button variant="secondary" onClick={() => window.open(inv.url, "_blank")}>Download</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    )}
+  </Card>
+);
+
 
 function NotificationsSection() {
   const [prefs, setPrefs] = useState({

@@ -22,7 +22,7 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6" noValidate>
       <div className="flex flex-col items-center space-y-4">
         {profileData?.avatar_url && (
           <OctagonAvatar
@@ -39,40 +39,52 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
           <label htmlFor="image" className="block text-sm font-medium text-white">
             {profileData?.avatar_url ? t('addTestimonial.changePhoto') : t('addTestimonial.uploadPhoto')} {t('addTestimonial.optional')}
           </label>
-          <Input
-            id="image"
-            type="file"
-            {...register('image')}
-            accept="image/*"
-            className="mt-1 text-white"
-          />
+          <div className="mt-1">
+            <Input
+              id="image"
+              type="file"
+              {...register('image')}
+              accept="image/*"
+            />
+          </div>
         </div>
       </div>
 
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-white">{t('addTestimonial.yourNameLabel')}</label>
-        <Input
-          id="name"
-          type="text"
-          {...register('name', { required: t('addTestimonial.yourNameRequired') })}
-          className="mt-1 text-white"
-          readOnly
-        />
-        {errors.name && <p className="mt-2 text-sm text-red-500">{errors.name.message}</p>}
+        <div className="mt-1">
+          <Input
+            id="name"
+            type="text"
+            aria-invalid={errors.name ? 'true' : 'false'}
+            aria-describedby={errors.name ? 'name-error' : undefined}
+            {...register('name', { required: t('addTestimonial.yourNameRequired') })}
+            readOnly
+          />
+        </div>
+        {errors.name && (
+          <p id="name-error" className="mt-2 text-sm text-red-600" aria-live="polite">{errors.name.message}</p>
+        )}
       </div>
 
       <div>
         <label htmlFor="content" className="block text-sm font-medium text-white">{t('addTestimonial.testimonialLabel')}</label>
-        <textarea
-          id="content"
-          rows="4"
-          {...register('content', {
-            required: t('addTestimonial.testimonialRequired'),
-            maxLength: { value: 120, message: t('addTestimonial.testimonialMaxLength') }
-          })}
-          className="w-full px-3 py-2 mt-2 rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-[#bfa200] bg-white/10 backdrop-blur-md border border-white/20"
-        />
-        {errors.content && <p className="mt-2 text-sm text-red-500">{errors.content.message}</p>}
+        <div className="mt-1">
+          <textarea
+            id="content"
+            rows="4"
+            aria-invalid={errors.content ? 'true' : 'false'}
+            aria-describedby={errors.content ? 'content-error' : undefined}
+            {...register('content', {
+              required: t('addTestimonial.testimonialRequired'),
+              maxLength: { value: 120, message: t('addTestimonial.testimonialMaxLength') }
+            })}
+            className="w-full px-3 py-2 mt-2 rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-white/70 bg-white/10 backdrop-blur-md border border-white/20"
+          />
+        </div>
+        {errors.content && (
+          <p id="content-error" className="mt-2 text-sm text-red-600" aria-live="polite">{errors.content.message}</p>
+        )}
       </div>
 
       <FormButton type="submit" disabled={isSubmitting} fullWidth>

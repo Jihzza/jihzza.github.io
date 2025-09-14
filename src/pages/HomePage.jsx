@@ -23,8 +23,22 @@ export default function HomePage() {
     const navigate = useNavigate();
     const location = useLocation();
     const schedulingRef = useRef(null);
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const scrollContainer = useContext(ScrollRootContext);
+
+    // Debug: log a sample translation on mount and language changes
+    useEffect(() => {
+        try {
+            // eslint-disable-next-line no-console
+            console.info('[HomePage] language snapshot', { lng: i18n.language, resolved: i18n.resolvedLanguage, sample: t('hero.learnFrom') });
+            const onChange = (lng) => {
+                // eslint-disable-next-line no-console
+                console.info('[HomePage] languageChanged -> sample', { lng, sample: t('hero.learnFrom') });
+            };
+            i18n.on('languageChanged', onChange);
+            return () => i18n.off('languageChanged', onChange);
+        } catch {}
+    }, [i18n, t]);
 
     // All buttons on home page go directly to step 2 (specific service step)
     const handleScheduleService = (serviceId, details = null) => {
