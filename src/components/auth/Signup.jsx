@@ -133,7 +133,7 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
             </div>
 
             {/* Submit button placeholder/docked anchor point (SectionCta renders floating + docked) */}
-            <div className="justify-center flex">
+            <div className="justify-center flex pt-6">
                 <SectionCta sectionRef={formRef}>
                     <Button onClick={handleCtaClick} isLoading={isLoading}>
                         {t('signup.cta', { defaultValue: 'Create your account' })}

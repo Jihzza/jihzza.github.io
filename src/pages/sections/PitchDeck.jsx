@@ -25,12 +25,14 @@ export default function PitchDeck({ onBookPitchDeck }) {
             <SectionText title={t('pitchDeck.investTitle')}>
                 {t('pitchDeck.investSubtitle')}
             </SectionText>
-            
+
             <BoxesGrid items={pitchDecks} showLabels={false} imageSize="w-36 h-36" fixedHeight={true} />
 
-            <SectionCta sectionRef={sectionRef}>
-                <Button onClick={onBookPitchDeck}>{t('pitchDeck.buttonText')}</Button>
-            </SectionCta>
+            <div className="mt-6">
+                <SectionCta sectionRef={sectionRef}>
+                    <Button onClick={onBookPitchDeck}>{t('pitchDeck.buttonText')}</Button>
+                </SectionCta>
+            </div>
         </section>
     );
 }

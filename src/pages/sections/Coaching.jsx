@@ -99,11 +99,13 @@ export default function Coaching({ onBookCoaching }) {
         onTierSelect={setSelectedPlanId}
       />
 
-      <SectionCta sectionRef={sectionRef}>
-        <Button onClick={onClick}>
-          {buttonText}
-        </Button>
-      </SectionCta>
+      <div className="mt-6">
+        <SectionCta sectionRef={sectionRef}>
+          <Button onClick={onClick}>
+            {buttonText}
+          </Button>
+        </SectionCta>
+      </div>
     </section>
   );
 }
