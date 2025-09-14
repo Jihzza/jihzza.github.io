@@ -70,46 +70,56 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
 
   return (
     <div className="w-full space-y-8">
-      <CustomCalendar
-        selectedDate={selectedDate}
-        onDateSelect={handleDateSelect}
-        isDateSelectionRestricted={true}
-        weekStartsOn={0}
-      />
+      <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+        <CustomCalendar
+          selectedDate={selectedDate}
+          onDateSelect={handleDateSelect}
+          isDateSelectionRestricted={true}
+          weekStartsOn={0}
+        />
+      </div>
 
       {selectedDate && (
-        <ScrollableSelector
-          title={t('scheduling.durationSelectorTitle')}
-          options={durationOptions}
-          selectedValue={selectedDuration}
-          onSelect={handleDurationSelect}
-          ariaLabel={t('scheduling.durationSelectorAria', { defaultValue: 'Select duration' })}
-        />
+        <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+          <ScrollableSelector
+            title={t('scheduling.durationSelectorTitle')}
+            options={durationOptions}
+            selectedValue={selectedDuration}
+            onSelect={handleDurationSelect}
+            ariaLabel={t('scheduling.durationSelectorAria', { defaultValue: 'Select duration' })}
+          />
+        </div>
       )}
 
       {isLoading && (
-        <p className="text-center text-gray-400 animate-pulse" aria-live="polite">
-          {t('scheduling.loadingTimes')}
-        </p>
+        <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+          <p className="text-center text-gray-200 animate-pulse" aria-live="polite">
+            {t('scheduling.loadingTimes')}
+          </p>
+        </div>
       )}
 
       {selectedDate && selectedDuration && !isLoading && (
-        <ScrollableSelector
-          title={t('scheduling.timeSelectorTitle')}
-          options={availableTimeSlots}
-          selectedValue={selectedTime}
-          onSelect={handleTimeSelect}
-          emptyStateMessage={t('scheduling.noSlotsAvailable')}
-          ariaLabel={t('scheduling.timeSelectorAria', { defaultValue: 'Select time' })}
-        />
+        <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+          <ScrollableSelector
+            title={t('scheduling.timeSelectorTitle')}
+            options={availableTimeSlots}
+            selectedValue={selectedTime}
+            onSelect={handleTimeSelect}
+            emptyStateMessage={t('scheduling.noSlotsAvailable')}
+            ariaLabel={t('scheduling.timeSelectorAria', { defaultValue: 'Select time' })}
+          />
+        </div>
       )}
 
       {error && (
-        <p className="text-center text-red-300" role="alert">{error}</p>
+        <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+          <p className="text-center text-red-300" role="alert">{error}</p>
+        </div>
       )}
 
       {selectedDate && selectedDuration && selectedTime && (
-        <>
+        <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
           <h3 className="text-base font-semibold text-white mb-3 text-center md:text-xl lg:text-base">
             {t('scheduling.consultationSummaryTitle', { defaultValue: 'Consultation Summary' })}
           </h3>
@@ -118,7 +128,7 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
             startTime={selectedTime}
             duration={selectedDuration}
           />
-        </>
+        </div>
       )}
     </div>
   )

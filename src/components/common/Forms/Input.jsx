@@ -9,7 +9,7 @@ const Input = React.forwardRef(({ className = '', ...props }, ref) => {
     return (
         <input
             ref={ref}
-            className={`w-full px-3 py-2 mt-2 rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-white/70 bg-white/10 backdrop-blur-md border border-white/20 ${className}`}
+            className={`w-full px-3 py-2 mt-2 rounded-xl text-white placeholder-gray-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-white/70 bg-white/10 backdrop-blur-md border border-white/20 ${className}`}
             {...props}
         />
     );

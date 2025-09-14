@@ -69,7 +69,7 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
                         type="button"
                         onClick={() => setShowPassword(v => !v)}
                         aria-pressed={showPassword ? 'true' : 'false'}
-                        className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none cursor-pointer"
+                        className="text-xs font-medium text-[#002147] underline underline-offset-2 hover:text-[#002147]/80 focus:outline-none cursor-pointer"
                     >
                         {showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                     </button>
@@ -106,7 +106,7 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
                         type="button"
                         onClick={() => setShowConfirm(v => !v)}
                         aria-pressed={showConfirm ? 'true' : 'false'}
-                        className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none cursor-pointer"
+                        className="text-xs font-medium text-[#002147] underline underline-offset-2 hover:text-[#002147]/80 focus:outline-none cursor-pointer"
                     >
                         {showConfirm ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                     </button>

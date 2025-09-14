@@ -365,7 +365,7 @@ export default function SchedulingFormPage() {
               <ConfirmationStep />
             </div>
           ) : (
-            <div className="w-full rounded-2xl bg-white/10 border border-white/20 p-4 md:p-6 flex-shrink-0">
+            <div className="w-full rounded-2xl  p-4 md:p-6 flex-shrink-0">
               {/* Step title */}
               <FormTitle title={stepTitle} />
 

@@ -21,7 +21,7 @@ export default function InfoBlock({ iconSrc, altText, children }) {
     <div className="flex flex-col items-center space-y-2">
 
       {/* Icon inside a styled box */}
-      <div className="relative overflow-hidden rounded-2xl shadow-[#002147] shadow-[0_0_5px_rgba(0,33,71,0.3)] text-white cursor-pointer hover:shadow-white hover:shadow-[0_0_10px_rgba(0,33,71,0.4)] transition-all duration-20 p-4">
+      <div className="relative overflow-hidden rounded-2xl bg-[#002147] shadow-xl text-white cursor-pointer p-4">
         <img
           src={iconSrc}
           alt={altText}
