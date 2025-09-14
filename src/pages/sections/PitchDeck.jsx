@@ -5,8 +5,10 @@ import SectionText from "../../components/ui/SectionText";
 import BoxesGrid from "../../components/ui/BoxesGrid";
 import Button from "../../components/ui/Button";
 import { useTranslation } from 'react-i18next';
-import Perspetiv from '../../assets/images/Perspectiv Banner.svg';
-import GalowClub from '../../assets/images/Galow Banner.svg';
+import PerspetivBanner from '../../assets/images/Perspectiv Banner.svg';
+import GalowClubBanner from '../../assets/images/Galow Banner.svg';
+import Perspectiv_Logo from '../../assets/icons/Perspectiv.svg';
+import GalowClub_Logo from '../../assets/icons/GalowClub.svg';
 
 export default function PitchDeck({ onBookPitchDeck }) {
     const sectionRef = useRef(null);
@@ -15,7 +17,8 @@ export default function PitchDeck({ onBookPitchDeck }) {
     // Transform pitch deck data to match BoxesGrid format
     const pitchDecks = t('pitchDeck.decks', { returnObjects: true }).map((deck, index) => ({
         name: deck.title,
-        image: [Perspetiv, GalowClub][index],
+        image: [Perspectiv_Logo, GalowClub_Logo][index], // Box images - logos
+        expandedImage: [PerspetivBanner, GalowClubBanner][index], // Expanded description images - banners
         subtitle: deck.description,
         id: ['perspetiv', 'galowclub'][index]
     }));
@@ -26,9 +29,9 @@ export default function PitchDeck({ onBookPitchDeck }) {
                 {t('pitchDeck.investSubtitle')}
             </SectionText>
 
-            <BoxesGrid items={pitchDecks} showLabels={false} imageSize="w-36 h-36" fixedHeight={true} />
+            <BoxesGrid items={pitchDecks} showLabels={false} imageSize="w-16 h-16" fixedHeight={true} showExpandedImage={true} />
 
-            <div className="mt-6">
+            <div>
                 <SectionCta sectionRef={sectionRef}>
                     <Button onClick={onBookPitchDeck}>{t('pitchDeck.buttonText')}</Button>
                 </SectionCta>

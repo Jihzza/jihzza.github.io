@@ -87,7 +87,7 @@ function useCols() {
   return cols;
 }
 
-export default function BoxesGrid({ items = [], showLabels = true, imageSize = "w-8 h-8", fixedHeight = false }) {
+export default function BoxesGrid({ items = [], showLabels = true, imageSize = "w-8 h-8", fixedHeight = false, showExpandedImage = false }) {
   // Normalize input to objects with a label / paragraph
   const normalized = useMemo(
     () =>
@@ -100,6 +100,7 @@ export default function BoxesGrid({ items = [], showLabels = true, imageSize = "
             paragraph: it.paragraph ?? it.subtitle ?? "",
             image: it.image,
             imageAlt: it.imageAlt,
+            expandedImage: it.expandedImage,
           }
       ),
     [items]
@@ -187,9 +188,9 @@ export default function BoxesGrid({ items = [], showLabels = true, imageSize = "
     }
     : {
       initial: { height: 0, opacity: 0 },
-      animate: { height: "auto", opacity: 1 },
+      animate: { height: "10rem", opacity: 1 }, // Fixed height for smooth animation
       exit: { height: 0, opacity: 0 },
-      transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+      transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
     };
 
   return (
@@ -268,11 +269,27 @@ export default function BoxesGrid({ items = [], showLabels = true, imageSize = "
                         className="overflow-hidden col-span-2 md:col-span-8"
                         {...panelMotion}
                       >
-                        <div className={`px-2 py-4 text-center text-white ${fixedHeight ? 'h-20 flex items-center justify-center' : ''}`}>
-                          <p className="text-sm md:text-lg">
-                            {normalized[active].paragraph || ""}
-                          </p>
-                        </div>
+                         <div className={`py-4 text-center text-white ${fixedHeight ? 'h-40 flex flex-col items-center justify-center' : ''}`}>
+                           {showExpandedImage && (normalized[active].expandedImage || normalized[active].image) && (
+                             <div className="mb-4 flex justify-center h-48 md:h-56">
+                               <img
+                                 src={normalized[active].expandedImage || normalized[active].image}
+                                 alt={normalized[active].imageAlt || normalized[active].label || ""}
+                                 className="w-48 md:w-56   object-contain"
+                                 loading="eager"
+                                 style={{ willChange: 'transform' }}
+                               />
+                             </div>
+                           )}
+                           {!showExpandedImage && normalized[active].label && (
+                             <h3 className="text-lg md:text-xl font-semibold mb-3 text-white">
+                               {normalized[active].label}
+                             </h3>
+                           )}
+                           <p className="text-sm md:text-lg">
+                             {normalized[active].paragraph || ""}
+                           </p>
+                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
