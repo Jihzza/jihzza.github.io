@@ -13,7 +13,7 @@ const mainPagesHrefs = ['/', '/profile', '/messages', '/calendar', '/chatbot'];
 const exploreLinksHrefs = [
   '/#consultations-section', '/#coaching-section', '/#invest-section',
   '/#testimonials-section', '/#media-appearances-section', '/#other-wins-section',
-  '/#interactive-sections', '/#interactive-sections', '/#interactive-sections'
+  '/#interactive-sections-social', '/#interactive-sections-faq', '/#interactive-sections-bug'
 ];
 
 const MotionLink = motion.create(Link);
@@ -92,13 +92,20 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
     onClose?.();
     if (href.includes('#')) {
       const [path, id] = href.split('#');
+      // Always reflect the hash in the URL so listeners react
       if (path && location.pathname !== path) {
-        navigate(path);
+        navigate(`${path}#${id}`);
+        // After navigation, ensure the target is scrolled into view
         setTimeout(() => {
-          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
       } else {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        // Same page: update hash to trigger hashchange and switch section
+        if (window.location.hash !== `#${id}`) {
+          window.location.hash = id;
+        }
+        // Ensure we scroll to the exact target element
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } else {
       navigate(href);

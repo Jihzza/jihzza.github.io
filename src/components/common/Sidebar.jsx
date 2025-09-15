@@ -12,7 +12,7 @@ const mainPagesHrefs = ['/', '/profile', '/messages', '/calendar'];
 const exploreLinksHrefs = [
     '/#consultations-section', '/#coaching-section', '/#invest-section',
     '/#testimonials-section', '/#media-appearances-section', '/#other-wins-section',
-    '/#interactive-sections', '/#interactive-sections', '/#interactive-sections'
+    '/#interactive-sections-social', '/#interactive-sections-faq', '/#interactive-sections-bug'
 ];
 
 
@@ -43,12 +43,15 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
         if (href.includes('#')) {
             const [path, id] = href.split('#');
             if (path && location.pathname !== path) {
-                navigate(path);
+                navigate(`${path}#${id}`);
                 setTimeout(() => {
-                    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
+                    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 150);
             } else {
-                document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                if (window.location.hash !== `#${id}`) {
+                    window.location.hash = id;
+                }
+                document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         } else {
             navigate(href);

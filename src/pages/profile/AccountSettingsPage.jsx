@@ -741,7 +741,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr]">
           {/* Sidebar on desktop, top tabs on mobile */}
           <div className="hidden lg:block"><Sidebar active={active} onChange={setActive} /></div>
-          <div className="lg:hidden -mx-1 mb-1 flex overflow-x-auto hide-scrollbar rounded-lg border border-white/20 p-1 bg-white/10 backdrop-blur-md shadow-sm">
+          <div className="lg:hidden -mx-4 mb-1 flex overflow-x-auto hide-scrollbar px-4">
             {NAV.map((n) => {
               const isActive = active === n.id;
               const baseScale = isActive ? 1.06 : 1;
@@ -753,11 +753,12 @@ export default function SettingsPage() {
                   onClick={() => setActive(n.id)}
                   aria-current={isActive ? 'true' : undefined}
                   className={cn(
-                    'mr-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm',
+                    'mr-2 whitespace-nowrap rounded-lg px-3 py-1 text-sm',
                     isActive
-                      ? 'bg-white/50 text-white font-medium shadow-lg'
-                      : 'bg-transparent text-white border-2 border-white/20 hover:bg-white/10 hover:text-white hover:shadow-lg transition-shadow duration-200',
+                      ? 'bg-[#BFA200] text-black shadow-lg'
+                      : 'bg-transparent text-white border-2 border-[#BFA200] hover:bg-[#BFA200] hover:text-white hover:shadow-lg transition-shadow duration-200',
                     'cursor-pointer',
+                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500/70',
                   )}
                   animate={{ scale: baseScale }}
                   whileHover={{ scale: hoverScale }}
