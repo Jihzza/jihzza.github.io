@@ -2,7 +2,7 @@
 import { useRef } from "react";
 import SectionCta from "../../components/ui/SectionCta";
 import SectionText from "../../components/ui/SectionText";
-import BoxesGrid from "../../components/ui/BoxesGrid";
+import PitchDeckGrid from "../../components/ui/PitchDeckGrid";
 import Button from "../../components/ui/Button";
 import { useTranslation } from 'react-i18next';
 import PerspetivBanner from '../../assets/images/Perspectiv Banner.svg';
@@ -29,7 +29,13 @@ export default function PitchDeck({ onBookPitchDeck }) {
                 {t('pitchDeck.investSubtitle')}
             </SectionText>
 
-            <BoxesGrid items={pitchDecks} showLabels={false} imageSize="w-16 h-16" fixedHeight={true} showExpandedImage={true} />
+            <PitchDeckGrid
+                items={pitchDecks}
+                showLabels={true}
+                imageSize="w-16 h-16"
+                fixedHeight={true}
+                showExpandedImage={true}
+            />
 
             <div className="mt-6">
                 <SectionCta sectionRef={sectionRef}>
