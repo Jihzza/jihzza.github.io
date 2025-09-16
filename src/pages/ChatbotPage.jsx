@@ -126,25 +126,31 @@ export default function ChatbotPage() {
     setUserText("");
     setLoading(true);
 
-    // Use environment variables with fallbacks to hardcoded URLs
+    // Use Netlify proxies to avoid CORS issues
     const webhooks = [
-      import.meta.env.VITE_N8N_FILTER_WEBHOOK_URL || "https://rafaello.app.n8n.cloud/webhook/filter",
-      import.meta.env.VITE_N8N_DECISION_WEBHOOK_URL || "https://rafaello.app.n8n.cloud/webhook/brain",
+      "/api/n8n-filter-proxy",
+      "/api/n8n-brain-proxy",
     ];
+
+    const payload = {
+      message: textToSend,
+      user_id: user?.id,
+      session_id: sessionId,
+    };
 
     try {
       // Fire-and-forget filter
       void fetch(webhooks[0], {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId, chatInput: textToSend, user_id: user?.id }),
+        body: JSON.stringify(payload),
       });
 
       // Await decision
       const res = await fetch(webhooks[1], {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId, chatInput: textToSend, user_id: user?.id }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
