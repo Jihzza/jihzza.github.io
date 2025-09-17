@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import ScrollArea from '../common/ScrollArea';
 
 export default function LanguageMenu({ open, topOffset, languages, currentKey, onSelect, onRequestClose, anchorRef }) {
   const menuRef = useRef(null);
@@ -42,7 +43,7 @@ export default function LanguageMenu({ open, topOffset, languages, currentKey, o
     >
       <div className="absolute inset-0"></div>
       <div className="relative w-full py-3">
-        <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar px-4">
+        <ScrollArea axis="x" hideScrollbar className="flex items-center gap-3 px-4">
           {languages.map((lang) => {
             const keyLower = lang.key.toLowerCase();
             const isSelected = normalized === keyLower || normalized.startsWith(keyLower + '-');
@@ -54,7 +55,7 @@ export default function LanguageMenu({ open, topOffset, languages, currentKey, o
                 whileTap={{ scale: 0.95 }}
                 className={`
                   px-2 py-1 rounded-lg text-xs font-medium transition-all duration-200
-                  border-[2px] border-[#bfa200] whitespace-nowrap flex-shrink-0
+                  whitespace-nowrap flex-shrink-0
                   flex items-center gap-2
                   ${isSelected ? 'bg-[#002147] text-[#bfa200] shadow-lg' : 'bg-[#002147] text-white hover:text-[#bfa200]'}
                 `}
@@ -64,7 +65,7 @@ export default function LanguageMenu({ open, topOffset, languages, currentKey, o
               </motion.button>
             );
           })}
-        </div>
+        </ScrollArea>
       </div>
     </motion.div>
   );

@@ -16,6 +16,7 @@ import {
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import { motion } from 'framer-motion';
+import ScrollArea from '../../components/common/ScrollArea';
 import Input from '../../components/common/Forms/Input';
 
 /**************************************
@@ -741,7 +742,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr]">
           {/* Sidebar on desktop, top tabs on mobile */}
           <div className="hidden lg:block"><Sidebar active={active} onChange={setActive} /></div>
-          <div className="lg:hidden -mx-4 mb-1 flex overflow-x-auto hide-scrollbar px-4">
+          <ScrollArea axis="x" hideScrollbar className="lg:hidden -mx-4 mb-1 flex px-4">
             {NAV.map((n) => {
               const isActive = active === n.id;
               const baseScale = isActive ? 1.06 : 1;
@@ -769,7 +770,7 @@ export default function SettingsPage() {
                 </motion.button>
               );
             })}
-          </div>
+          </ScrollArea>
 
           <div className="min-w-0 space-y-6">{Section}</div>
         </div>

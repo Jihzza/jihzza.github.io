@@ -1,6 +1,7 @@
 // src/components/common/SectionNavigator.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
+import ScrollArea from './ScrollArea';
 
 /**
  * Reusable nav for switching sections.
@@ -16,7 +17,7 @@ export default function SectionNavigator({
   const activeId = activeSectionId ?? activeSection;
 
   return (
-    <div className={`flex justify-start items-center gap-2 h-auto ${className}`}>
+    <ScrollArea axis="x" hideScrollbar className={`flex justify-start items-center gap-2 h-auto ${className}`}>
       {sections.map((section) => {
         const isActive = activeId === section.id;
         const baseScale = isActive ? 1.06 : 1;
@@ -50,6 +51,6 @@ export default function SectionNavigator({
           </motion.button>
         );
       })}
-    </div>
+    </ScrollArea>
   );
 }
