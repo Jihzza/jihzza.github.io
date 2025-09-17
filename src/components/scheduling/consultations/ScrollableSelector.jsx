@@ -80,7 +80,7 @@ export default function ScrollableSelector({ title, options = [], selectedValue,
                     ? 'text-gray-500 border-gray-600/60 cursor-not-allowed opacity-60'
                     : selected
                       ? 'bg-white/40 text-white border-white/50 scale-105 shadow-xl font-bold'
-                      : 'text-white hover:border-[#bfa200] shadow-xl hover:bg-white/15',
+                      : 'text-white shadow-xl hover:bg-white/15 hover:border-[#bfa200]',
                 ].join(' ')}
                 aria-pressed={selected}
                 aria-disabled={disabled}

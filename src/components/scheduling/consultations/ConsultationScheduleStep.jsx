@@ -70,7 +70,7 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
 
   return (
     <div className="w-full space-y-8">
-      <div className="rounded-xl bg-black/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+      <div className="rounded-xl bg-black/10 backdrop-blur-md p-4 md:p-6 shadow-xl">
         <CustomCalendar
           selectedDate={selectedDate}
           onDateSelect={handleDateSelect}
@@ -80,7 +80,7 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
       </div>
 
       {selectedDate && (
-        <div className="rounded-xl bg-black/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+        <div className="rounded-xl bg-black/10 backdrop-blur-md p-4 md:p-6 shadow-xl">
           <ScrollableSelector
             title={t('scheduling.durationSelectorTitle')}
             options={durationOptions}
@@ -92,7 +92,7 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
       )}
 
       {isLoading && (
-        <div className="rounded-xl bg-black/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+        <div className="rounded-xl bg-black/10 backdrop-blur-md p-4 md:p-6 shadow-xl">
           <p className="text-center text-gray-200 animate-pulse" aria-live="polite">
             {t('scheduling.loadingTimes')}
           </p>
@@ -100,7 +100,7 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
       )}
 
       {selectedDate && selectedDuration && !isLoading && (
-        <div className="rounded-xl bg-black/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+        <div className="rounded-xl bg-black/10 backdrop-blur-md p-4 md:p-6 shadow-xl">
           <ScrollableSelector
             title={t('scheduling.timeSelectorTitle')}
             options={availableTimeSlots}
@@ -113,13 +113,13 @@ export default function ConsultationScheduleStep({ consultationData, onUpdateFie
       )}
 
       {error && (
-        <div className="rounded-xl bg-black/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+        <div className="rounded-xl bg-black/10 backdrop-blur-md p-4 md:p-6 shadow-xl">
           <p className="text-center text-red-300" role="alert">{error}</p>
         </div>
       )}
 
       {selectedDate && selectedDuration && selectedTime && (
-        <div className="rounded-xl bg-black/10 backdrop-blur-md border border-white/20 p-4 md:p-6 shadow-xl">
+        <div className="rounded-xl bg-black/10 backdrop-blur-md p-4 md:p-6 shadow-xl">
           <h3 className="text-base font-semibold text-white mb-3 text-center md:text-xl lg:text-base">
             {t('scheduling.consultationSummaryTitle', { defaultValue: 'Consultation Summary' })}
           </h3>

@@ -32,8 +32,8 @@ const cn = (...args) => args.filter(Boolean).join(" ");
 const Card = ({ title, desc, children, danger = false, actions, className = "" }) => (
   <section
     className={cn(
-      "rounded-2xl border p-4 bg-black/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200",
-      danger ? "border-red-500/40" : "border-white/20",
+      "rounded-2xl p-4 bg-black/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200",
+      danger ? "border border-red-500/40" : "",
       className
     )}
   >
@@ -166,7 +166,7 @@ const NAV = [
 
 const Sidebar = ({ active, onChange }) => (
   <aside className="sticky top-4 h-max">
-    <nav className="grid gap-1 rounded-lg border border-white/20 p-2 bg-black/10 backdrop-blur-md shadow-sm">
+    <nav className="grid gap-1 rounded-lg p-2 bg-black/10 backdrop-blur-md shadow-sm">
       {NAV.map((item) => (
         <button
           key={item.id}

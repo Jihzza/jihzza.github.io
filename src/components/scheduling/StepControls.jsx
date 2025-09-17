@@ -81,7 +81,7 @@ export default function StepControls({
 
   return (
     <div
-      className="sticky bottom-0 left-0 right-0 bg-black/10 backdrop-blur-md border-t border-white/20"
+      className="sticky bottom-0 left-0 right-0 bg-black/10 backdrop-blur-md"
       style={{
         paddingBottom:
           "calc(env(safe-area-inset-bottom, 0px) + 8px)",

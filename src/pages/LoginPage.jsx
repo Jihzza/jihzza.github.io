@@ -61,7 +61,7 @@ export default function LoginPage() {
         <SectionTextWhite title="Log in to your account" />
 
         <div className="mt-8 w-full max-w-md">
-          <div className="rounded-2xl bg-black/10  border border-white/20 p-8 shadow-2xl ring-1 ring-black/5 backdrop-blur-xl">
+          <div className="rounded-2xl bg-black/10  p-8 shadow-2xl ring-1 ring-black/5 backdrop-blur-xl">
             {/* Form */}
             <Login
               onSubmit={handleLogin}

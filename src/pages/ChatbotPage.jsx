@@ -116,7 +116,7 @@ export default function ChatbotPage() {
                 className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm md:text-base shadow-sm ${
                   m.role === 'user'
                     ? 'bg-[#BFA200] text-black'
-                    : 'bg-black/10 text-white border border-white/20'
+                    : 'bg-black/10 text-white'
                 }`}
               >
                 {m.content}
@@ -125,7 +125,7 @@ export default function ChatbotPage() {
           ))}
           {isSending && (
             <div className="flex justify-start">
-              <div className="max-w-[85%] rounded-2xl px-3 py-2 text-sm bg-black/10 text-white border border-white/20 shadow-sm">
+              <div className="max-w-[85%] rounded-2xl px-3 py-2 text-sm bg-black/10 text-white shadow-sm">
                 Typing...
               </div>
             </div>
