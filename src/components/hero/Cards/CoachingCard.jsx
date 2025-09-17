@@ -62,7 +62,11 @@ export default function CoachingCard({ onScheduleClick }) {
               <motion.div
                 key={tier.id}
                 data-tier-card
-                onClick={(e) => handleTierClick(e, tier.id)}
+                // ⬇️ Block parent whileTap/whileHover from child taps/enters
+                onPointerDownCapture={(e) => e.stopPropagation()}
+                onTapStart={(e) => e.stopPropagation()}
+                onKeyDownCapture={(e) => e.stopPropagation()} // keyboard "Enter" also triggers tap
+                onClick={(e) => handleTierClick(e, tier.id)} // you already stopPropagation here
                 className="border-2 md:border-3 border-[#BFA200] rounded-xl p-3 lg:p-2 flex-1 cursor-pointer h-[70px] w-[70px] flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition-shadow duration-200"
                 style={{ scale: isSelected ? 1.12 : 1 }}
                 whileHover={prefersReduced ? undefined : { scale: isSelected ? 1.07 : 1.06 }}
@@ -76,7 +80,14 @@ export default function CoachingCard({ onScheduleClick }) {
           })}
         </div>
         <p className="text-xs text-white/75 mb-2">{t('hero.services.coaching.spots')}</p>
-        <Button onClick={handleButtonClick} className="cursor-pointer">{buttonText}</Button>
+        <Button
+          onClick={handleButtonClick}
+          onPointerDownCapture={(e) => e.stopPropagation()}
+          onKeyDownCapture={(e) => e.stopPropagation()}
+          className="cursor-pointer"
+        >
+          {buttonText}
+        </Button>
         <a
           href="#coaching-section"
           className="inline-block text-xs md:text-base text-white/75 cursor-pointer"
