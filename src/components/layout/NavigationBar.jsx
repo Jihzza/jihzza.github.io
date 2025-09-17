@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { scrollToTop } from "../../utils/scrollPositionManager";
 
-import logo from "../../assets/icons/CluckinsLogo.svg";
 import homeIcon from "../../assets/icons/House Branco.svg";
 import calendarIcon from "../../assets/icons/Calendar Branco.svg";
 import settingsIcon from "../../assets/icons/Settings Branco.svg";
 import profileIcon from "../../assets/icons/Profile Branco.svg";
+import chatIcon from "../../assets/icons/CluckinsLogo.svg";
 
 function useBreakpointValue(values) {
   const [val, setVal] = useState(values.base);
@@ -57,35 +57,20 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
   const { user } = useAuth();
   const { t, i18n } = useTranslation();
   
-  // State for notification badge
+  // Chatbot unread badge
   const [hasPendingWelcome, setHasPendingWelcome] = useState(false);
-
-  // Check for pending welcome message on mount and listen for new ones
   useEffect(() => {
-    // Check if there's already a pending message
-    const pendingMessage = sessionStorage.getItem('pending_welcome_message');
-    if (pendingMessage) {
-      console.log('🔴 Notification badge activated - pending welcome message found:', pendingMessage);
-      setHasPendingWelcome(true);
-    }
-
-    // Listen for new welcome messages
-    const handleWelcomeReady = () => {
-      console.log('🔴 Notification badge activated - welcome message ready event received');
-      setHasPendingWelcome(true);
+    const pending = sessionStorage.getItem('pending_welcome_message');
+    if (pending) setHasPendingWelcome(true);
+    const onReady = () => setHasPendingWelcome(true);
+    const onConsumed = () => setHasPendingWelcome(false);
+    window.addEventListener('welcomeMessageReady', onReady);
+    window.addEventListener('welcomeMessageConsumed', onConsumed);
+    return () => {
+      window.removeEventListener('welcomeMessageReady', onReady);
+      window.removeEventListener('welcomeMessageConsumed', onConsumed);
     };
-
-    window.addEventListener('welcomeMessageReady', handleWelcomeReady);
-    return () => window.removeEventListener('welcomeMessageReady', handleWelcomeReady);
   }, []);
-
-  // Clear notification when user visits chatbot page
-  useEffect(() => {
-    if (location.pathname === '/chat' || location.pathname.startsWith('/chat/')) {
-      console.log('✅ User entered chatbot page - notification badge cleared');
-      setHasPendingWelcome(false);
-    }
-  }, [location.pathname]);
 
   const avatarSrc =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
@@ -95,7 +80,7 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
     () => [
       { icon: homeIcon, label: t("navigation.home"), path: "/", requiresAuth: false },
       { icon: calendarIcon, label: t("navigation.calendar"), path: "/calendar", requiresAuth: true },
-      { icon: logo, label: t("navigation.chat"), path: "/chat", requiresAuth: true, isLogo: true },
+      { icon: chatIcon, label: t("navigation.chat"), path: "/chat", requiresAuth: true, isChat: true },
       { icon: settingsIcon, label: t("navigation.settings"), path: "/settings", requiresAuth: true },
       { icon: profileIcon, label: t("navigation.profile"), path: "/profile", requiresAuth: true, isProfile: true },
     ],
@@ -275,9 +260,8 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
                     alt={item.label}
                     className="w-full h-full object-contain p-[1px] pointer-events-none select-none"
                   />
-                  {/* Notification badge for chatbot */}
-                  {item.isLogo && hasPendingWelcome && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black animate-pulse" />
+                  {item.isChat && hasPendingWelcome && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black" />
                   )}
                 </motion.div>
               )}

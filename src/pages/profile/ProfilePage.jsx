@@ -10,14 +10,12 @@ import { getProfile, signOut } from '../../services/authService';
 import { getAppointmentsByUserId } from '../../services/appointmentService';
 import { getSubscriptionsByUserId } from '../../services/subscriptionService';
 import { getPitchDeckRequestsByUserId } from '../../services/pitchDeckServices';
-import { getConversationSessionsByUserId } from '../../services/chatbotService';
 import { getFinancialMetrics } from '../../services/financialService';
 import ProfileHeader from '../../components/profile/ProfileHeader';
 import FinancesBox from '../../components/profile/FinancesBox';
 import ConsultationsBox from '../../components/profile/ConsultationsBox';
 import SubscriptionsBox from '../../components/profile/SubscriptionsBox';
 import PitchDeckBox from '../../components/profile/PitchDeckBox';
-import ChatbotHistoryBox from '../../components/profile/ChatbotHistoryBox';
 import AccountSettingsBox from '../../components/profile/AccountSettingsBox';
 
 export default function ProfilePage() {
@@ -68,14 +66,12 @@ export default function ProfilePage() {
           { data: financialData, error: financialError },
           { data: appointmentsData, error: appointmentsError },
           { data: subscriptionsData, error: subscriptionsError },
-          { data: pitchDeckData, error: pitchDeckError },
-          { data: chatbotData, error: chatbotError }
+          { data: pitchDeckData, error: pitchDeckError }
         ] = await Promise.all([
           getFinancialMetrics(user.id),
           getAppointmentsByUserId(user.id),
           getSubscriptionsByUserId(user.id),
-          getPitchDeckRequestsByUserId(user.id),
-          getConversationSessionsByUserId(user.id)
+          getPitchDeckRequestsByUserId(user.id)
         ]);
 
         // Handle financial data
@@ -114,12 +110,6 @@ export default function ProfilePage() {
           submittedAt: request.submitted_at || request.created_at
         })) || [];
 
-        // Transform chatbot history data
-        const chatbotDataFormatted = chatbotData?.map(session => ({
-          created_at: session.last_message_at || session.created_at,
-          messageCount: 1 // We don't have message count in the current schema
-        })) || [];
-
         // Update dashboard data
         setDashboardData({
           finances: financialData || {
@@ -129,8 +119,7 @@ export default function ProfilePage() {
           },
           consultations: consultationsData,
           subscriptions: subscriptionsDataFormatted,
-          pitchDeckRequests: pitchDeckDataFormatted,
-          chatbotHistory: chatbotDataFormatted
+          pitchDeckRequests: pitchDeckDataFormatted
         });
 
       } catch (err) {
@@ -194,12 +183,6 @@ export default function ProfilePage() {
 
         {/* Third Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Chatbot History Box */}
-          <ChatbotHistoryBox
-            conversations={dashboardData.chatbotHistory}
-            to="/profile/chatbot-history"
-          />
-
           {/* Finances Box - Top Left */}
           <FinancesBox
             consultationEarnings={dashboardData.finances.consultationEarnings}

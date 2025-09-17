@@ -368,11 +368,11 @@
     }
   },
   "chatWithMe": {
-    "title": "Smart Assistance: Our AI Chatbot",
-    "subtitle": "Our AI assistant helps you find the right services and prepares us for your consultations, saving you time and money.",
-    "iconAltText": "Chat bubble icon",
-    "iconLabel": "Chatbot Icon",
-    "buttonText": "Chatbot"
+    "title": "Smart Assistance",
+    "subtitle": "We’ll soon introduce a guided assistant to streamline scheduling and prep.",
+    "iconAltText": "Assistant icon",
+    "iconLabel": "Assistant",
+    "buttonText": "Coming soon"
   },
   "scheduling": {
     "serviceSelection": {
@@ -482,10 +482,8 @@
       "checkoutButton": "Proceed to Checkout",
       "stripeRedirectMessage": "You will be redirected to Stripe to complete your payment."
     },
-    "chatbotStep": {
-      "title": "Final Step",
-      "initialMessage": "Hello! I'm here to gather some preliminary information for our upcoming consultation. To start, could you please tell more about yourself?",
-      "inputPlaceholder": "Type your message..."
+    "confirmation": {
+      "title": "Confirmation"
     }
   },
   "socialMedia": {
@@ -571,21 +569,10 @@
   },
   "sidebar": {
     "mainPages": [
-      {
-        "label": "Home"
-      },
-      {
-        "label": "Profile"
-      },
-      {
-        "label": "Messages"
-      },
-      {
-        "label": "Calendar"
-      },
-      {
-        "label": "Chatbot"
-      }
+      { "label": "Home" },
+      { "label": "Profile" },
+      { "label": "Messages" },
+      { "label": "Calendar" }
     ],
     "explore": "Explore",
     "exploreLinks": [

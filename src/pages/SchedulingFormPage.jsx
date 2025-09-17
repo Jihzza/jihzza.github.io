@@ -16,7 +16,6 @@ import CoachingPlanStep from '../components/scheduling/coaching/CoachingPlanStep
 import PitchDeckStep from '../components/scheduling/pitchdeck/PitchDeckStep';
 import ContactInfoStep from '../components/scheduling/ContactInfoStep';
 import PaymentStep from '../components/scheduling/PaymentStep';
-import ChatbotStep from '../components/scheduling/ChatbotStep';
 import ConfirmationStep from '../components/scheduling/ConfirmationStep';
 import FormTitle from '../components/common/FormsTitle'; // unified step titles
 
@@ -261,20 +260,20 @@ export default function SchedulingFormPage() {
       if (currentStep === 2) return t('scheduling.consultation.title', { defaultValue: 'Schedule your consultation' });
       if (currentStep === 3) return t('scheduling.contactInfo.title', { defaultValue: 'Your contact info' });
       if (currentStep === 4) return t('scheduling.paymentStep.summaryTitle', { defaultValue: 'Payment' });
-      if (currentStep === 5) return t('scheduling.chatbotStep.title', { defaultValue: 'Chat & follow-up' });
+      if (currentStep === 5) return t('scheduling.confirmation.title', { defaultValue: 'Confirmation' });
     }
 
     if (st === 'coaching') {
       if (currentStep === 2) return t('scheduling.coachingPlan.title', { defaultValue: 'Choose your coaching plan' });
       if (currentStep === 3) return t('scheduling.contactInfo.title', { defaultValue: 'Your contact info' });
       if (currentStep === 4) return t('scheduling.paymentStep.summaryTitle', { defaultValue: 'Payment' });
-      if (currentStep === 5) return t('scheduling.chatbotStep.title', { defaultValue: 'Chat & follow-up' });
+      if (currentStep === 5) return t('scheduling.confirmation.title', { defaultValue: 'Confirmation' });
     }
 
     if (st === 'pitchdeck') {
       if (currentStep === 2) return t('scheduling.pitchDeck.title', { defaultValue: 'Pitch deck options' });
       if (currentStep === 3) return t('scheduling.contactInfo.title', { defaultValue: 'Your contact info' });
-      if (currentStep === 4) return t('scheduling.chatbotStep.title', { defaultValue: 'Chat & follow-up' });
+      if (currentStep === 4) return t('scheduling.confirmation.title', { defaultValue: 'Confirmation' });
     }
 
     return t('scheduling.title', { defaultValue: 'Scheduling' });
@@ -283,7 +282,7 @@ export default function SchedulingFormPage() {
   // Step indicator text (Step X / Y)
   const stepIndicator = useMemo(() => {
     const st = formData.serviceType;
-    const totalSteps = (st && flowConfig[st]) ? flowConfig[st].totalSteps : 6;
+    const totalSteps = (st && flowConfig[st]) ? flowConfig[st].totalSteps : 5;
 
     return (
       <>
@@ -417,8 +416,12 @@ export default function SchedulingFormPage() {
                 />
               )}
 
-              {(formData.serviceType === 'pitchdeck' && currentStep === 4) && <ChatbotStep />}
-              {(formData.serviceType !== 'pitchdeck' && currentStep === 5) && <ChatbotStep />}
+              {(formData.serviceType === 'pitchdeck' && currentStep === 4) && (
+                <div className="text-white/80">{t('scheduling.confirmation.title', { defaultValue: 'Confirmation' })}</div>
+              )}
+              {(formData.serviceType !== 'pitchdeck' && currentStep === 5) && (
+                <div className="text-white/80">{t('scheduling.confirmation.title', { defaultValue: 'Confirmation' })}</div>
+              )}
 
             </div>
           )}

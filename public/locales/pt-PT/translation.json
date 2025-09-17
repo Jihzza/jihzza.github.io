@@ -357,11 +357,11 @@
         }
     },
     "chatWithMe": {
-        "title": "Assistência Inteligente: O Nosso Chatbot de IA",
-        "subtitle": "O nosso assistente de IA ajuda-te a encontrar os serviços certos e prepara-nos para as tuas consultas, poupando-te tempo e dinheiro.",
-        "iconAltText": "Ícone de balão de conversa",
-        "iconLabel": "Ícone do Chatbot",
-        "buttonText": "Chatbot"
+        "title": "Assistência Inteligente",
+        "subtitle": "Em breve iremos introduzir um assistente guiado para agilizar marcações e preparação.",
+        "iconAltText": "Ícone do assistente",
+        "iconLabel": "Assistente",
+        "buttonText": "Brevemente"
     },
     "scheduling": {
         "serviceSelection": {
@@ -471,10 +471,8 @@
             "checkoutButton": "Avançar para o Pagamento",
             "stripeRedirectMessage": "Vais ser redirecionado para a Stripe para concluíres o pagamento."
         },
-        "chatbotStep": {
-            "title": "Passo Final",
-            "initialMessage": "Olá! Estou aqui para recolher alguma informação preliminar para a nossa próxima consulta. Para começar, podes falar-me um pouco mais sobre ti?",
-            "inputPlaceholder": "Escreve a tua mensagem..."
+        "confirmation": {
+            "title": "Confirmação"
         }
     },
     "socialMedia": {

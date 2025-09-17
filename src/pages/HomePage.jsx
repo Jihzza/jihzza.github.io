@@ -11,7 +11,6 @@ import OtherWinsSection from './sections/OtherWinsSection';
 import MediaAppearancesSection from './sections/MediaAppearancesSection';
 import TestimonialsSection from './sections/TestimonialsSection';
 import SignupSection from './sections/SignupSection';
-import ChatWithMeSection from './sections/ChatWithMeSection';
 import InteractiveSections from './sections/InteractiveSections';
 import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
 import { saveHomeScrollPosition, getHomeScrollPosition, scrollToPosition } from '../utils/scrollPositionManager';
@@ -178,9 +177,6 @@ export default function HomePage() {
             </div>
             <div id="signup-section" className="w-full">
                 <SignupSection />
-            </div>
-            <div id="chat-section" className="w-full">
-                <ChatWithMeSection />
             </div>
             <div id="scheduling-section" ref={schedulingRef} className="w-full">
                 <div className="h-auto flex flex-col items-center justify-center py-4">

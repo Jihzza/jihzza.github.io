@@ -44,7 +44,7 @@ function useVisualViewport() {
 export default function Layout() {
   // --- STATE ---
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [isChatbotOpen, setChatbotOpen] = useState(false);
+  // Chatbot removed
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const headerRef = useRef(null);
@@ -65,7 +65,6 @@ export default function Layout() {
 
   // --- HANDLERS ---
   const handleMenuClick = () => setMenuOpen(!isMenuOpen);
-  const handleChatClick = () => setChatbotOpen(!isChatbotOpen);
   const handleCloseMenu = () => setMenuOpen(false);
 
   const handleScrollToTop = () => {
@@ -125,113 +124,51 @@ export default function Layout() {
   }, []);
 
 
-  // --- WELCOME MESSAGE SYSTEM: Trigger n8n welcome WF site-wide on first load (once per tab). ---
-  // This ensures users get a welcome message as soon as they enter the website.
+  // Trigger welcome-message WF on first load to seed chatbot message
   useEffect(() => {
-    console.log('🔍 Welcome effect triggered', { isAuthenticated, user: user?.id, location: location.pathname });
-    
-    const SESSION_KEY = 'chatbot-session-id';
-    let sid = sessionStorage.getItem(SESSION_KEY);
-    if (!sid) {
-      sid = typeof crypto?.randomUUID === 'function'
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      sessionStorage.setItem(SESSION_KEY, sid);
-      console.log('🆔 Generated new session ID:', sid);
-    } else {
-      console.log('🆔 Using existing session ID:', sid);
-    }
+    try {
+      const alreadyTriggered = sessionStorage.getItem('welcome_triggered');
+      if (alreadyTriggered) return;
 
-    // Check if we've already triggered the welcome workflow for this session
-    const welcomedKey = `welcomed:${sid}`;
-    if (sessionStorage.getItem(welcomedKey)) {
-      console.log('⏭️ Welcome workflow already triggered for this session, skipping');
-      return; // already triggered for this session
-    }
-    
-    // Check if there's already a pending welcome message
-    const pendingMessage = sessionStorage.getItem('pending_welcome_message');
-    if (pendingMessage) {
-      console.log('⏭️ Welcome message already pending, skipping new request');
-      return; // already have a pending message
-    }
-    
-    // Wait a bit for authentication to be ready, then trigger
-    const timeoutId = setTimeout(() => {
-      console.log('✅ Welcome workflow will be triggered for session:', sid);
-      
-      // Mark this session as having triggered the welcome workflow
-      sessionStorage.setItem(welcomedKey, '1');
+      const sidKey = 'chatbot-session-id';
+      let sid = sessionStorage.getItem(sidKey);
+      if (!sid) {
+        sid = typeof crypto?.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        sessionStorage.setItem(sidKey, sid);
+      }
 
-      const WELCOME_ENDPOINT = import.meta.env.VITE_N8N_WELCOME_WEBHOOK_URL || 'https://rafaello.app.n8n.cloud/webhook/welcome-message';
-    
-      // Default welcome message (fallback)
-      const defaultWelcomeMessage = "Hello! I'm Daniel, your personal coach. I'm here to help you with mindset, business, finance, and growth. How can I assist you today?";
-      
-      if (WELCOME_ENDPOINT) {
-        console.log('🚀 Triggering N8N welcome workflow...', {
-          session_id: sid,
-          user_id: isAuthenticated ? (user?.id ?? null) : null,
-          path: location.pathname,
-          referrer: document.referrer || null,
-          endpoint: WELCOME_ENDPOINT
-        });
-        
-        // Try n8n webhook first
-        const payload = {
-          session_id: sid,
-          user_id: isAuthenticated ? (user?.id ?? null) : null,
-          path: location.pathname,
-          referrer: document.referrer || null,
-          ts: new Date().toISOString(),
-        };
+      sessionStorage.setItem('welcome_triggered', '1');
 
-        fetch(WELCOME_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          keepalive: true,
-        })
-          .then(async (res) => {
-            try {
-              const raw = await res.json();
-              const first = Array.isArray(raw) ? raw[0] : raw;
-              const text = first?.content ?? first?.value ?? first?.output ?? '';
-              if (text) {
-                // Store welcome message for chatbot page
-                sessionStorage.setItem('pending_welcome_message', text);
-                console.log('🎉 Welcome message received from N8N workflow:', text);
-                // Trigger notification badge update
-                window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
-              } else {
-                // Fallback to default if n8n returns empty response
-                sessionStorage.setItem('pending_welcome_message', defaultWelcomeMessage);
-                console.log('⚠️ N8N returned empty response, using default welcome message:', defaultWelcomeMessage);
-                window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
-              }
-            } catch (error) {
-              console.warn('Failed to parse n8n welcome response:', error);
-              sessionStorage.setItem('pending_welcome_message', defaultWelcomeMessage);
+      const WELCOME_URL = 'https://rafaello.app.n8n.cloud/webhook/welcome-message';
+      const payload = {
+        session_id: sid,
+        user_id: isAuthenticated ? (user?.id ?? null) : null,
+        path: location.pathname,
+        referrer: document.referrer || null,
+        ts: new Date().toISOString(),
+      };
+
+      fetch(WELCOME_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      })
+        .then(async (res) => {
+          try {
+            const raw = await res.json();
+            const first = Array.isArray(raw) ? raw[0] : raw;
+            const text = first?.content ?? first?.value ?? first?.output ?? '';
+            if (text) {
+              sessionStorage.setItem('pending_welcome_message', text);
               window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
             }
-          })
-          .catch((error) => {
-            console.warn('❌ N8N welcome webhook failed:', error);
-            // Fallback to default message
-            sessionStorage.setItem('pending_welcome_message', defaultWelcomeMessage);
-            console.log('🔄 Using fallback welcome message due to webhook failure:', defaultWelcomeMessage);
-            window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
-          });
-      } else {
-        // No n8n webhook configured, use default message
-        console.log('⚠️ No VITE_N8N_WELCOME_WEBHOOK_URL configured, using default welcome message');
-        sessionStorage.setItem('pending_welcome_message', defaultWelcomeMessage);
-        console.log('🔄 Default welcome message stored:', defaultWelcomeMessage);
-        window.dispatchEvent(new CustomEvent('welcomeMessageReady'));
-      }
-    }, 1000); // Wait 1 second for auth to be ready
-
-    return () => clearTimeout(timeoutId);
+          } catch {}
+        })
+        .catch(() => {});
+    } catch {}
   }, [isAuthenticated, user?.id, location.pathname]);
 
   // --- RENDER LOGIC ---
@@ -260,16 +197,10 @@ export default function Layout() {
         </ScrollRootContext.Provider>
       </main>
 
-      {/* The NavigationBar is conditionally rendered. */}
-      {!isChatbotOpen && (
-        <div ref={navBarRef} className="relative">
-          <NavigationBar
-            isChatbotOpen={isChatbotOpen}
-            onChatClick={handleChatClick}
-            onNavigate={handleNavigate}
-          />
-        </div>
-      )}
+      {/* Bottom navigation */}
+      <div ref={navBarRef} className="relative">
+        <NavigationBar onNavigate={handleNavigate} />
+      </div>
 
 
       {/* SCROLL TO TOP BUTTON - Only show on home page */}

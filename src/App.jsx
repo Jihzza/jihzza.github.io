@@ -1,8 +1,6 @@
 // src/App.jsx
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
-import { useAuth } from './contexts/AuthContext';
 
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
@@ -17,15 +15,14 @@ import AddTestimonialPage from './pages/AddTestimonialPage';
 import AppointmentsPage from './pages/profile/AppointmentsPage';
 import SubscriptionsPage from './pages/profile/SubscriptionsPage';
 import PitchDeckRequestsPage from './pages/profile/PitchDeckRequestsPage';
-import ChatbotHistoryPage from './pages/profile/ChatbotHistoryPage';
 import AccountSettingsPage from './pages/profile/AccountSettingsPage';
 import CalendarPage from './pages/CalendarPage';
 import NotificationsPage from './pages/NotificationsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import SuccessPage from './pages/SuccessPage';
-import ChatbotPage from './pages/ChatbotPage';
 import SchedulingFormPage from './pages/SchedulingFormPage';
+import ChatbotPage from './pages/ChatbotPage';
 
 function App() {
   return (
@@ -75,7 +72,7 @@ function App() {
           />
           <Route
             path="/profile/chatbot-history"
-            element={<ProtectedRoute><ChatbotHistoryPage /></ProtectedRoute>}
+            element={<ProtectedRoute><div /> </ProtectedRoute>}
           />
           <Route
             path="/calendar"
@@ -89,13 +86,9 @@ function App() {
             path="/success"
             element={<SuccessPage />}
           />
-          <Route 
+          <Route
             path="/chat"
-            element={<ChatbotPage />} 
-          />
-          <Route 
-            path="/chat/:sessionId"
-            element={<ChatbotPage />} 
+            element={<ProtectedRoute><ChatbotPage /></ProtectedRoute>}
           />
         </Route>
       </Routes>
