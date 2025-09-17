@@ -147,6 +147,23 @@ export default function HomePage() {
         };
     }, [scrollContainer]);
 
+    // Observe Chat section visibility and broadcast event for navbar glow
+    useEffect(() => {
+        const section = document.getElementById('chat-section');
+        if (!section) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                const isVisible = !!entry?.isIntersecting;
+                window.dispatchEvent(new CustomEvent('chatSectionVisible', { detail: isVisible }));
+            },
+            { threshold: 0.5 }
+        );
+
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <div
             id="page-top"

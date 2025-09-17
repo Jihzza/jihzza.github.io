@@ -57,6 +57,14 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
   const { user } = useAuth();
   const { t, i18n } = useTranslation();
   
+  // Glow state for chat icon when chat section is visible
+  const [glowChatIcon, setGlowChatIcon] = useState(false);
+  useEffect(() => {
+    const handler = (e) => setGlowChatIcon(!!e.detail);
+    window.addEventListener('chatSectionVisible', handler);
+    return () => window.removeEventListener('chatSectionVisible', handler);
+  }, []);
+  
   // Chatbot unread badge
   const [hasPendingWelcome, setHasPendingWelcome] = useState(false);
   useEffect(() => {
@@ -249,7 +257,7 @@ export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }
                 </motion.div>
               ) : (
                 <motion.div
-                  className={["grid place-items-center relative", ICON_BOX_CLASS].join(" ")}
+                  className={["grid place-items-center relative", ICON_BOX_CLASS, item.isChat && glowChatIcon ? "chat-icon-glow" : ""].join(" ")}
                   animate={{ scale: baseScale }}
                   whileHover={{ scale: hoverScale }}
                   whileTap={{ scale: 0.95 }}

@@ -36,7 +36,7 @@ function PitchDeckCard({
         "cursor-pointer",
       ].join(" ")}
     >
-      <div className="relative overflow-hidden rounded-2xl bg-[#002147] p-4 w-24 h-24 md:w-28 md:h-28 flex items-center justify-center">
+      <div className="relative overflow-hidden rounded-2xl bg-[#002147] p-4 w-20 h-20 md:w-28 md:h-28 flex items-center justify-center">
         {image && (
           <img
             src={image}
@@ -47,7 +47,7 @@ function PitchDeckCard({
         )}
       </div>
       {showLabels && (
-        <span className="text-white text-xs md:text-base font-normal mt-2">{label}</span>
+        <span className="text-white text-sm md:text-base font-normal mt-2">{label}</span>
       )}
     </motion.button>
   );

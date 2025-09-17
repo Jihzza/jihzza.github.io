@@ -23,6 +23,12 @@ body,
 }
 
 
+.chat-icon-glow {
+  filter: drop-shadow(0 0 6px #BFA200) drop-shadow(0 0 12px #BFA200);
+  transition: filter 0.3s ease-in-out;
+}
+
+
 :root {
   font-family: 'Inter', sans-serif;
 }

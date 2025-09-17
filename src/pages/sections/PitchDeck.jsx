@@ -32,7 +32,7 @@ export default function PitchDeck({ onBookPitchDeck }) {
             <PitchDeckGrid
                 items={pitchDecks}
                 showLabels={true}
-                imageSize="w-16 h-16"
+                imageSize="w-13 h-13"
                 fixedHeight={true}
                 showExpandedImage={true}
             />
