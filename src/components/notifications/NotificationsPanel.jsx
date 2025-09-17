@@ -15,7 +15,7 @@ export default function NotificationsPanel({ onClose }) {
         {unreadCount > 0 && (
           <button
             onClick={markAllAsRead}
-            className="text-xs font-medium px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 transition"
+            className="text-xs font-medium px-3 py-1 rounded-full bg-black/10 hover:bg-white/20 transition"
           >
             {t('notifications.panel.markAllAsRead')}
           </button>

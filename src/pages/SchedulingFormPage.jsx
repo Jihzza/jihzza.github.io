@@ -359,7 +359,7 @@ export default function SchedulingFormPage() {
         <div className="w-full max-w-2xl mx-auto px-4 py-4">
           {/* Payment success branch shows confirmation only */}
           {paymentStatus === 'success' ? (
-            <div className="w-full rounded-2xl shadow-xl bg-white/10 p-4 md:p-6 space-y-4">
+            <div className="w-full rounded-2xl shadow-xl bg-black/10 p-4 md:p-6 space-y-4">
               <FormTitle title={t('scheduling.confirmation.title', { defaultValue: 'Payment Successful!' })} />
               <ConfirmationStep />
             </div>

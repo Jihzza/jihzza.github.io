@@ -316,7 +316,7 @@ export default function CustomCalendar({
               } else if (selected) {
                 classes.push("bg-white/20");
               } else {
-                classes.push("hover:bg-white/10 cursor-pointer");
+                classes.push("hover:bg-black/10 cursor-pointer");
               }
               if (!inMonth) classes.push("text-white/40");
 

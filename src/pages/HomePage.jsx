@@ -15,6 +15,7 @@ import InteractiveSections from './sections/InteractiveSections';
 import ServiceSelectionStep from '../components/scheduling/ServiceSelectionStep';
 import { saveHomeScrollPosition, getHomeScrollPosition, scrollToPosition } from '../utils/scrollPositionManager';
 import { ScrollRootContext } from '../contexts/ScrollRootContext';
+import ChatWithMeSection from './sections/ChatWithMeSection';
 
 import { useTranslation } from 'react-i18next';
 
@@ -177,6 +178,9 @@ export default function HomePage() {
             </div>
             <div id="signup-section" className="w-full">
                 <SignupSection />
+            </div>
+            <div id="chatbot-section" className="w-full">
+                <ChatWithMeSection />
             </div>
             <div id="scheduling-section" ref={schedulingRef} className="w-full">
                 <div className="h-auto flex flex-col items-center justify-center py-4">

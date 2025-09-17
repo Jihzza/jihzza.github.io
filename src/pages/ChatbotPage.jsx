@@ -116,7 +116,7 @@ export default function ChatbotPage() {
                 className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm md:text-base shadow-sm ${
                   m.role === 'user'
                     ? 'bg-[#BFA200] text-black'
-                    : 'bg-white/10 text-white border border-white/20'
+                    : 'bg-black/10 text-white border border-white/20'
                 }`}
               >
                 {m.content}
@@ -125,7 +125,7 @@ export default function ChatbotPage() {
           ))}
           {isSending && (
             <div className="flex justify-start">
-              <div className="max-w-[85%] rounded-2xl px-3 py-2 text-sm bg-white/10 text-white border border-white/20 shadow-sm">
+              <div className="max-w-[85%] rounded-2xl px-3 py-2 text-sm bg-black/10 text-white border border-white/20 shadow-sm">
                 Typing...
               </div>
             </div>
@@ -149,13 +149,13 @@ export default function ChatbotPage() {
               rows={1}
               placeholder={isAuthenticated ? 'Type your message...' : 'Log in to chat'}
               disabled={!isAuthenticated || isSending}
-              className={`w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl py-3 pl-4 pr-24 text-white placeholder:text-white/50 focus:outline-none focus:ring focus:ring-white/30 md:text-base resize-none`}
+              className={`w-full bg-black/10 backdrop-blur-md border border-white/20 rounded-xl py-3 pl-4 pr-24 text-white placeholder:text-white/50 focus:outline-none focus:ring focus:ring-white/30 md:text-base resize-none`}
             />
             <button
               onClick={handleSend}
               disabled={!canSend}
               className={`absolute right-2 bottom-2 px-3 py-2 rounded-lg text-sm font-semibold transition ${
-                canSend ? 'bg-[#BFA200] text-black hover:opacity-90' : 'bg-white/10 text-white/50 cursor-not-allowed'
+                canSend ? 'bg-[#BFA200] text-black hover:opacity-90' : 'bg-black/10 text-white/50 cursor-not-allowed'
               }`}
             >
               Send

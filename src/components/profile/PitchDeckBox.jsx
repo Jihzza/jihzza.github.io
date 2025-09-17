@@ -44,7 +44,7 @@ const PitchDeckBox = ({
     <ProfileDashboardBox 
       title="Pitch Deck Requests" 
       to={to}
-      className="bg-white/10"
+      className="bg-black/10"
     >
       <div className="space-y-2">
         {displayedRequests.length > 0 ? (

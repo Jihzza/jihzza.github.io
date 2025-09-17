@@ -30,7 +30,7 @@ export default function PitchDeckStep({ selectedDeck, onSelectDeck }) {
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.04 }}
               className={`
-                w-full max-w-sm p-3 rounded-lg cursor-pointer transition-all duration-200 md:p-4 bg-white/10 backdrop-blur-md border border-white/20
+                w-full max-w-sm p-3 rounded-lg cursor-pointer transition-all duration-200 md:p-4 bg-black/10 backdrop-blur-md border border-white/20
                 ${isSelected
                   ? 'border-[#bfa200] shadow-xl hover:bg-white/15'
                   : 'hover:border-[#bfa200] hover:bg-white/15 hover:shadow-md transition-shadow duration-200'

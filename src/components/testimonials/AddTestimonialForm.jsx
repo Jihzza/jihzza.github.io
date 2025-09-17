@@ -79,7 +79,7 @@ export default function AddTestimonialForm({ onSubmit, isSubmitting, profileData
               required: t('addTestimonial.testimonialRequired'),
               maxLength: { value: 120, message: t('addTestimonial.testimonialMaxLength') }
             })}
-            className="w-full px-3 py-2 mt-2 rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-white/70 bg-white/10 backdrop-blur-md border border-white/20"
+            className="w-full px-3 py-2 mt-2 rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-white/70 bg-black/10 backdrop-blur-md border border-white/20"
           />
         </div>
         {errors.content && (

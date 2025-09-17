@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
     <div className="relative h-full w-full overflow-hidden bg-[#002147]">
       {/* Decorative background accents (same as Login/Signup) */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-black/10 blur-3xl" />
         <div className="absolute -bottom-32 -right-32 h-80 w-80 rounded-full bg-[#002147]/40 blur-3xl" />
         <div className="absolute inset-0 opacity-30 [background:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:22px_22px]" />
       </div>
@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
         <SectionTextWhite title={sent ? 'Check your inbox' : 'Reset your password'} />
 
         <div className="mt-8 w-full max-w-md">
-          <div className="rounded-2xl bg-white/10  border border-white/20 p-8 shadow-2xl ring-1 ring-black/5 backdrop-blur-xl">
+          <div className="rounded-2xl bg-black/10  border border-white/20 p-8 shadow-2xl ring-1 ring-black/5 backdrop-blur-xl">
             {sent ? (
               <div role="status" aria-live="polite" className="space-y-4 text-center">
                 <p className="text-sm text-black/80">

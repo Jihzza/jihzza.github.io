@@ -21,7 +21,7 @@ const ProfileDashboardBox = ({
   clickable = true 
 }) => {
   const content = (
-    <div className={`bg-white/10 backdrop-blur-md rounded-2xl p-4 shadow-sm border border-white/20 hover:bg-white/15 hover:shadow-md transition-all duration-200 ${className}`}>
+    <div className={`bg-black/10 backdrop-blur-md rounded-2xl p-4 shadow-sm border border-white/20 hover:bg-white/15 hover:shadow-md transition-all duration-200 ${className}`}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-semibold text-white">{title}</h3>
         {clickable && to && (

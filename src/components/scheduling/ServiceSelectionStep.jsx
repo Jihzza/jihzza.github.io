@@ -44,7 +44,7 @@ export default function ServiceSelectionStep({ selectedService, onSelectService,
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.04 }}
               className={[
-                'p-3 md:p-4 rounded-lg cursor-pointer transition-all duration-200 w-full bg-white/10 backdrop-blur-md border border-white/20',
+                'p-3 md:p-4 rounded-lg cursor-pointer transition-all duration-200 w-full bg-black/10 backdrop-blur-md border border-white/20',
                 isSelected
                   ? 'border-[#bfa200] shadow-xl hover:bg-white/15'
                   : 'hover:border-[#bfa200] hover:bg-white/15 hover:shadow-md transition-shadow duration-200',

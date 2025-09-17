@@ -28,7 +28,7 @@ const FinancesBox = ({
     <ProfileDashboardBox 
       title="Finances" 
       to={to}
-      className="bg-white/10"
+      className="bg-black/10"
     >
       <div className="space-y-3">
         <div className="flex items-center justify-between p-3 rounded-xl ring-1 ring-gray-300 shadow-sm">

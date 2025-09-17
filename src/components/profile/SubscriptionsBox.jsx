@@ -29,7 +29,7 @@ const SubscriptionsBox = ({
     <ProfileDashboardBox 
       title="Subscriptions" 
       to={to}
-      className="bg-white/10"
+      className="bg-black/10"
     >
       <div className="space-y-2">
         {displayedSubscriptions.length > 0 ? (

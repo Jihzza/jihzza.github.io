@@ -40,7 +40,7 @@ const ConsultationsBox = ({
     <ProfileDashboardBox 
       title="Consultations" 
       to={to}
-      className="bg-white/10"
+      className="bg-black/10"
     >
       <div className="space-y-2">
         {displayedConsultations.length > 0 ? (

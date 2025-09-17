@@ -113,7 +113,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
   };
 
   const itemBase =
-    'flex items-center gap-3 rounded-xl px-3 py-2 text-base md:text-lg lg:text-base transition-colors outline-none hover:bg-white/10 focus-visible:bg-white/10 focus-visible:ring-2 focus-visible:ring-yellow-400/70 cursor-pointer';
+    'flex items-center gap-3 rounded-xl px-3 py-2 text-base md:text-lg lg:text-base transition-colors outline-none hover:bg-black/10 focus-visible:bg-black/10 focus-visible:ring-2 focus-visible:ring-yellow-400/70 cursor-pointer';
 
   const authColorClasses = isAuthenticated
     ? 'text-red-400 hover:text-red-300 focus-visible:ring-red-400/70'
@@ -216,7 +216,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                     ref={closeButtonRef}
                     type="button"
                     onClick={onClose}
-                    className="inline-flex items-center rounded-lg p-2 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 cursor-pointer"
+                    className="inline-flex items-center rounded-lg p-2 hover:bg-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/70 cursor-pointer"
                     aria-label={t('common.close', { defaultValue: 'Close' })}
                   >
                     <XMarkIcon className="h-5 w-5 md:h-6 md:w-6" />

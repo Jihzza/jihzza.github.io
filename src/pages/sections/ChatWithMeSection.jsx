@@ -21,6 +21,10 @@ export default function ChatWithMeSection() {
         {t('chatWithMe.iconLabel')}
       </InfoBlock>
 
+      <Button onClick={() => navigate('/chatbot')}>
+        {t('chatWithMe.buttonText')}
+      </Button>
+
       {/* Chatbot temporarily disabled */}
     </section>
   );

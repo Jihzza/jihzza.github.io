@@ -64,7 +64,7 @@ export default function CoachingCard({ onScheduleClick }) {
                 data-tier-card
                 onClick={(e) => handleTierClick(e, tier.id)}
                 className="border-2 md:border-3 border-[#BFA200] rounded-xl p-3 lg:p-2 flex-1 cursor-pointer h-[70px] w-[70px] flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition-shadow duration-200"
-                style={{ scale: isSelected ? 1.08 : 1 }}
+                style={{ scale: isSelected ? 1.12 : 1 }}
                 whileHover={prefersReduced ? undefined : { scale: isSelected ? 1.07 : 1.06 }}
                 whileTap={{ scale: isSelected ? 1.02 : 0.95 }}
                 transition={{ duration: 0.12 }}

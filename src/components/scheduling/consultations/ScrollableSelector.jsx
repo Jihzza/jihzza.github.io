@@ -75,7 +75,7 @@ export default function ScrollableSelector({ title, options = [], selectedValue,
                 }}
                 disabled={disabled}
                 className={[
-                  'flex-shrink-0 px-3 py-1 rounded-lg transition-all duration-200 ease-in-out whitespace-nowrap md:px-5 md:py-2 text-sm md:text-base shadow-xl lg:text-sm lg:px-3 lg:py-1 bg-white/10 backdrop-blur-md border border-white/20',
+                  'flex-shrink-0 px-3 py-1 rounded-lg transition-all duration-200 ease-in-out whitespace-nowrap md:px-5 md:py-2 text-sm md:text-base shadow-xl lg:text-sm lg:px-3 lg:py-1 bg-black/10 backdrop-blur-md border border-white/20',
                   disabled
                     ? 'text-gray-500 border-gray-600/60 cursor-not-allowed opacity-60'
                     : selected

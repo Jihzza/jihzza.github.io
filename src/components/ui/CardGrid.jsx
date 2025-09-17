@@ -141,7 +141,7 @@ export default function CardGrid({ items = [] }) {
                       {items[active].href && (
                         <a
                           href={items[active].href}
-                          className="shrink-0 inline-flex items-center rounded-xl border border-white/20 px-3 py-1.5 text-sm hover:bg-white/10"
+                          className="shrink-0 inline-flex items-center rounded-xl border border-white/20 px-3 py-1.5 text-sm hover:bg-black/10"
                         >
                           Learn more
                         </a>
@@ -150,10 +150,10 @@ export default function CardGrid({ items = [] }) {
 
                     {/* Two info boxes */}
                     <div className="grid grid-cols-2 gap-4 mt-6">
-                      <div className="rounded-xl border border-white/15 bg-white/10 p-4">
+                      <div className="rounded-xl border border-white/15 bg-black/10 p-4">
                         {items[active].content?.boxLeft ?? "Left info"}
                       </div>
-                      <div className="rounded-xl border border-white/15 bg-white/10 p-4">
+                      <div className="rounded-xl border border-white/15 bg-black/10 p-4">
                         {items[active].content?.boxRight ?? "Right info"}
                       </div>
                     </div>

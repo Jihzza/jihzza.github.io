@@ -60,7 +60,7 @@ export default function CalendarPage() {
 
                 {!loading && !error && (
                     <div className="flex flex-col space-y-6 mt-4">
-                        <div className="rounded-2xl border border-white/20 p-4 bg-white/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200">
+                        <div className="rounded-2xl border border-white/20 p-4 bg-black/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200">
                             <AppointmentCalendar
                                 appointments={allAppointments}
                                 selectedDate={selectedDate}
@@ -79,7 +79,7 @@ export default function CalendarPage() {
                             )}
                         </div>
 
-                        <div className="rounded-2xl border border-white/20 p-4 bg-white/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200">
+                        <div className="rounded-2xl border border-white/20 p-4 bg-black/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200">
                             <ConsultationList
                                 appointments={filteredAppointments}
                                 title={listTitle}

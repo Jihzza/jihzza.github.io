@@ -83,7 +83,7 @@ export default function BugReportForm({ onSubmit, isLoading, defaultValues = {} 
                     id="description"
                     rows="4"
                     {...register('description', { required: t('bugReport.form.description.required') })}
-                    className="mt-2 block w-full px-3 py-2 rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-white/70 bg-white/10 backdrop-blur-md border border-white/20 md:text-lg"
+                    className="mt-2 block w-full px-3 py-2 rounded-xl text-white placeholder-gray-400 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-white/70 bg-black/10 backdrop-blur-md border border-white/20 md:text-lg"
                     placeholder={t('bugReport.form.description.placeholder')}
                 />
                 {errors.description && <p className="mt-2 text-sm text-red-500">{errors.description.message}</p>}
@@ -96,13 +96,13 @@ export default function BugReportForm({ onSubmit, isLoading, defaultValues = {} 
                 </label>
                 <div className="mt-2">
                     {!imagePreview ? (
-                        <div className="flex justify-center rounded-xl border-2 border-dashed border-white/30 bg-white/5 px-6 py-10 hover:bg-white/10 transition-colors">
+                        <div className="flex justify-center rounded-xl border-2 border-dashed border-white/30 bg-white/5 px-6 py-10 hover:bg-black/10 transition-colors">
                             <div className="text-center">
                                 <PhotoIcon className="mx-auto h-12 w-12 text-white/40" />
                                 <div className="mt-4 flex text-sm text-white/70">
                                     <label
                                         htmlFor="image"
-                                        className="relative cursor-pointer rounded-md bg-white/10 px-3 py-2 font-medium text-white hover:bg-white/20 focus-within:outline-none focus-within:ring-2 focus-within:ring-white/50 focus-within:ring-offset-2 focus-within:ring-offset-gray-900"
+                                        className="relative cursor-pointer rounded-md bg-black/10 px-3 py-2 font-medium text-white hover:bg-white/20 focus-within:outline-none focus-within:ring-2 focus-within:ring-white/50 focus-within:ring-offset-2 focus-within:ring-offset-gray-900"
                                     >
                                         <span>{t('bugReport.form.image.uploadText')}</span>
                                         <input

@@ -363,7 +363,7 @@ export default function FullScreenVideo({
             {/* Play/Pause */}
             <button
               onClick={togglePlay}
-              className="rounded-full bg-white/10 p-2 hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
+              className="rounded-full bg-black/10 p-2 hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
               aria-label={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? (
@@ -380,7 +380,7 @@ export default function FullScreenVideo({
             {/* Mute/Unmute */}
             <button
               onClick={toggleMute}
-              className="rounded-full bg-white/10 p-2 hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
+              className="rounded-full bg-black/10 p-2 hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
               aria-label={isMuted ? "Unmute" : "Mute"}
             >
               {isMuted ? (
@@ -399,14 +399,14 @@ export default function FullScreenVideo({
             {/* Quick seek */}
             <button
               onClick={() => seekBy(-10)}
-              className="rounded-full bg-white/10 px-3 py-1 text-sm hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
+              className="rounded-full bg-black/10 px-3 py-1 text-sm hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
               aria-label="Rewind 10 seconds"
             >
               -10s
             </button>
             <button
               onClick={() => seekBy(10)}
-              className="rounded-full bg-white/10 px-3 py-1 text-sm hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
+              className="rounded-full bg-black/10 px-3 py-1 text-sm hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
               aria-label="Forward 10 seconds"
             >
               +10s
@@ -415,7 +415,7 @@ export default function FullScreenVideo({
             {/* Fullscreen */}
             <button
               onClick={toggleFullscreen}
-              className="rounded-full bg-white/10 p-2 hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
+              className="rounded-full bg-black/10 p-2 hover:bg-white/20 focus:outline-none focus:ring focus:ring-white/30"
               aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
             >
               {isFullscreen ? (

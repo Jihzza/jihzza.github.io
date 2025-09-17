@@ -41,7 +41,7 @@ export default function PaymentStep({ paymentStatus, formData, price, onInitiate
 
     return (
         <div className="w-full">
-            <div className="rounded-2xl border p-6 bg-white/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200 border-white/20 space-y-4 md:flex md:flex-col md:justify-center md:items-center md:text-center">
+            <div className="rounded-2xl border p-6 bg-black/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200 border-white/20 space-y-4 md:flex md:flex-col md:justify-center md:items-center md:text-center">
                 {formData.serviceType === 'consultation' && (
                     <div className="space-y-2">
                         <h3 className="text-lg font-semibold text-white">{t('scheduling.paymentStep.consultationTitle')}</h3>

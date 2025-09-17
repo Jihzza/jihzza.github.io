@@ -86,7 +86,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                                             <Link
                                                 to={item.href}
                                                 onClick={() => handleLinkClick(item.href)}
-                                                className="block rounded-md px-2 py-2 text-base md:text-xl lg:text-sm leading-4 text-white hover:bg-white/10 hover:text-yellow-400"
+                                                className="block rounded-md px-2 py-2 text-base md:text-xl lg:text-sm leading-4 text-white hover:bg-black/10 hover:text-yellow-400"
                                             >
                                                 {item.label}
                                             </Link>
@@ -102,7 +102,7 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                                             <Link
                                                 to={item.href}
                                                 onClick={() => handleLinkClick(item.href)}
-                                                className="block rounded-md px-2 py-2 text-base md:text-xl lg:text-sm leading-6 text-white hover:bg-white/10 hover:text-yellow-400"
+                                                className="block rounded-md px-2 py-2 text-base md:text-xl lg:text-sm leading-6 text-white hover:bg-black/10 hover:text-yellow-400"
                                             >
                                                 {item.label}
                                             </Link>
@@ -114,14 +114,14 @@ export default function SidebarMenu({ isOpen, onClose, isAuthenticated = true, s
                                 <Link
                                     to="/settings"
                                     onClick={() => handleLinkClick('/settings')}
-                                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm md:text-lg lg:text-base leading-6 text-white hover:bg-white/10 items-center"
+                                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm md:text-lg lg:text-base leading-6 text-white hover:bg-black/10 items-center"
                                 >
                                     <Cog6ToothIcon className="h-6 w-6 md:h-8 md:w-8 lg:h-4 lg:w-4 hrink-0" />
                                     {t('sidebar.settings')}
                                 </Link>
                                 <button 
                                     onClick={handleSignOut} 
-                                    className="group -mx-2 flex w-full gap-x-3 rounded-md md:text-lg lg:text-base p-2 text-sm font-semibold leading-6 text-white hover:bg-white/10 items-center"
+                                    className="group -mx-2 flex w-full gap-x-3 rounded-md md:text-lg lg:text-base p-2 text-sm font-semibold leading-6 text-white hover:bg-black/10 items-center"
                                 >
                                     <ArrowLeftOnRectangleIcon className="h-6 w-6 md:h-8 md:w-8 lg:h-4 lg:w-4 shrink-0" />
                                     {t('sidebar.logout')}

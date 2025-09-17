@@ -32,7 +32,7 @@ const AccountSettingsBox = ({
     <ProfileDashboardBox 
       title="Account & Settings" 
       to={to}
-      className="bg-white/10"
+      className="bg-black/10"
     >
       <div className="space-y-3">
         <div className="flex items-center space-x-3 p-3 rounded-xl ring-1 ring-gray-300 shadow-sm">
