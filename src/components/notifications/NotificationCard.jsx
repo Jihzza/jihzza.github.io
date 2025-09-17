@@ -44,10 +44,11 @@ const NotificationMessage = ({ notification }) => {
   }
 };
 
-// Simple white dot indicator for notifications
-const NotificationDot = () => {
+// Simple status dot indicator for notifications
+const NotificationDot = ({ isRead }) => {
+  const colorClass = isRead ? 'bg-[#ECEBE5]' : 'bg-[#bfa200]';
   return (
-    <div className="w-2 h-2 bg-[#bfa200] rounded-full flex-shrink-0 mt-1"></div>
+    <div className={`w-2 h-2 ${colorClass} rounded-full flex-shrink-0 mt-1`}></div>
   );
 };
 
@@ -65,12 +66,12 @@ export default function NotificationCard({ notification, onMarkAsRead }) {
   return (
     <div
       onClick={handleClick}
-      className={`px-4 py-3 cursor-pointer transition-all duration-200 hover:bg-gray-800/50`}
+      className={`px-4 py-3 cursor-pointer transition-all duration-200 hover:bg-gray-800/50 ${notification.is_read ? 'opacity-60' : ''}`}
     >
       <div className="flex items-start space-x-3">
         {/* White dot indicator */}
         <div className="flex-shrink-0">
-          <NotificationDot />
+          <NotificationDot isRead={!!notification.is_read} />
         </div>
         
         {/* Content */}

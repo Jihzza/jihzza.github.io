@@ -27,7 +27,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="bg-[#002147] min-h-screen">
+    <div className="bg-[#002147] h-auto min-h-full">
       <ProfileSectionLayout>
         <div>
           <SectionTextWhite title={t('notifications.pageTitle')} />
