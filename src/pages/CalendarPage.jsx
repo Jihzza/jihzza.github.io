@@ -7,7 +7,7 @@ import { isSameDay, parseISO, format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 // --- COMPONENT IMPORTS ---
-import SectionTextWhite from '../components/common/SectionTextWhite';
+import SectionTextWhite from '../components/common/FormsTitle';
 import ProfileSectionLayout from '../components/profile/ProfileSectionLayout';
 import AppointmentCalendar from '../components/calendar/AppointmentCalendar';
 import ConsultationList from '../components/calendar/ConsultationList';
@@ -53,33 +53,38 @@ export default function CalendarPage() {
     return (
         <div className="bg-[#002147] h-auto min-h-full">
             <ProfileSectionLayout>
-                <SectionTextWhite title={t('calendar.pageTitle')}>
-                    {t('calendar.pageSubtitle')}
-                </SectionTextWhite>
+                <SectionTextWhite title={t('calendar.pageTitle')} />
+                
                 {loading && <p className="text-center text-gray-500">{t('calendar.loading')}</p>}
                 {error && <p className="text-center text-red-500">{error}</p>}
 
                 {!loading && !error && (
-                    <div className="flex flex-col space-y-6">
-                        <AppointmentCalendar
-                            appointments={allAppointments}
-                            selectedDate={selectedDate}
-                            onDateSelect={setSelectedDate}
-                        />
+                    <div className="flex flex-col space-y-6 mt-4">
+                        <div className="rounded-2xl border border-white/20 p-4 bg-white/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200">
+                            <AppointmentCalendar
+                                appointments={allAppointments}
+                                selectedDate={selectedDate}
+                                onDateSelect={setSelectedDate}
+                            />
 
-                        {selectedDate && (
-                            <Button
-                                onClick={() => setSelectedDate(null)}
-                                className="self-center"
-                            >
-                                {t('calendar.showAllButton')}
-                            </Button>
-                        )}
+                            {selectedDate && (
+                                <div className="mt-4 flex justify-center">
+                                    <Button
+                                        onClick={() => setSelectedDate(null)}
+                                        className="self-center"
+                                    >
+                                        {t('calendar.showAllButton')}
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
 
-                        <ConsultationList
-                            appointments={filteredAppointments}
-                            title={listTitle}
-                        />
+                        <div className="rounded-2xl border border-white/20 p-4 bg-white/10 backdrop-blur-md shadow-sm hover:bg-white/15 hover:shadow-md transition-all duration-200">
+                            <ConsultationList
+                                appointments={filteredAppointments}
+                                title={listTitle}
+                            />
+                        </div>
                     </div>
                 )}
             </ProfileSectionLayout>
