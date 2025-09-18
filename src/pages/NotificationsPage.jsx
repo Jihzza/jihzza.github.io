@@ -1,5 +1,5 @@
 // src/pages/NotificationsPage.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProfileSectionLayout from '../components/profile/ProfileSectionLayout';
 import SectionTextWhite from '../components/common/SectionTextWhite';
@@ -8,7 +8,17 @@ import NotificationCard from '../components/notifications/NotificationCard';
 
 export default function NotificationsPage() {
   const { t } = useTranslation();
-  const { notifications, loading, markAsRead } = useNotifications();
+  const { notifications, loading, markAsRead, markAllAsRead } = useNotifications();
+
+  // Auto-mark all notifications as read when entering the page
+  useEffect(() => {
+    if (notifications && notifications.length > 0) {
+      const hasUnreadNotifications = notifications.some(n => !n.is_read);
+      if (hasUnreadNotifications) {
+        markAllAsRead();
+      }
+    }
+  }, [notifications, markAllAsRead]);
 
   const renderContent = () => {
     if (loading) {
