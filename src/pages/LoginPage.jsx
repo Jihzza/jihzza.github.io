@@ -57,7 +57,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 opacity-30 [background:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:22px_22px]" />
       </div>
 
-      <div className="mx-auto flex h-full max-w-7xl flex-col items-center justify-start px-6 py-12">
+      <div className="mx-auto flex h-full max-w-7xl flex-col items-center justify-start p-6">
         <SectionTextWhite title="Log in to your account" />
 
         <div className="mt-8 w-full max-w-md">

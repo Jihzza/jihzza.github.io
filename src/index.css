@@ -22,12 +22,14 @@ body,
   user-drag: none;
 }
 
-
 .chat-icon-glow {
-  filter: drop-shadow(0 0 6px #BFA200) drop-shadow(0 0 12px #BFA200);
+  filter:
+    drop-shadow(0 0 4px #BFA200)
+    drop-shadow(0 0 8px #BFA200)
+    drop-shadow(0 0 16px #BFA200)
+    drop-shadow(0 0 24px #BFA200);
   transition: filter 0.3s ease-in-out;
 }
-
 
 :root {
   font-family: 'Inter', sans-serif;

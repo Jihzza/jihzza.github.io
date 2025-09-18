@@ -1,6 +1,7 @@
 // src/components/auth/Login.jsx
 
 import { useState } from 'react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -62,14 +63,19 @@ export default function Login({ onSubmit, onGoogleSignIn, isLoading, containerCl
                     <label htmlFor="password" className="block text-sm font-medium text-white">
                         Password
                     </label>
-                    {/* Show/Hide toggle — accessible name + pressed state */}
+                    {/* Icon toggle */}
                     <button
                         type="button"
                         onClick={() => setShowPassword((v) => !v)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
                         aria-pressed={showPassword ? 'true' : 'false'}
-                        className="text-xs font-medium text-[#002147] underline underline-offset-2 hover:text-[#002147]/80 focus:outline-none cursor-pointer"
+                        className="p-1 rounded-md text-[#bfa200] hover:text-[#bfa200]/80 focus:outline-none focus:ring-2 focus:ring-[#bfa200] cursor-pointer"
                     >
-                        {showPassword ? 'Hide password' : 'Show password'}
+                        {showPassword ? (
+                            <EyeSlashIcon className="h-5 w-5" />
+                        ) : (
+                            <EyeIcon className="h-5 w-5" />
+                        )}
                     </button>
                 </div>
 
@@ -97,7 +103,7 @@ export default function Login({ onSubmit, onGoogleSignIn, isLoading, containerCl
                 <label className="inline-flex select-none items-center gap-2">
                     <input
                         type="checkbox"
-                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        className="h-4 w-4 rounded border-white/30 bg-black/10 text-[#bfa200] focus:ring-[#bfa200]"
                         {...register('rememberMe')}
                     />
                     <span className="text-sm text-white/80">Remember me</span>

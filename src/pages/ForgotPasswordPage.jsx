@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ForgotPassword from '../components/auth/ForgotPassword';
 import { sendPasswordResetEmail } from '../services/authService';
 import { Link } from 'react-router-dom';
-import SectionTextWhite from '../components/common/SectionTextWhite';
+import SectionTextWhite from '../components/common/FormsTitle';
 import Button from '../components/ui/Button';
 
 export default function ForgotPasswordPage() {

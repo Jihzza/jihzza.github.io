@@ -3,6 +3,7 @@
 // A "dumb" sign-up form. It receives onSubmit + isLoading props from the parent page and never talks to global state.
 
 import { useState, useRef } from 'react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form'; // form helper
 import Input from '../common/Forms/Input';
@@ -11,7 +12,7 @@ import Button from '../ui/Button';
 import GoogleButton from '../common/Forms/GoogleButton';
 import { useTranslation } from 'react-i18next';
 
-export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerClassName = 'space-y-6' }) {
+export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerClassName = 'space-y-6', textColor = 'black', showNameField = false }) {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const { t } = useTranslation();
 
@@ -35,9 +36,34 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
     return (
         // HTML form landmark with visible heading label (via surrounding section)
         <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className={containerClassName} noValidate>
+            {/* Name field (optional, controlled via prop) */}
+            {showNameField && (
+            <div>
+                <label htmlFor="name" className={`block text-sm font-medium text-left ${textColor === 'white' ? 'text-white' : 'text-black'}`}>
+                    {t('signup.form.nameLabel', { defaultValue: 'Name' })}
+                </label>
+                <div className="mt-1">
+                    <Input
+                        id="name"
+                        type="text"
+                        autoComplete="name"
+                        placeholder={t('signup.form.namePlaceholder', { defaultValue: 'Your name' })}
+                        aria-invalid={errors.name ? 'true' : 'false'}
+                        aria-describedby={errors.name ? 'name-error' : undefined}
+                        {...register('name')}
+                    />
+                    {errors.name && (
+                        <p id="name-error" className="mt-2 text-sm text-red-600" aria-live="polite">
+                            {errors.name.message}
+                        </p>
+                    )}
+                </div>
+            </div>
+            )}
+
             {/* Email field */}
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-white">
+                <label htmlFor="email" className={`block text-sm font-medium text-left ${textColor === 'white' ? 'text-white' : 'text-black'}`}>
                     {t('signup.form.emailLabel')}
                 </label>
                 <div className="mt-1">
@@ -62,16 +88,21 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
             {/* Password field + Show/Hide */}
             <div>
                 <div className="flex items-center justify-between">
-                    <label htmlFor="password" className="block text-sm font-medium text-white">
+                    <label htmlFor="password" className={`block text-sm font-medium text-left ${textColor === 'white' ? 'text-white' : 'text-black'}`}>
                         {t('signup.form.passwordLabel')}
                     </label>
                     <button
                         type="button"
                         onClick={() => setShowPassword(v => !v)}
+                        aria-label={showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                         aria-pressed={showPassword ? 'true' : 'false'}
-                        className="text-xs font-medium text-[#002147] underline underline-offset-2 hover:text-[#002147]/80 focus:outline-none cursor-pointer"
+                        className="p-1 rounded-md text-[#001B3A] hover:text-[#001B3A]/80 focus:outline-none focus:ring-2 focus:ring-[#001B3A] cursor-pointer"
                     >
-                        {showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
+                        {showPassword ? (
+                            <EyeSlashIcon className="h-5 w-5" />
+                        ) : (
+                            <EyeIcon className="h-5 w-5" />
+                        )}
                     </button>
                 </div>
 
@@ -99,16 +130,21 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
             {/* Confirm Password field + Show/Hide */}
             <div>
                 <div className="flex items-center justify-between">
-                    <label htmlFor="confirm" className="block text-sm font-medium text-white">
+                    <label htmlFor="confirm" className={`block text-sm font-medium text-left ${textColor === 'white' ? 'text-white' : 'text-black'}`}>
                         {t('signup.form.confirmPasswordLabel')}
                     </label>
                     <button
                         type="button"
                         onClick={() => setShowConfirm(v => !v)}
+                        aria-label={showConfirm ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
                         aria-pressed={showConfirm ? 'true' : 'false'}
-                        className="text-xs font-medium text-[#002147] underline underline-offset-2 hover:text-[#002147]/80 focus:outline-none cursor-pointer"
+                        className="p-1 rounded-md text-[#001B3A] hover:text-[#001B3A]/80 focus:outline-none focus:ring-2 focus:ring-[#001B3A] cursor-pointer"
                     >
-                        {showConfirm ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
+                        {showConfirm ? (
+                            <EyeSlashIcon className="h-5 w-5" />
+                        ) : (
+                            <EyeIcon className="h-5 w-5" />
+                        )}
                     </button>
                 </div>
 
@@ -159,7 +195,7 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
             </div>
 
             {/* Bottom link */}
-            <p className="mt-6 text-center text-sm text-white/80">
+            <p className={`mt-6 text-center text-sm ${textColor === 'white' ? 'text-white/80' : 'text-black'}`}>
                 {t('signup.form.loginPrompt')}{' '}
                 <Link to="/login" className="font-semibold text-[#bfa200] hover:text-[#bfa200]/80 underline">
                     {t('signup.form.loginLink')}

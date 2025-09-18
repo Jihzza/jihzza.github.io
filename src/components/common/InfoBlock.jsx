@@ -18,20 +18,20 @@ export default function InfoBlock({ iconSrc, altText, children }) {
     // - `flex flex-col`: Stacks children vertically.
     // - `items-center`: Centers children horizontally.
     // - `space-y-4`: Adds vertical spacing between the icon and the text.
-    <div className="flex flex-col items-center space-y-2">
+    <div className="flex flex-col items-center justify-center gap-2 w-full text-center cursor-pointer">
 
       {/* Icon inside a styled box */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#002147] shadow-xl text-white cursor-pointer p-4">
+      <div className="relative overflow-hidden rounded-2xl bg-[#002147] p-4 w-20 h-20 md:w-28 md:h-28 flex items-center justify-center">
         <img
           src={iconSrc}
           alt={altText}
-          className="w-14 md:w-16 h-14 md:h-16"
+          className="w-13 h-13 object-contain pointer-events-none select-none"
         />
       </div>
 
       {/* The text content passed in as children is rendered here. */}
       {/* We ensure the text is centered and has a constrained width for readability. */}
-      <div className="text-black text-xs text-center max-w-md md:text-base">
+      <div className="text-black text-sm md:text-base font-normal mt-2">
         {children}
       </div>
 

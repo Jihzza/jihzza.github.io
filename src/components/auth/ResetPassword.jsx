@@ -1,6 +1,7 @@
 // src/components/auth/ResetPassword.jsx
 
 import { useState } from 'react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useForm } from 'react-hook-form';
 import Input from '../common/Forms/Input';
 import FormButton from '../common/Forms/FormButton';
@@ -28,10 +29,15 @@ export default function ResetPassword({ onSubmit, isLoading }) {
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
             aria-pressed={showPassword ? 'true' : 'false'}
-            className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none md:text-sm"
+            className="p-1 rounded-md text-[#bfa200] hover:text-[#bfa200]/80 focus:outline-none focus:ring-2 focus:ring-[#bfa200] md:text-sm"
           >
-            {showPassword ? 'Hide password' : 'Show password'}
+            {showPassword ? (
+              <EyeSlashIcon className="h-5 w-5" />
+            ) : (
+              <EyeIcon className="h-5 w-5" />
+            )}
           </button>
         </div>
 
@@ -66,10 +72,15 @@ export default function ResetPassword({ onSubmit, isLoading }) {
           <button
             type="button"
             onClick={() => setShowConfirm((v) => !v)}
+            aria-label={showConfirm ? 'Hide password' : 'Show password'}
             aria-pressed={showConfirm ? 'true' : 'false'}
-            className="text-xs font-medium text-[#bfa200] underline underline-offset-2 hover:text-[#bfa200]/80 focus:outline-none md:text-sm"
+            className="p-1 rounded-md text-[#bfa200] hover:text-[#bfa200]/80 focus:outline-none focus:ring-2 focus:ring-[#bfa200] md:text-sm"
           >
-            {showConfirm ? 'Hide password' : 'Show password'}
+            {showConfirm ? (
+              <EyeSlashIcon className="h-5 w-5" />
+            ) : (
+              <EyeIcon className="h-5 w-5" />
+            )}
           </button>
         </div>
 

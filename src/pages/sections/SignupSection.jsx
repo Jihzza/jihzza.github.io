@@ -58,9 +58,9 @@ export default function SignupSection() {
             </SectionTextBlack>
 
             <div className="mt-8 flex justify-center">
-                <div className="homepage-signup-form w-full max-w-md">
+                <div className="w-full max-w-md">
                     <div>
-                        <Signup onSubmit={handleSignup} onGoogleSignIn={handleGoogleSignIn} isLoading={isLoading} />
+                        <Signup onSubmit={handleSignup} onGoogleSignIn={handleGoogleSignIn} isLoading={isLoading} textColor="black" showNameField />
                         {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
                     </div>
                 </div>

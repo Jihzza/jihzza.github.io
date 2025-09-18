@@ -35,7 +35,7 @@ export default function SectionNavigator({
               // colors for active/inactive (removed scale-105 utility; Motion handles scale)
               isActive
                 ? 'bg-[#BFA200] text-black shadow-lg'
-                : 'bg-black/20 text-black border border-white/20 hover:bg-[#BFA200] hover:text-black hover:shadow-lg transition-shadow duration-200',
+                : 'bg-[#001B3A] text-white border border-white/20 hover:bg-[#BFA200] hover:text-black hover:shadow-lg transition-shadow duration-200',
               // hand cursor for obvious clickability
               'cursor-pointer',
               // focus ring stays for a11y

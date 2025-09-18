@@ -8,7 +8,7 @@ import { signUpNewUser, signInWithGoogle } from '../services/authService';
 import { useAuth } from '../contexts/AuthContext';
 import SignUp from '../components/auth/Signup';
 import EmailVerificationModal from '../components/auth/EmailVerificationModal';
-import SectionTextWhite from '../components/common/SectionTextWhite';
+import SectionTextWhite from '../components/common/FormsTitle';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#002147] ">
+    <div className="relative min-h-full h-auto w-full overflow-hidden bg-[#002147] ">
       {/* Decorative background accents (subtle, no color change) */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-black/10 blur-3xl" />
@@ -66,7 +66,7 @@ export default function SignupPage() {
         <div className="absolute inset-0 opacity-30 [background:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:22px_22px]" />
       </div>
 
-      <div className="mx-auto flex h-full max-w-7xl flex-col items-center justify-center px-6 py-12">
+      <div className="mx-auto flex h-full max-w-7xl flex-col items-center justify-center p-6">
         <SectionTextWhite title="Create an account" />
 
         <div className="mt-8 w-full max-w-md">
@@ -77,6 +77,8 @@ export default function SignupPage() {
               onGoogleSignIn={handleGoogleSignIn}
               isLoading={isLoading}
               containerClassName="space-y-6"
+              textColor="white"
+              showNameField
             />
 
             {/* Error alert */}

@@ -57,7 +57,7 @@ export default function LanguageMenu({ open, topOffset, languages, currentKey, o
                   px-2 py-1 rounded-lg text-xs font-medium transition-all duration-200
                   whitespace-nowrap flex-shrink-0
                   flex items-center gap-2
-                  ${isSelected ? 'bg-[#BFA200] text-black shadow-lg' : 'bg-black/20 text-white border border-white/20 hover:text-[#bfa200]'}
+                  ${isSelected ? 'bg-[#BFA200] text-black shadow-lg' : 'bg-[#001B3A] text-white border border-white/20 hover:bg-[#BFA200] hover:text-black hover:shadow-lg transition-shadow duration-200'}
                 `}
               >
                 <img src={lang.flag} alt={`${lang.label} flag`} className="w-4 h-3 object-contain" />
