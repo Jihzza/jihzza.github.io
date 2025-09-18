@@ -3,7 +3,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useReducedMotion } from 'framer-motion';
-import { createPortal } from 'react-dom';
 import LanguageButton from '../common/LanguageButton';
 import LanguageMenu from './LanguageMenu';
 import USFlag from '../../assets/icons/US Flag.svg';
@@ -11,7 +10,7 @@ import SpainFlag from '../../assets/icons/Spain Flag.svg';
 import PortugalFlag from '../../assets/icons/Portugal Flag.svg';
 import BrazilFlag from '../../assets/icons/Brazil Flag.svg';
 
-export default function LanguageSwitcher({ headerRef, inlineContainerRef }) {
+export default function LanguageSwitcher({ headerRef }) {
   const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -55,31 +54,15 @@ export default function LanguageSwitcher({ headerRef, inlineContainerRef }) {
   return (
     <div className="relative" ref={buttonRef}>
       <LanguageButton onClick={() => setOpen((v) => !v)} ariaExpanded={open} />
-      {inlineContainerRef?.current
-        ? createPortal(
-            <LanguageMenu
-              open={open}
-              topOffset={headerHeight}
-              languages={languages}
-              currentKey={currentLang}
-              onSelect={changeLanguage}
-              onRequestClose={() => setOpen(false)}
-              anchorRef={buttonRef}
-              inline
-            />,
-            inlineContainerRef.current
-          )
-        : (
-            <LanguageMenu
-              open={open}
-              topOffset={headerHeight}
-              languages={languages}
-              currentKey={currentLang}
-              onSelect={changeLanguage}
-              onRequestClose={() => setOpen(false)}
-              anchorRef={buttonRef}
-            />
-          )}
+      <LanguageMenu
+        open={open}
+        topOffset={headerHeight}
+        languages={languages}
+        currentKey={currentLang}
+        onSelect={changeLanguage}
+        onRequestClose={() => setOpen(false)}
+        anchorRef={buttonRef}
+      />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import ScrollArea from '../common/ScrollArea';
 
-export default function LanguageMenu({ open, topOffset, languages, currentKey, onSelect, onRequestClose, anchorRef, inline = false }) {
+export default function LanguageMenu({ open, topOffset, languages, currentKey, onSelect, onRequestClose, anchorRef }) {
   const menuRef = useRef(null);
 
   // Close on outside click, but allow clicks on the anchor (globe) and menu
@@ -34,19 +34,17 @@ export default function LanguageMenu({ open, topOffset, languages, currentKey, o
   return (
     <motion.div
       ref={menuRef}
-      layout
-      initial={{ opacity: 0, y: inline ? -8 : -20 }}
+      initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: inline ? -8 : -20 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
-      style={inline ? undefined : { top: `${topOffset}px` }}
-      className={inline ? 'w-full' : 'fixed inset-x-0 z-50'}
+      style={{ top: `${topOffset}px` }}
+      className="fixed inset-x-0 z-50"
     >
-      {!inline && <div className="absolute inset-0"></div>}
-      <div className="relative w-full py-2">
-        <ScrollArea axis="x" hideScrollbar className={`${inline ? 'full-bleed px-0' : 'px-4'}`}>
-          <div className="flex items-center gap-3 w-full px-4 md:px-6">
-            {languages.map((lang) => {
+      <div className="absolute inset-0"></div>
+      <div className="relative w-full py-3">
+        <ScrollArea axis="x" hideScrollbar className="flex items-center gap-3 px-4">
+          {languages.map((lang) => {
             const keyLower = lang.key.toLowerCase();
             const isSelected = normalized === keyLower || normalized.startsWith(keyLower + '-');
             return (
@@ -67,7 +65,6 @@ export default function LanguageMenu({ open, topOffset, languages, currentKey, o
               </motion.button>
             );
           })}
-          </div>
         </ScrollArea>
       </div>
     </motion.div>
