@@ -3,7 +3,6 @@
 // A "dumb" sign-up form. It receives onSubmit + isLoading props from the parent page and never talks to global state.
 
 import { useState, useRef } from 'react';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form'; // form helper
 import Input from '../common/Forms/Input';
@@ -87,31 +86,18 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
 
             {/* Password field + Show/Hide */}
             <div>
-                <div className="flex items-center justify-between">
-                    <label htmlFor="password" className={`block text-sm font-medium text-left ${textColor === 'white' ? 'text-white' : 'text-black'}`}>
-                        {t('signup.form.passwordLabel')}
-                    </label>
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword(v => !v)}
-                        aria-label={showPassword ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
-                        aria-pressed={showPassword ? 'true' : 'false'}
-                        className="p-1 rounded-md text-[#001B3A] hover:text-[#001B3A]/80 focus:outline-none focus:ring-2 focus:ring-[#001B3A] cursor-pointer"
-                    >
-                        {showPassword ? (
-                            <EyeSlashIcon className="h-5 w-5" />
-                        ) : (
-                            <EyeIcon className="h-5 w-5" />
-                        )}
-                    </button>
-                </div>
-
+                <label htmlFor="password" className={`block text-sm font-medium text-left ${textColor === 'white' ? 'text-white' : 'text-black'}`}>
+                    {t('signup.form.passwordLabel')}
+                </label>
                 <div className="mt-1">
                     <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
                         autoComplete="new-password"
                         placeholder="••••••••"
+                        showPasswordToggle={true}
+                        showPassword={showPassword}
+                        onTogglePassword={() => setShowPassword(v => !v)}
                         aria-invalid={errors.password ? 'true' : 'false'}
                         aria-describedby={errors.password ? 'password-error' : undefined}
                         {...register('password', {
@@ -129,31 +115,18 @@ export default function Signup({ onSubmit, onGoogleSignIn, isLoading, containerC
 
             {/* Confirm Password field + Show/Hide */}
             <div>
-                <div className="flex items-center justify-between">
-                    <label htmlFor="confirm" className={`block text-sm font-medium text-left ${textColor === 'white' ? 'text-white' : 'text-black'}`}>
-                        {t('signup.form.confirmPasswordLabel')}
-                    </label>
-                    <button
-                        type="button"
-                        onClick={() => setShowConfirm(v => !v)}
-                        aria-label={showConfirm ? t('signup.form.hidePassword', 'Hide password') : t('signup.form.showPassword', 'Show password')}
-                        aria-pressed={showConfirm ? 'true' : 'false'}
-                        className="p-1 rounded-md text-[#001B3A] hover:text-[#001B3A]/80 focus:outline-none focus:ring-2 focus:ring-[#001B3A] cursor-pointer"
-                    >
-                        {showConfirm ? (
-                            <EyeSlashIcon className="h-5 w-5" />
-                        ) : (
-                            <EyeIcon className="h-5 w-5" />
-                        )}
-                    </button>
-                </div>
-
+                <label htmlFor="confirm" className={`block text-sm font-medium text-left ${textColor === 'white' ? 'text-white' : 'text-black'}`}>
+                    {t('signup.form.confirmPasswordLabel')}
+                </label>
                 <div className="mt-1">
                     <Input
                         id="confirm"
                         type={showConfirm ? 'text' : 'password'}
                         autoComplete="new-password"
                         placeholder="••••••••"
+                        showPasswordToggle={true}
+                        showPassword={showConfirm}
+                        onTogglePassword={() => setShowConfirm(v => !v)}
                         aria-invalid={errors.confirm ? 'true' : 'false'}
                         aria-describedby={errors.confirm ? 'confirm-error' : undefined}
                         {...register('confirm', {

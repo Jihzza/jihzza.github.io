@@ -17,10 +17,10 @@ export default function SectionNavigator({
   const activeId = activeSectionId ?? activeSection;
 
   return (
-    <ScrollArea axis="x" hideScrollbar className={`flex justify-start items-center gap-2 h-auto ${className}`}>
+    <ScrollArea axis="x" hideScrollbar className={`flex justify-start items-center gap-2 h-auto py-2 ${className}`}>
       {sections.map((section) => {
         const isActive = activeId === section.id;
-        const baseScale = isActive ? 1.06 : 1;
+        const baseScale = isActive ? 1 : 1;
         const hoverScale = isActive ? 1.09 : 1.06;
 
         return (

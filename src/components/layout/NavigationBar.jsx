@@ -46,7 +46,7 @@ const BUTTON_CLASS = [
   "cursor-pointer",
 ].join(" ");
 const BAR_CLASS = "w-full fixed bottom-0 left-0 right-0 bg-black z-50";
-const INNER_CLASS = "mx-auto grid grid-cols-5 items-center w-full lg:w-[80%]";
+const INNER_CLASS = "mx-auto grid grid-cols-5 items-center w-full lg:w-[80%] px-2";
 
 export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }) {
   // Double-click tracking for home icon

@@ -58,7 +58,7 @@ export default function ScrollableSelector({ title, options = [], selectedValue,
 
         <div
           ref={containerRef}
-          className="flex space-x-3 overflow-x-auto hide-scrollbar md:space-x-4 md:px-10"
+          className="flex space-x-3 overflow-x-auto hide-scrollbar md:space-x-4 md:px-10 py-2"
         >
           {options.map((option, i) => {
             const selected = selectedValue === option.value
