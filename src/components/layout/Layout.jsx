@@ -174,11 +174,10 @@ export default function Layout() {
   // --- RENDER LOGIC ---
   return (
     // This is the main application container.
-    // By setting its height to the `viewport.height`, we ensure that the entire
-    // application resizes when the keyboard appears, preventing overlap.
+    // Using dvh (dynamic viewport height) instead of viewport.height to prevent
+    // scaling issues during pinch zoom while still handling keyboard properly.
     <div
-      className="h-full w-full flex flex-col bg-[#002147]"
-      style={{ height: viewport.height }}
+      className="h-full w-full flex flex-col bg-[#002147] min-h-dvh"
     >
       <Header ref={headerRef} onMenuClick={handleMenuClick} />
 
@@ -191,7 +190,7 @@ export default function Layout() {
         isAuthenticated={isAuthenticated}
       />
 
-      <main ref={mainContentRef} className="flex-grow min-h-0 overflow-y-auto w-full overflow-x-hidden">
+      <main ref={mainContentRef} className="flex-grow min-h-0 overflow-y-auto w-full overflow-x-hidden pb-16 md:pb-20">
         <ScrollRootContext.Provider value={mainContentRef}>
           <Outlet />
         </ScrollRootContext.Provider>
@@ -220,7 +219,7 @@ export default function Layout() {
             showScrollToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none',
           ].join(' ')}
           style={{
-            bottom: `calc(${(navBarRef.current?.offsetHeight || 0)}px + 1rem + env(safe-area-inset-bottom))`,
+            bottom: `calc(4rem + 1rem + env(safe-area-inset-bottom))`,
           }}
           aria-label="Scroll to top"
           title="Scroll to top"

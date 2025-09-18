@@ -45,7 +45,7 @@ const BUTTON_CLASS = [
   "focus-visible:ring-cyan-400/70 rounded-lg",
   "cursor-pointer",
 ].join(" ");
-const BAR_CLASS = "w-full sticky bottom-0 left-0 right-0 bg-black z-50";
+const BAR_CLASS = "w-full fixed bottom-0 left-0 right-0 bg-black z-50";
 const INNER_CLASS = "mx-auto grid grid-cols-5 items-center w-full lg:w-[80%]";
 
 export default function NavigationBar({ onNavigate, isChatbotOpen, onChatClick }) {
