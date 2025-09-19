@@ -1,11 +1,12 @@
 // src/components/layout/LanguageMenu.jsx
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import ScrollArea from '../common/ScrollArea';
 
 export default function LanguageMenu({ open, topOffset, languages, currentKey, onSelect, onRequestClose, anchorRef }) {
   const menuRef = useRef(null);
+  const [hoveredButton, setHoveredButton] = useState(null);
 
   // Close on outside click, but allow clicks on the anchor (globe) and menu
   useEffect(() => {
@@ -47,17 +48,27 @@ export default function LanguageMenu({ open, topOffset, languages, currentKey, o
           {languages.map((lang) => {
             const keyLower = lang.key.toLowerCase();
             const isSelected = normalized === keyLower || normalized.startsWith(keyLower + '-');
+            const isHovered = hoveredButton === lang.key;
+            const shouldShowHover = isHovered && !isSelected;
+            
             return (
               <motion.button
                 key={lang.key}
                 onClick={() => onSelect?.(lang.key)}
+                onMouseEnter={() => setHoveredButton(lang.key)}
+                onMouseLeave={() => setHoveredButton(null)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`
                   px-2 py-1 rounded-lg text-xs font-medium transition-all duration-200
                   whitespace-nowrap flex-shrink-0
                   flex items-center gap-2
-                  ${isSelected ? 'bg-[#BFA200] text-black' : 'bg-[#001B3A] text-white border border-white/20 hover:bg-[#BFA200] hover:text-black hover:shadow-lg transition-shadow duration-200'}
+                  ${isSelected 
+                    ? 'bg-[#BFA200] text-black' 
+                    : shouldShowHover 
+                    ? 'bg-[#BFA200] text-black shadow-lg'
+                    : 'bg-[#001B3A] text-white border border-white/20'
+                  }
                 `}
               >
                 <img src={lang.flag} alt={`${lang.label} flag`} className="w-4 h-3 object-contain" />

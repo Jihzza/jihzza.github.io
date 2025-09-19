@@ -716,6 +716,7 @@ function DangerSection() {
 /************ Main Page *************/
 export default function SettingsPage() {
   const [active, setActive] = useState("profile");
+  const [hoveredButton, setHoveredButton] = useState(null);
 
   const Section = useMemo(() => {
     switch (active) {
@@ -745,6 +746,8 @@ export default function SettingsPage() {
           <ScrollArea axis="x" hideScrollbar className="lg:hidden -mx-4 mb-1 flex px-4">
             {NAV.map((n) => {
               const isActive = active === n.id;
+              const isHovered = hoveredButton === n.id;
+              const shouldShowHover = isHovered && !isActive;
               const baseScale = isActive ? 1.06 : 1;
               const hoverScale = isActive ? 1.09 : 1.06;
 
@@ -752,14 +755,19 @@ export default function SettingsPage() {
                 <motion.button
                   key={n.id}
                   onClick={() => setActive(n.id)}
+                  onMouseEnter={() => setHoveredButton(n.id)}
+                  onMouseLeave={() => setHoveredButton(null)}
                   aria-current={isActive ? 'true' : undefined}
                   className={cn(
                     'mr-2 whitespace-nowrap rounded-lg px-3 py-1 text-sm',
                     isActive
                       ? 'bg-[#BFA200] text-black shadow-lg'
-                      : 'bg-black/20 text-white border border-white/20 hover:bg-[#BFA200] hover:text-white hover:shadow-lg transition-shadow duration-200',
+                      : shouldShowHover
+                      ? 'bg-[#BFA200] text-black shadow-lg'
+                      : 'bg-black/20 text-white border border-white/20',
                     'cursor-pointer',
                     'focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500/70',
+                    'transition-all duration-200',
                   )}
                   animate={{ scale: baseScale }}
                   whileHover={{ scale: hoverScale }}
