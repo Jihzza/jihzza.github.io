@@ -27,7 +27,8 @@ i18n
       'default': ['en']
     },
     
-    debug: process.env.NODE_ENV === 'development',
+    // Too noisy; keep off unless explicitly enabled
+    debug: Boolean(import.meta.env.VITE_I18N_DEBUG) === true,
 
     // --- SOLUTION IS HERE ---
     // Add 'pt' to the list of supported languages.

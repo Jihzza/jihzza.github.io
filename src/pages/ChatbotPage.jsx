@@ -3,32 +3,56 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { mcpClient } from '../services/mcpClient';
+import { chatbotService } from '../services/chatbotService';
 import AppointmentScheduler from '../components/chatbot/AppointmentScheduler';
 import CoachingSubscription from '../components/chatbot/CoachingSubscription';
 import PitchDeckRequest from '../components/chatbot/PitchDeckRequest';
+import ChatbotSettings from '../components/chatbot/ChatbotSettings';
+import WelcomeMessageTester from '../components/chatbot/WelcomeMessageTester';
+import TypingIndicator from '../components/chatbot/TypingIndicator';
 
-const WEBHOOK_URL = 'https://rafaello.app.n8n.cloud/webhook/decision';
 const SESSION_STORAGE_KEY = 'chatbot-session-id';
+const SESSION_TIMESTAMP_KEY = 'chatbot-session-timestamp';
 
 export default function ChatbotPage() {
   const { user, isAuthenticated } = useAuth();
 
+  // Debug flag to silence logs unless explicitly enabled
+  const DEBUG = import.meta.env.VITE_CHATBOT_DEBUG === 'true';
+  const debugLog = (...args) => { if (DEBUG) console.log(...args); };
+
   const [sessionId, setSessionId] = useState(() => {
     const cached = sessionStorage.getItem(SESSION_STORAGE_KEY);
-    if (cached) return cached;
+    const timestamp = sessionStorage.getItem(SESSION_TIMESTAMP_KEY);
+    const now = Date.now();
+    
+    // Check if session is valid (exists and less than 24 hours old)
+    const isValidSession = cached && timestamp && (now - parseInt(timestamp)) < 24 * 60 * 60 * 1000;
+    
+    if (isValidSession) {
+      return cached;
+    }
+    
+    // Create new session
     const id = typeof crypto?.randomUUID === 'function'
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     sessionStorage.setItem(SESSION_STORAGE_KEY, id);
+    sessionStorage.setItem(SESSION_TIMESTAMP_KEY, now.toString());
     return id;
   });
 
   const [messages, setMessages] = useState(() => []);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [showAppointmentScheduler, setShowAppointmentScheduler] = useState(false);
   const [showCoachingSubscription, setShowCoachingSubscription] = useState(false);
   const [showPitchDeckRequest, setShowPitchDeckRequest] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showWelcomeTester, setShowWelcomeTester] = useState(false);
+  const [hasShownWelcome, setHasShownWelcome] = useState(false);
+  const [isGeneratingWelcome, setIsGeneratingWelcome] = useState(false);
   const messagesEndRef = useRef(null);
 
   const canSend = useMemo(() => {
@@ -83,9 +107,103 @@ export default function ChatbotPage() {
         setMessages((prev) => [...prev, { role: 'assistant', content: msg }]);
         sessionStorage.removeItem('pending_welcome_message');
         window.dispatchEvent(new CustomEvent('welcomeMessageConsumed'));
+        setHasShownWelcome(true);
       }
     } catch {}
   }, []);
+
+  // Load conversation history when session changes (only once on mount or when sessionId changes)
+  useEffect(() => {
+    const loadConversationHistory = async () => {
+      if (!isAuthenticated || !user || !sessionId) {
+        return;
+      }
+
+      setIsLoadingHistory(true);
+      debugLog('🔍 Chatbot: Loading conversation history for session:', sessionId);
+
+      try {
+        const history = await chatbotService.getConversationHistory(sessionId);
+        
+        if (history && history.length > 0) {
+          debugLog('🔍 Chatbot: Found existing conversation history:', history.length, 'messages');
+          setMessages(history.map(msg => ({ role: msg.role, content: msg.content })));
+          setHasShownWelcome(true);
+        } else {
+          debugLog('🔍 Chatbot: No conversation history found, will generate welcome');
+          setMessages([]);
+          setHasShownWelcome(false);
+        }
+      } catch (error) {
+        console.error('Failed to load conversation history:', error);
+        setMessages([]);
+        setHasShownWelcome(false);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    };
+
+    loadConversationHistory();
+    // Intentionally depend only on sessionId to avoid duplicate loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]);
+
+  // Generate welcome message when there is no history yet
+  useEffect(() => {
+    const generateWelcome = async () => {
+      if (!isAuthenticated || !user || hasShownWelcome || isLoadingHistory) {
+        return;
+      }
+
+      // Guard against React StrictMode double-invocation and rapid re-renders
+      if (welcomeRunForSessionRef.current === sessionId || generatingWelcomeRef.current) {
+        return;
+      }
+      generatingWelcomeRef.current = true;
+      setIsGeneratingWelcome(true);
+      debugLog('🔍 Chatbot: Generating welcome message for session:', sessionId);
+
+      try {
+        const result = await chatbotService.generateWelcomeMessage(user.id, sessionId);
+        if (result.success) {
+          if (result.alreadyExists) {
+            debugLog('🔍 Chatbot: Welcome message already exists for this session');
+            // Only add to UI if not already displayed
+            if (messages.length === 0 || !messages.some(m => m.role === 'assistant')) {
+              setMessages((prev) => [...prev, { role: 'assistant', content: result.message }]);
+            }
+          } else {
+            debugLog('🔍 Chatbot: Generated new welcome message:', result.message);
+            setMessages((prev) => [...prev, { role: 'assistant', content: result.message }]);
+          }
+          setHasShownWelcome(true);
+          welcomeRunForSessionRef.current = sessionId;
+        }
+      } catch (error) {
+        console.error('Failed to generate welcome message:', error);
+        // Fallback welcome message - only if no messages exist
+        if (messages.length === 0) {
+          setMessages((prev) => [...prev, { 
+            role: 'assistant', 
+            content: "Hi! I'm Daniel's assistant. How can I help you today?" 
+          }]);
+        }
+        setHasShownWelcome(true);
+        welcomeRunForSessionRef.current = sessionId;
+      } finally {
+        generatingWelcomeRef.current = false;
+        setIsGeneratingWelcome(false);
+      }
+    };
+
+    generateWelcome();
+    // Depend on minimal set to avoid double trigger
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId, hasShownWelcome, isLoadingHistory]);
+
+  // Dedup guards (persist only in-memory per mount)
+  const welcomeRunForSessionRef = useRef(null);
+  const generatingWelcomeRef = useRef(false);
 
   const handleSend = async () => {
     if (!canSend) return;
@@ -316,33 +434,18 @@ export default function ChatbotPage() {
         }
       }
 
-      // Regular message processing via n8n webhook
-      const res = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: user?.id ?? null,
-          session_id: sessionId,
-          // Send both keys for compatibility with existing workflows
-          content,
-          message: content,
-        }),
-      });
-
-      let text = '';
-      try {
-        const data = await res.json();
-        const first = Array.isArray(data) ? data[0] : data;
-        text = first?.content ?? first?.value ?? first?.output ?? '';
-      } catch (_) {
-        // fall through to generic error below
+      // Regular message processing via local chatbot service
+      console.log('🔍 Chatbot: Processing with local chatbot service');
+      const result = await chatbotService.processMessage(user?.id ?? null, sessionId, content);
+  
+      if (result.success) {
+        setMessages((prev) => [...prev, { role: 'assistant', content: result.message }]);
+      } else {
+        setMessages((prev) => [...prev, { 
+          role: 'assistant', 
+          content: "Sorry, I couldn't process that. Please try again." 
+        }]);
       }
-
-      if (!res.ok || !text) {
-        text = "Sorry, I couldn't process that. Please try again.";
-      }
-
-      setMessages((prev) => [...prev, { role: 'assistant', content: text }]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
@@ -387,11 +490,46 @@ export default function ChatbotPage() {
     setShowPitchDeckRequest(false);
   };
 
+  const handleCloseSettings = () => {
+    setShowSettings(false);
+  };
+
+  const handleCloseWelcomeTester = () => {
+    setShowWelcomeTester(false);
+  };
+
+  const createNewConversation = () => {
+    const id = typeof crypto?.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const now = Date.now();
+    
+    // Update session storage
+    sessionStorage.setItem(SESSION_STORAGE_KEY, id);
+    sessionStorage.setItem(SESSION_TIMESTAMP_KEY, now.toString());
+    
+    // Update state
+    setSessionId(id);
+    setMessages([]);
+    setHasShownWelcome(false);
+    
+    console.log('🔍 Chatbot: Created new conversation with session:', id);
+  };
+
   return (
     <div className="flex flex-col h-full bg-[#002147] text-white">
       <header className="sticky top-0 z-10 border-b border-white/10 bg-[#002147]">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="text-lg font-semibold">Chatbot</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-lg font-semibold">Chatbot</h1>
+            <button
+              onClick={createNewConversation}
+              className="bg-green-600/80 text-white px-2 py-1 rounded text-xs font-semibold hover:bg-green-600 transition"
+              title="Start New Conversation"
+            >
+              🆕 New Chat
+            </button>
+          </div>
           <div className="flex items-center gap-2">
             {isAuthenticated && (
               <>
@@ -413,15 +551,41 @@ export default function ChatbotPage() {
                 >
                   Pitch Deck
                 </button>
+                <button
+                  onClick={() => setShowSettings(true)}
+                  className="bg-black/20 text-white px-2 py-1 rounded text-xs font-semibold hover:bg-black/30 transition border border-white/20"
+                  title="Chatbot Settings"
+                >
+                  ⚙️
+                </button>
+                {import.meta.env.DEV && (
+                  <button
+                    onClick={() => setShowWelcomeTester(true)}
+                    className="bg-purple-600/80 text-white px-2 py-1 rounded text-xs font-semibold hover:bg-purple-600 transition border border-purple-400/50"
+                    title="Welcome Message Tester (Dev Only)"
+                  >
+                    🧪
+                  </button>
+                )}
               </>
             )}
-            <div className="text-xs opacity-75 ml-2">Session: {sessionId.slice(0, 8)}</div>
+            <div className="text-xs opacity-75 ml-2">
+              <div>Session: {sessionId.slice(0, 8)}</div>
+              <div>Messages: {messages.length}</div>
+            </div>
           </div>
         </div>
       </header>
 
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto px-3 py-4 space-y-3">
+          {isLoadingHistory && (
+            <div className="flex justify-center">
+              <div className="max-w-[85%] rounded-2xl px-3 py-2 text-sm bg-black/10 text-white shadow-sm">
+                Loading conversation history...
+              </div>
+            </div>
+          )}
           {messages.map((m, idx) => (
             <div key={idx} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
@@ -501,10 +665,22 @@ export default function ChatbotPage() {
             />
           )}
           
-          {isSending && (
+          {showSettings && (
+            <ChatbotSettings
+              onClose={handleCloseSettings}
+            />
+          )}
+
+          {showWelcomeTester && (
+            <WelcomeMessageTester
+              onClose={handleCloseWelcomeTester}
+            />
+          )}
+          
+          {(isSending || isGeneratingWelcome) && (
             <div className="flex justify-start">
               <div className="max-w-[85%] rounded-2xl px-3 py-2 text-sm bg-black/10 text-white shadow-sm">
-                Typing...
+                <TypingIndicator label={isGeneratingWelcome ? 'Preparing welcome' : 'Typing'} />
               </div>
             </div>
           )}
