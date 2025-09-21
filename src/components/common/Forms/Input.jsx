@@ -28,7 +28,7 @@ const Input = React.forwardRef(({
                     onClick={onTogglePassword}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                     aria-pressed={showPassword ? 'true' : 'false'}
-                    className="absolute right-3 top-1/2 -translate-y-1/2  w-6 h-6 rounded-md text-[#BFA200] hover:text-[#BFA200]/80 focus:outline-none focus:ring-2 focus:ring-[#BFA200] cursor-pointer flex items-center justify-center items-center"
+                    className="absolute right-3 top-1/2 -translate-y-1/2  w-6 h-6 rounded-md text-white hover:text-white/80 focus:outline-none focus:ring-2 focus:ring-white cursor-pointer flex items-center justify-center items-center"
                 >
                     {showPassword ? (
                         <EyeSlashIcon className="h-5 w-5" />
